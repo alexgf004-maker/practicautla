@@ -142,7 +142,11 @@ Del documento de guías solo están redactadas la **Práctica 1** (configurar el
 
 Es un solo archivo sin dependencias ni build. Lo único externo son las Google Fonts (Barlow Condensed, Barlow, JetBrains Mono). Todo el JS va en un IIFE al final.
 
-Secciones (con su id): `#sim` simulador y retos · `#partes` cuerpo, cerebro y ventana · `#recorrido` recorrido de una pieza · `#guias` · `#detalles` cinco temas que confunden · `#encendido` · `#asesor` tarjetas para practicar en voz alta · `#cuestionario`.
+Funciona como una app de cuatro pestañas. En teléfono la barra de pestañas (`.tabs`) va fija abajo; desde 900 px pasa a la barra superior. Cada pestaña es una `<section class="view">` y solo se muestra una a la vez según el hash de la URL (función `route()`):
+- `#inicio` (`#v-inicio`): qué es el módulo, "Cómo usar esta página" con el avance de cada parte y un botón de siguiente paso recomendado (`#nextStep`).
+- `#aprender-N` (`#v-aprender`): 5 lecciones, cada una es un `<article class="lesson" data-n data-title data-short>`: 1 cuerpo, cerebro y ventana · 2 recorrido de una pieza · 3 las 4 guías · 4 cinco detalles que confunden (acordeones) · 5 encendido y fallas. Arriba va el indicador de lecciones y abajo los botones Anterior/Siguiente (`#pager`). Una lección cuenta como vista al pulsar Siguiente o al acertar todas sus preguntas de repaso.
+- `#simulador` (`#v-simulador`): simulador, retos y el panel de entradas y salidas. En teléfono la banda (`.sim-top`) se queda fija arriba mientras se usa el gabinete. `cue()` marca con borde amarillo lo que conviene tocar después, y al cumplir un reto sale un aviso (`toast()`).
+- `#practicar` y `#tarjetas` (`#v-practicar`): cuestionario y tarjetas del asesor, una tarjeta a la vez.
 
 ### Banco de preguntas
 - Está en el array `Q`. Cada pregunta tiene este formato:
@@ -159,7 +163,8 @@ Secciones (con su id): `#sim` simulador y retos · `#partes` cuerpo, cerebro y v
 - `FLASH`: tarjetas del asesor, cada una es `[pregunta, respuesta]`.
 - `RETOS`: cada reto es `[clave, texto, explicación]`. Se marca llamando a `reto('clave')` desde la lógica del simulador.
 - Simulador: el objeto `S` guarda el estado. Las posiciones están en `IND, FOT, C1, C2` (en % del ancho). `paint()` dibuja y `loop()` corre en `requestAnimationFrame`.
-- El avance se guarda en `localStorage` con el prefijo `modbanda-`, envuelto en try/catch. La página tiene que funcionar aunque falle.
+- El avance se guarda en `localStorage` con el prefijo `modbanda-`, envuelto en try/catch. La página tiene que funcionar aunque falle. El objeto `progress` tiene `retos`, `checks`, `best`, `flash` y `lessons`; también se guardan `lesson` (última lección abierta), `theme` y `howtoClosed`.
+- Hay botón de tema claro/oscuro en la barra superior: pone `data-theme` en `<html>`.
 - Colores: todos son tokens CSS en `:root`, con versión oscura en `@media (prefers-color-scheme: dark)` y en `[data-theme="dark"]`. No se usan colores sueltos.
 - Tiene que verse bien a 400 px de ancho sin scroll horizontal.
 
