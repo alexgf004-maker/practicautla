@@ -136,6 +136,8 @@ Del documento de guías solo están redactadas la **Práctica 1** (configurar el
 3. **Guía 3. Programar:** TIA Portal, tags, TON, SR, CTU, descarga al PLC.
 4. **Guía 4. Integrar:** driver de Factory I/O, conexión y operación en automático y manual.
 
+Figuras de la Guía 1 que se usan en preguntas: diagrama del CPU (alimentación por L1/N a 120–240 VAC, DI a a 24 VDC, RELAY OUTPUTS), pasos de Windows hasta TCP/IPv4 (adaptador Realtek PCIe GbE), firmware V4.2.2 en Diagnostics → General, y Functions → Assign IP address.
+
 ---
 
 ## 6. Cómo está hecho `index.html`
@@ -153,11 +155,12 @@ Funciona como una app de cuatro pestañas. En teléfono la barra de pestañas (`
   ```js
   {id:'p4', c:'prog', q:'Pregunta', o:['correcta','distractor','distractor','distractor'], a:0, e:'Explicación', s:'Fuente'}
   ```
-- `c` es la categoría y tiene que ser una clave de `CATS`: `gen`, `comp`, `sen`, `prog` (Guía 3), `red` (Guía 1), `fio` (Guías 2 y 4), `seg`.
+- `c` es la categoría y tiene que ser una clave de `CATS`: `red` (Guía 1), `fio` (Guía 2), `prog` (Guía 3), `int` (Guía 4), `gen`, `comp`, `sen`, `seg`.
 - `a` es el índice de la respuesta correcta en `o`. Por convención la correcta va primero (`a:0`); las opciones se revuelven al mostrarse.
 - `e` explica **por qué** es la correcta, en lenguaje sencillo. `s` dice de dónde sale (por ejemplo `'Cap. IV, tabla 4.5'`, `'Guía 1'`, `'Pruebas del módulo'`).
 - Los `id` son únicos. Las preguntas de repaso de cada sección los usan en `<div class="check" data-q="ID">`.
-- Hoy hay 80 preguntas: gen 8, comp 14, sen 14, prog 15, red 12, fio 10, seg 7.
+- Hoy hay 143 preguntas: red 35, fio 18, prog 29, int 18, gen 8, comp 14, sen 14, seg 7.
+- Ids por categoría: `r` Guía 1, `f` Guía 2, `p` Guía 3, `i` o `f` Guía 4, `g` general, `c` componentes, `s` sensores, `e` seguridad.
 
 ### Otras piezas
 - `FLASH`: tarjetas del asesor, cada una es `[pregunta, respuesta]`.
