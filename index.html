@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Módulo Banda Clasificadora</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: tablero de control. Una columna de lectura; el simulador y el cuestionario ocupan el ancho como paneles del gabinete. */
+:root{
+  --bg:#ECEFF0; --surface:#FFFFFF; --ink:#1A252B; --muted:#58686F; --line:#CDD5D8;
+  --petrol:#3F5664; --petrol-ink:#FFFFFF; --rail:#D7DDE0;
+  --go:#2C9A4C; --stop:#C7372C; --amber:#C98404; --plastic:#2F6FB8; --metal:#8C979D;
+  --ok-bg:#E3F3E7; --bad-bg:#F8E3E1;
+  --led-off:#C6CDD0; --tag:#FFFFFF; --tag-ink:#111111;
+  --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
+  --body:"Barlow","Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#11181C; --surface:#19232A; --ink:#E2E9EC; --muted:#97A7AE; --line:#2D3B43;
+  --petrol:#5D7C8D; --petrol-ink:#FFFFFF; --rail:#24313A;
+  --go:#3DBA62; --stop:#E2554A; --amber:#E5A52A; --plastic:#5C97DA; --metal:#A9B4B9;
+  --ok-bg:#183323; --bad-bg:#3A1D1B;
+  --led-off:#33424A; --tag:#E9ECEC; --tag-ink:#111111; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#11181C; --surface:#19232A; --ink:#E2E9EC; --muted:#97A7AE; --line:#2D3B43;
+  --petrol:#5D7C8D; --petrol-ink:#FFFFFF; --rail:#24313A;
+  --go:#3DBA62; --stop:#E2554A; --amber:#E5A52A; --plastic:#5C97DA; --metal:#A9B4B9;
+  --ok-bg:#183323; --bad-bg:#3A1D1B;
+  --led-off:#33424A; --tag:#E9ECEC; --tag-ink:#111111; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 64px}
+.wrap{max-width:1040px;margin:0 auto}
+.read{max-width:68ch}
+h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0}
+h1{font-size:clamp(2.3rem,6vw,3.6rem);font-weight:700}
+h2{font-size:clamp(1.7rem,4vw,2.3rem);font-weight:700}
+h3{font-size:1.3rem;font-weight:600}
+p{margin:0}
+.stack{display:flex;flex-direction:column;gap:14px}
+section{padding-block:52px 8px;display:flex;flex-direction:column;gap:22px}
+.tag{display:inline-block;font-family:var(--mono);font-weight:700;font-size:.78rem;letter-spacing:.06em;
+  background:var(--tag);color:var(--tag-ink);border:1.5px solid #222;padding:2px 8px;border-radius:2px;transform:rotate(-1.2deg);width:max-content}
+.muted{color:var(--muted)}
+code{font-family:var(--mono);font-size:.86em}
+.lead{font-size:1.2rem}
+button{font:inherit}
+button:focus-visible,a:focus-visible{outline:3px solid var(--amber);outline-offset:3px}
+
+/* HERO */
+header{padding-block:40px 6px;display:flex;flex-direction:column;gap:16px}
+.formula{display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-family:var(--display);font-size:1.25rem;font-weight:600}
+.formula span.b{background:var(--surface);border:1px solid var(--line);padding:6px 12px;border-radius:4px}
+.formula span.op{color:var(--muted)}
+.nav{display:flex;flex-wrap:wrap;gap:8px}
+.nav a{font-family:var(--display);font-weight:600;font-size:1rem;color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:5px 12px;border-radius:20px}
+.nav a:hover{border-color:var(--petrol)}
+.progress{display:flex;flex-wrap:wrap;gap:18px;align-items:center;font-size:.92rem;color:var(--muted)}
+.progress b{font-family:var(--mono);color:var(--ink)}
+
+/* SIMULADOR */
+.sim{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sim-head{background:var(--petrol);color:var(--petrol-ink);padding:10px 16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;font-family:var(--display);font-size:1.15rem;font-weight:600}
+.sim-head small{font-family:var(--body);font-weight:400;font-size:.85rem;opacity:.9}
+.sim-body{display:grid;grid-template-columns:260px 1fr}
+@media (max-width:760px){.sim-body{grid-template-columns:1fr}}
+.panel{padding:18px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:760px){.panel{border-right:0;border-bottom:1px solid var(--line)}}
+.plant{padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.lights{display:flex;gap:18px}
+.lamp{display:flex;flex-direction:column;align-items:center;gap:4px;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.lamp i{width:30px;height:30px;border-radius:50%;background:var(--led-off);border:3px solid var(--rail);display:block;transition:background .15s,box-shadow .15s}
+.lamp.g.on i{background:var(--go);box-shadow:0 0 14px var(--go)}
+.lamp.r.on i{background:var(--stop);box-shadow:0 0 14px var(--stop)}
+.btns{display:flex;gap:10px;flex-wrap:wrap}
+.pb{appearance:none;border:0;cursor:pointer;width:72px;height:72px;border-radius:50%;font-family:var(--display);font-weight:700;font-size:.95rem;color:#fff;position:relative;box-shadow:inset 0 -5px 0 rgba(0,0,0,.25);touch-action:none;user-select:none;-webkit-user-select:none}
+.pb:active{box-shadow:inset 0 2px 0 rgba(0,0,0,.25);transform:translateY(1px)}
+.pb.start{background:var(--go)} .pb.stopb{background:var(--stop)}
+.ring{position:absolute;inset:-6px;width:84px;height:84px;pointer-events:none}
+.sel{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.sel button{appearance:none;border:0;background:transparent;color:var(--ink);padding:9px 4px;font-family:var(--display);font-weight:600;font-size:1rem;cursor:pointer}
+.sel button[aria-pressed="true"]{background:var(--petrol);color:var(--petrol-ink)}
+.emg{appearance:none;cursor:pointer;width:100%;border:2px dashed var(--stop);background:transparent;color:var(--stop);font-family:var(--display);font-weight:700;font-size:1.05rem;padding:9px;border-radius:6px}
+.emg[aria-pressed="true"]{background:var(--stop);color:#fff;border-style:solid}
+.hint{font-size:.85rem;color:var(--muted);line-height:1.45}
+.think{background:var(--bg);border-left:4px solid var(--petrol);padding:10px 14px;border-radius:0 6px 6px 0;min-height:3.2em;font-size:.98rem}
+.think b{font-family:var(--display);font-size:1.05rem}
+.belt-zone{position:relative;height:190px;min-width:0}
+.bin{position:absolute;width:24%;height:40px;border:2px dashed var(--line);border-radius:6px;display:flex;align-items:center;justify-content:center;gap:6px;font-family:var(--display);font-weight:600;font-size:.95rem;color:var(--muted);text-align:center;line-height:1}
+.bin b{font-family:var(--mono);color:var(--ink)}
+.bin.m{left:21%;top:0} .bin.n{left:58%;top:0}
+.bin.e{right:0;bottom:0;width:18%;height:38px}
+.belt{position:absolute;left:0;right:0;top:92px;height:34px;border-radius:17px;background:repeating-linear-gradient(90deg,var(--rail) 0 14px,var(--line) 14px 16px);border:2px solid var(--petrol)}
+.belt.run{animation:run .6s linear infinite}
+@keyframes run{to{background-position:16px 0}}
+@media (prefers-reduced-motion:reduce){.belt.run{animation:none}}
+.sensor{position:absolute;top:128px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;font-family:var(--mono);font-size:.66rem;color:var(--muted)}
+.sensor i{width:16px;height:16px;border-radius:3px;background:var(--led-off);display:block;border:2px solid var(--petrol)}
+.sensor.hit i{background:var(--amber);box-shadow:0 0 10px var(--amber)}
+.cyl{position:absolute;top:126px;width:40px;transform:translateX(-50%);height:52px}
+.cyl .body{position:absolute;bottom:0;left:8px;width:24px;height:24px;background:var(--petrol);border-radius:3px}
+.cyl .rod{position:absolute;left:16px;bottom:24px;width:8px;height:6px;background:var(--metal);transition:height .25s}
+.cyl.out .rod{height:34px}
+.cyl .head{position:absolute;left:4px;width:32px;height:7px;background:var(--metal);border-radius:2px;transition:bottom .25s;bottom:30px}
+.cyl.out .head{bottom:58px}
+.cyl .rd{position:absolute;right:-30px;bottom:4px;font-family:var(--mono);font-size:.62rem;color:var(--muted);white-space:nowrap}
+.cyl .rd.on{color:var(--amber);font-weight:700}
+.piece{position:absolute;top:96px;width:26px;height:26px;margin-left:-13px;border-radius:4px;transition:top .25s,opacity .25s}
+.piece.metal{background:linear-gradient(135deg,#d9dee0,var(--metal) 55%,#5f6a70);border:1px solid #4c565b}
+.piece.plastic{background:var(--plastic);border-radius:50%}
+.piece.up{top:6px;opacity:.15}
+.feed{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.feed button,.btn2{appearance:none;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:7px 12px;border-radius:5px;font-weight:600;font-size:.92rem;display:inline-flex;align-items:center;gap:7px}
+.feed button i{width:14px;height:14px;display:inline-block;border-radius:3px}
+.feed .im{background:var(--metal)} .feed .ip{background:var(--plastic);border-radius:50%!important}
+.io{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:520px){.io{grid-template-columns:1fr}}
+.io-col{border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-width:0}
+.bit{display:grid;grid-template-columns:14px 58px 1fr;gap:8px;align-items:center;font-size:.84rem;line-height:1.3;padding:2px 0}
+.bit i{width:11px;height:11px;border-radius:50%;background:var(--led-off)}
+.bit.on i{background:var(--go)}
+.bit .a{font-family:var(--mono);font-size:.78rem}
+.manual-steps{display:flex;gap:4px;flex-wrap:wrap}
+.manual-steps span{font-family:var(--mono);font-size:.75rem;padding:3px 7px;border:1px solid var(--line);border-radius:3px;color:var(--muted)}
+.manual-steps span.done{background:var(--petrol);color:var(--petrol-ink);border-color:var(--petrol)}
+
+/* RETOS */
+.retos{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
+.retos-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline}
+.retos ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}
+@media (max-width:640px){.retos ul{grid-template-columns:1fr}}
+.retos li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-size:.95rem;line-height:1.4;align-items:start}
+.retos li .box{width:18px;height:18px;border:2px solid var(--line);border-radius:3px;margin-top:2px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff}
+.retos li.done .box{background:var(--go);border-color:var(--go)}
+.retos li.done .box::after{content:"✓"}
+.retos li.done span.t{color:var(--muted)}
+.retos li .why{display:block;font-size:.84rem;color:var(--muted)}
+.retos li:not(.done) .why{display:none}
+
+/* TRES PIEZAS */
+.trio{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:760px){.trio{grid-template-columns:1fr}}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.card ul{margin:0;padding-left:18px;font-size:.95rem}
+.analogy{font-style:italic;color:var(--muted)}
+
+/* RECORRIDO */
+.path{padding:0;margin:0;max-width:760px;counter-reset:s}
+.path li{list-style:none;display:grid;grid-template-columns:44px 1fr;gap:14px;padding-bottom:18px;position:relative}
+.path li::before{counter-increment:s;content:counter(s);font-family:var(--display);font-weight:700;font-size:1.2rem;width:36px;height:36px;border-radius:50%;background:var(--petrol);color:var(--petrol-ink);display:flex;align-items:center;justify-content:center}
+.path li:not(:last-child)::after{content:"";position:absolute;left:17px;top:38px;bottom:2px;width:2px;background:var(--line)}
+
+/* GUIAS */
+.guides{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+@media (max-width:860px){.guides{grid-template-columns:1fr 1fr}}
+@media (max-width:520px){.guides{grid-template-columns:1fr}}
+.guide{padding:18px;display:flex;flex-direction:column;gap:8px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);min-width:0}
+.guide .n{font-family:var(--display);font-weight:700;font-size:2.4rem;color:var(--petrol);line-height:1}
+.guide .q{font-family:var(--display);font-weight:600;font-size:1.15rem}
+.guide p{font-size:.94rem}
+.guide .out{margin-top:auto;font-size:.85rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
+.guide .go{appearance:none;cursor:pointer;border:1px solid var(--petrol);background:transparent;color:var(--ink);border-radius:4px;padding:5px 10px;font-weight:600;font-size:.85rem;align-self:flex-start}
+
+/* TABLAS */
+.tbl-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:560px;font-size:.93rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--display);font-size:1rem;font-weight:600;background:var(--bg)}
+tr:last-child td{border-bottom:0}
+.order{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-family:var(--mono);font-size:.9rem}
+.order .tag{transform:none}
+
+/* PREGUNTA SUELTA (comprueba) */
+.check{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--amber);border-radius:0 8px 8px 0;padding:16px 18px;display:flex;flex-direction:column;gap:12px;max-width:760px}
+.check .lbl{color:var(--amber)}
+.qtext{font-weight:600;font-size:1.06rem;line-height:1.45}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{appearance:none;cursor:pointer;text-align:left;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:6px;padding:10px 12px;font-size:.98rem;line-height:1.4;display:grid;grid-template-columns:26px 1fr;gap:8px;align-items:start}
+.opt .k{font-family:var(--mono);font-size:.8rem;color:var(--muted);padding-top:2px}
+.opt:hover:not([disabled]){border-color:var(--petrol)}
+.opt[disabled]{cursor:default}
+.opt.right{background:var(--ok-bg);border-color:var(--go)}
+.opt.wrong{background:var(--bad-bg);border-color:var(--stop)}
+.expl{border-radius:6px;padding:10px 12px;font-size:.95rem;line-height:1.5;background:var(--bg)}
+.expl b.v{font-family:var(--display);font-size:1.05rem}
+.expl .ok{color:var(--go)} .expl .bad{color:var(--stop)}
+.src{display:block;margin-top:6px;font-size:.82rem;color:var(--muted);font-family:var(--mono)}
+.check .again{align-self:flex-start}
+
+/* TARJETAS DEL ASESOR */
+.flash{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media (max-width:640px){.flash{grid-template-columns:1fr}}
+.fc{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.fc .q{font-weight:600}
+.fc .a{border-left:3px solid var(--go);padding-left:12px;font-size:.96rem}
+.fc .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+
+/* CUESTIONARIO */
+.quiz{background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.quiz-head{background:var(--petrol);color:var(--petrol-ink);padding:12px 18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
+.quiz-head h3{font-size:1.25rem}
+.quiz-body{padding:18px;display:flex;flex-direction:column;gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{appearance:none;cursor:pointer;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:20px;padding:6px 12px;font-weight:600;font-size:.9rem}
+.chip[aria-pressed="true"]{background:var(--petrol);color:var(--petrol-ink);border-color:var(--petrol)}
+.chip small{font-family:var(--mono);font-weight:500;opacity:.8;margin-left:4px}
+.primary{appearance:none;cursor:pointer;border:0;background:var(--go);color:#fff;border-radius:6px;padding:10px 18px;font-weight:700;font-size:1rem}
+.primary[disabled]{opacity:.5;cursor:not-allowed}
+.bar{height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--go);transition:width .25s}
+.qmeta{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.88rem;color:var(--muted)}
+.qmeta b{font-family:var(--mono);color:var(--ink)}
+.score{font-family:var(--display);font-size:3rem;font-weight:700;line-height:1}
+.breakdown{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:8px}
+.breakdown div{border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:.9rem;display:flex;justify-content:space-between;gap:8px}
+.breakdown b{font-family:var(--mono)}
+.review{display:flex;flex-direction:column;gap:10px}
+.review .item{border:1px solid var(--line);border-left:4px solid var(--stop);border-radius:0 6px 6px 0;padding:10px 12px;font-size:.94rem}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.kbd{font-family:var(--mono);font-size:.78rem;color:var(--muted)}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+<header>
+  <span class="tag">TESIS UTLA · ING. ELÉCTRICA</span>
+  <h1>El módulo de la banda clasificadora, sin enredos</h1>
+  <p class="lead read">Es una banda que separa piezas de metal de piezas que no son de metal. Un PLC decide qué hacer, y una computadora con Factory I/O muestra lo que pasa en 3D. Si entienden eso, ya entienden la mayor parte del proyecto.</p>
+  <div class="formula" aria-label="Sensores, PLC, actuadores, Factory I/O">
+    <span class="b">Sensores avisan</span><span class="op">→</span><span class="b">PLC decide</span><span class="op">→</span><span class="b">Actuadores hacen</span><span class="op">→</span><span class="b">Factory I/O muestra</span>
+  </div>
+  <nav class="nav" aria-label="Secciones">
+    <a href="#sim">Simulador</a><a href="#partes">Las 3 partes</a><a href="#recorrido">Recorrido</a><a href="#guias">Guías</a><a href="#detalles">Detalles</a><a href="#encendido">Encendido</a><a href="#asesor">Asesor</a><a href="#cuestionario">Cuestionario</a>
+  </nav>
+  <div class="progress" aria-live="polite">
+    <span>Retos del simulador: <b id="pRetos">0/8</b></span>
+    <span>Preguntas de repaso: <b id="pChecks">0/9</b></span>
+    <span>Mejor nota del cuestionario: <b id="pBest">sin intentos</b></span>
+  </div>
+</header>
+
+<section id="sim" aria-labelledby="sim-t">
+  <div class="read stack">
+    <span class="tag">1 · PRUÉBENLO</span>
+    <h2 id="sim-t">El módulo en miniatura</h2>
+    <p>Este simulador se comporta como el programa del PLC. Usen los botones del gabinete, echen piezas a la banda y vayan cumpliendo los retos de abajo. Cada reto se marca solo y explica qué acaban de ver.</p>
+  </div>
+
+  <div class="sim">
+    <div class="sim-head">Gabinete y banda <small>Modelo didáctico basado en los 11 networks del programa</small></div>
+    <div class="sim-body">
+      <div class="panel">
+        <div class="stack" style="gap:8px">
+          <span class="lbl">Luces del panel</span>
+          <div class="lights">
+            <div class="lamp g" id="lampG"><i></i>LUZ START</div>
+            <div class="lamp r" id="lampR"><i></i>LUZ STOP</div>
+          </div>
+        </div>
+        <div class="stack" style="gap:8px">
+          <span class="lbl">Pulsadores</span>
+          <div class="btns">
+            <button class="pb start" id="bStart" aria-describedby="hStart">START<svg class="ring" viewBox="0 0 84 84" aria-hidden="true"><circle id="ringC" cx="42" cy="42" r="39" fill="none" stroke="var(--amber)" stroke-width="4" stroke-dasharray="245" stroke-dashoffset="245" transform="rotate(-90 42 42)"/></svg></button>
+            <button class="pb stopb" id="bStop">STOP</button>
+          </div>
+          <p class="hint" id="hStart">En AUTO hay que sostener START 3 segundos. En MANUAL cada toque avanza un paso.</p>
+        </div>
+        <div class="stack" style="gap:8px">
+          <span class="lbl">Maneta de 3 posiciones</span>
+          <div class="sel" role="group" aria-label="Modo de operación">
+            <button id="mMan" aria-pressed="false">MANUAL</button>
+            <button id="mOff" aria-pressed="true">0</button>
+            <button id="mAuto" aria-pressed="false">AUTO</button>
+          </div>
+        </div>
+        <button class="emg" id="bEmg" aria-pressed="false">PARO DE EMERGENCIA</button>
+      </div>
+
+      <div class="plant">
+        <div class="think" id="think" aria-live="polite"><b>Módulo detenido.</b> La luz roja está encendida.</div>
+        <div class="belt-zone" id="zone">
+          <div class="bin m">METAL <b id="cM">0</b></div>
+          <div class="bin n">NO METAL <b id="cN">0</b></div>
+          <div class="bin e">SIN SEPARAR <b id="cE">0</b></div>
+          <div class="belt" id="belt"></div>
+          <div class="cyl" id="cy1" style="left:33%"><div class="head"></div><div class="rod"></div><div class="body"></div><span class="rd" id="rd1">S3</span></div>
+          <div class="cyl" id="cy2" style="left:70%"><div class="head"></div><div class="rod"></div><div class="body"></div><span class="rd" id="rd2">S4</span></div>
+          <div class="sensor" id="sInd" style="left:28%"><i></i>INDUCTIVO</div>
+          <div class="sensor" id="sFot" style="left:65%"><i></i>FOTOELÉC.</div>
+        </div>
+        <div class="feed">
+          <span class="lbl">Echar pieza:</span>
+          <button id="addM"><i class="im"></i>Metal</button>
+          <button id="addP"><i class="ip"></i>Plástico o madera</button>
+        </div>
+        <div class="stack" style="gap:6px" id="manBox" hidden>
+          <span class="lbl">Secuencia manual (toques de START)</span>
+          <div class="manual-steps" id="steps"></div>
+        </div>
+        <div class="io">
+          <div class="io-col"><span class="lbl">Entradas · lo que el PLC escucha</span><div id="ioI"></div></div>
+          <div class="io-col"><span class="lbl">Salidas · lo que el PLC ordena</span><div id="ioQ"></div>
+            <p class="hint" style="margin-top:8px">Factory I/O lee estas salidas por Ethernet y las dibuja en 3D.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="retos">
+    <div class="retos-head"><h3>Retos</h3><button class="btn2" id="resetRetos">Reiniciar retos</button></div>
+    <ul id="retoList"></ul>
+  </div>
+  <p class="hint read">Fíjense en I0.4 e I0.5: están encendidas cuando no hay pieza y se apagan al detectar. Así trabajan los sensores NC del módulo.</p>
+</section>
+
+<section id="partes" aria-labelledby="trio-t">
+  <div class="read stack">
+    <span class="tag">2 · LAS 3 PARTES</span>
+    <h2 id="trio-t">Cuerpo, cerebro y ventana</h2>
+    <p>La forma más fácil de explicarlo es comparar el módulo con una persona trabajando en una fábrica.</p>
+  </div>
+  <div class="trio">
+    <div class="card"><span class="tag">CUERPO</span><h3>El módulo físico</h3><p class="analogy">Los ojos y las manos.</p>
+      <ul><li><b>Ojos (entradas):</b> sensor inductivo, sensor fotoeléctrico, 2 sensores Reed, START, STOP y la maneta.</li>
+      <li><b>Manos (salidas):</b> motor de la banda con su variador, 2 cilindros neumáticos y las luces verde y roja.</li></ul></div>
+    <div class="card"><span class="tag">CEREBRO</span><h3>PLC S7-1200 (CPU 1214C)</h3><p class="analogy">El que piensa y decide.</p>
+      <ul><li>Lee las entradas, ejecuta el programa y actualiza las salidas, una y otra vez en milisegundos.</li>
+      <li>El programa se hizo en <b>TIA Portal V17</b>, en lenguaje Ladder, con 11 networks.</li></ul></div>
+    <div class="card"><span class="tag">VENTANA</span><h3>Laptop con Factory I/O</h3><p class="analogy">El monitor de vigilancia.</p>
+      <ul><li>Se conecta al PLC por cable Ethernet (PLC <code>192.168.0.5</code>, laptop <code>192.168.0.2</code>).</li>
+      <li>Muestra en 3D la banda, las luces y los cilindros al mismo tiempo que los reales.</li></ul></div>
+  </div>
+  <div class="check" data-q="g6"></div>
+</section>
+
+<section id="recorrido" aria-labelledby="path-t">
+  <div class="read stack">
+    <span class="tag">3 · EL RECORRIDO</span>
+    <h2 id="path-t">Qué le pasa a una pieza, paso a paso</h2>
+  </div>
+  <ol class="path">
+    <li><div class="stack" style="gap:4px"><h3>Arranque</h3><p>Maneta en AUTO y START sostenido 3 segundos: se enciende la luz verde. Tres segundos después el variador arranca el motor y la banda empieza a moverse.</p></div></li>
+    <li><div class="stack" style="gap:4px"><h3>Primer filtro: ¿es metal?</h3><p>La pieza pasa frente al sensor inductivo. Si es metálica, el sensor la detecta y el PLC extiende el cilindro 1 (salida Y1), que la saca de la banda.</p></div></li>
+    <li><div class="stack" style="gap:4px"><h3>Confirmación</h3><p>El sensor Reed S3 detecta que el cilindro llegó al final de su carrera. Cuando ya no hay pieza frente al sensor, el cilindro regresa.</p></div></li>
+    <li><div class="stack" style="gap:4px"><h3>Segundo filtro: lo que queda</h3><p>Si no era metálica, sigue hasta el sensor fotoeléctrico. Ese sensor detecta que hay un objeto y el cilindro 2 (Y2) lo separa. El Reed S4 confirma la carrera.</p></div></li>
+    <li><div class="stack" style="gap:4px"><h3>Paro</h3><p>STOP apaga la banda y la luz verde, y enciende la roja. El paro de emergencia corta la energía de todo el módulo.</p></div></li>
+  </ol>
+  <p class="read">El punto clave: el fotoeléctrico no sabe de qué material es la pieza, solo que hay algo. La clasificación funciona por el <b>orden</b>: el metal ya salió en el primer filtro, así que todo lo que llega al segundo es no metálico.</p>
+  <div class="check" data-q="s3"></div>
+  <div class="check" data-q="p5"></div>
+</section>
+
+<section id="guias" aria-labelledby="guias-t">
+  <div class="read stack">
+    <span class="tag">4 · ¿POR QUÉ LAS GUÍAS?</span>
+    <h2 id="guias-t">Las 4 guías son el camino para que otro estudiante lo pueda usar</h2>
+    <p>El módulo se queda en el laboratorio. Las guías existen para que un docente o estudiante que nunca lo ha visto pueda ponerlo a funcionar solo. Cada guía resuelve una pregunta, en orden. Esto responde al tercer objetivo específico de la tesis.</p>
+  </div>
+  <div class="guides">
+    <div class="guide"><span class="n">1</span><span class="q">¿Cómo se habla con el PLC?</span><p>Conectar el PLC, dar dirección IP a la laptop y al PLC, y comprobar que se ven en la red.</p><p class="out">Al terminar: la laptop y el PLC se comunican.</p><button class="go" data-cat="red">Practicar Guía 1</button></div>
+    <div class="guide"><span class="n">2</span><span class="q">¿Cómo se arma la banda virtual?</span><p>Crear la escena 3D en Factory I/O con banda, sensores, cilindros y panel, y entender para qué sirve cada sensor y actuador.</p><p class="out">Al terminar: existe la maqueta virtual.</p><button class="go" data-cat="fio">Practicar Guía 2</button></div>
+    <div class="guide"><span class="n">3</span><span class="q">¿Cómo se le enseña al cerebro?</span><p>Programar en TIA Portal: etiquetas, temporizadores, biestables SR y contadores, y descargar el programa al PLC.</p><p class="out">Al terminar: el PLC sabe qué hacer.</p><button class="go" data-cat="prog">Practicar Guía 3</button></div>
+    <div class="guide"><span class="n">4</span><span class="q">¿Cómo se junta todo?</span><p>Configurar el driver de Factory I/O, conectar con el PLC y operar el módulo en automático y manual.</p><p class="out">Al terminar: módulo real y 3D funcionando juntos.</p><button class="go" data-cat="fio">Practicar Guía 4</button></div>
+  </div>
+  <div class="check" data-q="g4"></div>
+  <div class="check" data-q="r4"></div>
+</section>
+
+<section id="detalles" aria-labelledby="tab-t">
+  <div class="read stack">
+    <span class="tag">5 · LO QUE MÁS CONFUNDE</span>
+    <h2 id="tab-t">Cinco detalles que conviene tener claros</h2>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Tema</th><th>Lo que pasa</th><th>Cómo decirlo</th></tr></thead>
+      <tbody>
+        <tr><td><b>Factory I/O no controla la banda</b></td><td>Factory I/O escribe sus botones en <code>%I10.x</code>, pero el programa lee las entradas físicas en <code>%I0.x</code>. Solo lee las salidas <code>%Q0.x</code>.</td><td>"Factory I/O funciona como visualización. El mando es físico, desde el panel, por seguridad."</td></tr>
+        <tr><td><b>Metal y no metal</b></td><td>El sensor inductivo detecta cualquier metal, no solo hierro. El fotoeléctrico solo detecta presencia.</td><td>"El módulo separa material metálico de no metálico."</td></tr>
+        <tr><td><b>Sensores NC</b></td><td>El inductivo y el fotoeléctrico dan 24 V en reposo y caen a 0 V al detectar.</td><td>"Por eso en Ladder usamos un contacto normalmente cerrado para esas entradas."</td></tr>
+        <tr><td><b>Protocolo</b></td><td>La comunicación PLC–laptop es Ethernet con el protocolo S7 de Siemens (puerto 102). Hay que habilitar PUT/GET en TIA Portal.</td><td>"Es comunicación S7 sobre TCP/IP; PUT/GET permite que Factory I/O lea el PLC."</td></tr>
+        <tr><td><b>Sin salida analógica</b></td><td>La CPU 1214C no trae salidas analógicas. El variador solo recibe encendido y apagado; la velocidad se fija en el variador.</td><td>"Como mejora se puede agregar un módulo SB 1232 para variar la velocidad desde el PLC."</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="check" data-q="f4"></div>
+  <div class="check" data-q="s6"></div>
+</section>
+
+<section id="encendido" aria-labelledby="enc-t">
+  <div class="read stack">
+    <span class="tag">6 · ENCENDIDO</span>
+    <h2 id="enc-t">Cómo se enciende y qué revisar si no funciona</h2>
+    <p>Orden para subir los breakers:</p>
+    <div class="order"><span class="tag">Q1</span>→<span class="tag">F2 / Q3</span>→<span class="tag">Q2 / Q4</span><span class="muted" style="font-family:var(--body)">Para apagar, al revés. El hongo de emergencia no se usa para apagar.</span></div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Síntoma</th><th>Causa probable</th><th>Solución</th></tr></thead>
+      <tbody>
+        <tr><td>No enciende nada</td><td>Paro de emergencia presionado o breakers abajo</td><td>Girar el hongo para liberarlo y subir los breakers en orden</td></tr>
+        <tr><td>Variador muestra <code>0E</code></td><td>Arrancó justo después de una emergencia</td><td>Presionar STOP/RESET en el variador</td></tr>
+        <tr><td>Factory I/O da error <code>#510</code></td><td>El PLC está en STOP</td><td>En TIA Portal: Online → Start CPU</td></tr>
+        <tr><td><code>ping</code> no responde</td><td>Cable, IP de la laptop, o la IP mal escrita (por ejemplo 162 en vez de 192)</td><td>Escribir <code>ping 192.168.0.5</code> y revisar que la laptop tenga <code>192.168.0.2</code></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="check" data-q="e1"></div>
+</section>
+
+<section id="asesor" aria-labelledby="faq-t">
+  <div class="read stack">
+    <span class="tag">7 · PRÁCTICA EN VOZ ALTA</span>
+    <h2 id="faq-t">Preguntas que el asesor puede hacer</h2>
+    <p>Lean la pregunta, respóndanla en voz alta con sus palabras y después revisen la respuesta. Marquen las que ya dominan.</p>
+  </div>
+  <div class="flash" id="flash"></div>
+</section>
+
+<section id="cuestionario" aria-labelledby="quiz-t">
+  <div class="read stack">
+    <span class="tag">8 · CUESTIONARIO</span>
+    <h2 id="quiz-t">Pongan a prueba lo que saben</h2>
+    <p>Las preguntas salen de las guías y del documento de la tesis. Elijan los temas, la cantidad, y al responder cada una verán por qué es la correcta y de dónde sale.</p>
+  </div>
+  <div class="quiz">
+    <div class="quiz-head"><h3 id="quizTitle">Configurar cuestionario</h3><span class="kbd">Atajos: teclas 1 a 4 y Enter</span></div>
+    <div class="quiz-body" id="quizBody"></div>
+  </div>
+</section>
+
+</div>
+
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+const store={get(k,d){try{const v=localStorage.getItem('modbanda-'+k);return v?JSON.parse(v):d;}catch(e){return d;}},set(k,v){try{localStorage.setItem('modbanda-'+k,JSON.stringify(v));}catch(e){}}};
+
+/* ================= BANCO DE PREGUNTAS ================= */
+const CATS={gen:'Módulo en general',comp:'Componentes',sen:'Sensores y E/S',prog:'Programación (Guía 3)',red:'Red y comunicación (Guía 1)',fio:'Factory I/O (Guías 2 y 4)',seg:'Seguridad y encendido'};
+// a: índice de la respuesta correcta dentro de o
+const Q=[
+{id:'g1',c:'gen',q:'¿Qué hace el módulo didáctico?',o:['Clasifica piezas metálicas y no metálicas','Clasifica piezas ferrosas y no ferrosas','Pesa las piezas y las separa por peso','Separa piezas por color'],a:0,e:'El sensor inductivo detecta cualquier metal y el fotoeléctrico detecta presencia. Con esos dos sensores el módulo separa metálico de no metálico. El documento decía "ferroso y no ferroso", y se corrigió.',s:'Cap. IV, 4.1'},
+{id:'g2',c:'gen',q:'¿Con qué software se programó el PLC?',o:['TIA Portal V17','Factory I/O','Autodesk Fusion','CADe SIMU'],a:0,e:'TIA Portal es el software de Siemens para configurar y programar el S7-1200. Factory I/O es la simulación 3D.',s:'Guía 1 y Cap. IV, 4.8'},
+{id:'g3',c:'gen',q:'¿Qué papel cumple Factory I/O en el módulo?',o:['Muestra en 3D y en tiempo real lo que pasa en el módulo','Programa la lógica del PLC','Alimenta los sensores','Regula la velocidad del variador'],a:0,e:'Factory I/O lee las salidas del PLC por Ethernet y las dibuja en una escena 3D. Funciona como plataforma de visualización y monitoreo.',s:'Cap. IV, 4.1'},
+{id:'g4',c:'gen',q:'¿Qué pide el tercer objetivo específico de la tesis?',o:['Estructurar cuatro guías prácticas de laboratorio','Comprar la licencia de Factory I/O','Diseñar el gabinete en Autodesk Fusion','Medir el consumo del motor'],a:0,e:'El objetivo 3 pide cuatro guías usando el PLC S7-1200 y TIA Portal, para demostrar la operación de actuadores neumáticos, motores e indicadores.',s:'Cap. I, 1.2.2'},
+{id:'g5',c:'gen',q:'¿Dónde se va a usar el módulo?',o:['En el laboratorio de Ingeniería Eléctrica de la UTLA','En una planta de reciclaje','En la casa de los estudiantes','En un centro de datos'],a:0,e:'El módulo queda en el laboratorio de la Escuela de Ingeniería Eléctrica de la UTLA, en Santa Tecla, junto con la laptop con el software instalado.',s:'Cap. I, delimitación'},
+{id:'g6',c:'gen',q:'En la comparación con una persona, ¿qué sería el PLC?',o:['El cerebro, porque decide qué hacer','Los ojos, porque detecta las piezas','Las manos, porque mueve los cilindros','La ventana, porque muestra el proceso'],a:0,e:'Los sensores son los ojos, los actuadores las manos, el PLC el cerebro y Factory I/O la ventana para ver el proceso.',s:'Explicación general'},
+{id:'g7',c:'gen',q:'¿Cuáles son los dos modos de operación del módulo?',o:['Automático y manual','Rápido y lento','Local y remoto','Simulado y real'],a:0,e:'Se eligen con la maneta de 3 posiciones. En automático los sensores deciden; en manual cada toque de START activa un elemento.',s:'Cap. IV, 4.2.5'},
+{id:'g8',c:'gen',q:'¿Quién financió el módulo?',o:['Los estudiantes, como parte del trabajo de graduación','La universidad','Siemens','Una empresa local'],a:0,e:'El documento indica que los costos no los absorbe la institución: los asumen los estudiantes y el módulo se dona a la UTLA.',s:'Cap. I, fundamentos socioeconómicos'},
+
+{id:'c1',c:'comp',q:'¿Qué modelo de PLC usa el módulo?',o:['S7-1200, CPU 1214C AC/DC/RLY','S7-1200, CPU 1212C DC/DC/DC','S7-300, CPU 314','LOGO! 8'],a:0,e:'Es el CPU 1214C AC/DC/RLY, referencia 6ES7214-1BG40-0XB0, con 14 entradas digitales, 10 salidas de relé y 2 entradas analógicas.',s:'Cap. IV, tabla 4.1'},
+{id:'c2',c:'comp',q:'¿Qué significa AC/DC/RLY en el nombre del CPU?',o:['Alimentación en AC, entradas en DC y salidas de relé','Corriente alterna, directa y reserva','Que acepta cualquier voltaje en las salidas','Que tiene salidas analógicas'],a:0,e:'La primera parte indica cómo se alimenta el CPU (AC), la segunda el tipo de entradas (24 V DC) y la tercera el tipo de salidas (relé).',s:'Cap. IV, 4.3'},
+{id:'c3',c:'comp',q:'¿Con qué se alimenta el CPU 1214C AC/DC/RLY del módulo?',o:['Con 120 V AC (acepta de 85 a 264 V AC)','Con 24 V DC en L+ y M','Con 12 V DC del compresor','Por el cable Ethernet'],a:0,e:'Al ser AC/DC/RLY se alimenta con corriente alterna, protegida por el breaker Q4. Los bornes L+ y M de este modelo son una salida de 24 V DC para sensores, no la alimentación del CPU.',s:'Cap. IV, tabla 4.1'},
+{id:'c4',c:'comp',q:'¿Qué motor mueve la banda?',o:['Motorreductor trifásico SEW-EURODRIVE de ¼ HP','Motor monofásico de 1 kW','Motor paso a paso de 12 V','Motor DC de 24 V'],a:0,e:'El motor real es un motorreductor trifásico SEW-EURODRIVE de ¼ HP. El presupuesto del anteproyecto mencionaba un monofásico de 1 kW, y se corrigió.',s:'Cap. IV, 4.2.4'},
+{id:'c5',c:'comp',q:'¿Por qué el variador tiene entrada monofásica y salida trifásica?',o:['Porque la red del laboratorio es monofásica y el motor es trifásico','Para que el motor gire más rápido que su velocidad nominal','Porque el PLC necesita tres fases','Para cargar el compresor'],a:0,e:'El variador VEVOR de 3 kW recibe 220 V monofásicos y entrega 220 V trifásicos al motor. Además hace el arranque suave.',s:'Cap. IV, tabla 4.2'},
+{id:'c6',c:'comp',q:'¿Para qué sirve el guardamotor Siemens SIRIUS 3RV2011?',o:['Protege el motor contra sobrecarga y cortocircuito','Cambia el sentido de giro del motor','Mide la velocidad de la banda','Alimenta las electroválvulas'],a:0,e:'El guardamotor, ajustable de 10 a 16 A, protege el motor contra sobrecarga, cortocircuito y falta de fase.',s:'Cap. IV, 4.2.2'},
+{id:'c7',c:'comp',q:'¿Qué entrega la fuente MEAN WELL RS-150-24?',o:['24 V DC, hasta 6.5 A','120 V AC, 10 A','12 V DC, 30 A','220 V trifásico'],a:0,e:'Convierte la red AC en 24 V DC para el circuito de control: sensores, relés y entradas del PLC. La fuente de 12 V y 30 A es otra, para el compresor.',s:'Cap. IV, 4.2.2'},
+{id:'c8',c:'comp',q:'¿Para qué se usan los relés OMRON K1 a K5?',o:['Para que cada salida del PLC accione su actuador a través de un relé','Para medir corriente','Para guardar el programa','Para conectar el PLC a la red'],a:0,e:'Cada salida del PLC activa un relé de 24 V DC, y el relé enciende la luz, el variador o la electroválvula correspondiente. Así se protege al PLC.',s:'Cap. IV, tabla 4.6'},
+{id:'c9',c:'comp',q:'Las electroválvulas son 5/2 monoestables. ¿Qué pasa cuando se quita la señal?',o:['El muelle regresa la válvula y el cilindro se retrae','El cilindro se queda extendido para siempre','La válvula se bloquea a la mitad','El compresor se apaga'],a:0,e:'Monoestable significa que solo tiene una posición estable. Al energizar la bobina el cilindro sale; al quitarla, el muelle devuelve la válvula y el cilindro regresa.',s:'Cap. IV, 4.2.4'},
+{id:'c10',c:'comp',q:'¿Qué tipo de cilindros clasifican las piezas?',o:['Neumáticos de doble efecto, Ø12 mm y 100 mm de carrera','Hidráulicos de simple efecto','Eléctricos lineales','Neumáticos sin vástago'],a:0,e:'Son cilindros de doble efecto: el aire los mueve en ambos sentidos, extensión y retracción.',s:'Cap. IV, 4.2.4'},
+{id:'c11',c:'comp',q:'¿Qué hace el contactor KM1 (Telemecanique CA2 DN31)?',o:['Corta la energía del sistema cuando se presiona el paro de emergencia','Arranca el compresor','Cambia de modo automático a manual','Alimenta el PLC con 24 V'],a:0,e:'El hongo de emergencia desenergiza la bobina de KM1, y KM1 deja sin alimentación al resto del circuito.',s:'Cap. IV, 4.2.2'},
+{id:'c12',c:'comp',q:'¿Cuál es el interruptor principal del módulo?',o:['Q1, TENGEN de 3 polos y 32 A','Q4, Siemens de 16 A','F2, CHINT de 25 A','El guardamotor Q5'],a:0,e:'Q1 es el disyuntor general. Se sube primero al encender y se baja último al apagar.',s:'Cap. IV, 4.2.2'},
+{id:'c13',c:'comp',q:'¿Qué función tiene el presostato Genebre?',o:['Apaga el compresor cuando el depósito llega a la presión ajustada','Mide la temperatura del motor','Regula la velocidad de la banda','Detecta las piezas'],a:0,e:'El presostato controla el encendido y apagado automático del compresor según la presión del depósito de aire.',s:'Cap. IV, 4.4'},
+{id:'c14',c:'comp',q:'¿Para qué sirven las válvulas de estrangulamiento de 6 mm?',o:['Para regular la velocidad de los cilindros','Para filtrar el aire','Para cortar la energía','Para medir presión'],a:0,e:'Regulan cuánto aire pasa, y con eso la velocidad a la que salen y entran los cilindros.',s:'Cap. IV, tabla de componentes'},
+
+{id:'s1',c:'sen',q:'¿Qué detecta el sensor inductivo?',o:['Cualquier objeto metálico cercano','Solo hierro y acero','Cualquier objeto, sea del material que sea','El color de la pieza'],a:0,e:'Detecta todos los metales por las corrientes que se inducen en ellos. Los no ferrosos, como el aluminio, los detecta a menor distancia, pero los detecta.',s:'Cap. IV, 4.2.3'},
+{id:'s2',c:'sen',q:'¿Qué detecta el sensor fotoeléctrico difuso?',o:['Que hay un objeto, porque la luz rebota en él','El material de la pieza','El peso de la pieza','Solo piezas de plástico'],a:0,e:'Emite luz infrarroja y recibe el reflejo en el mismo encapsulado. Detecta presencia, no material.',s:'Cap. IV, 4.2.3'},
+{id:'s3',c:'sen',q:'Si el fotoeléctrico detecta cualquier objeto, ¿por qué a él solo le llegan piezas no metálicas?',o:['Porque el cilindro 1 ya sacó el metal antes, en el primer filtro','Porque el fotoeléctrico ignora el metal','Porque el metal pasa por otra banda','Porque el PLC apaga el fotoeléctrico'],a:0,e:'El inductivo y el cilindro 1 están primero. El metal sale ahí, así que lo que sigue en la banda hasta el fotoeléctrico ya es no metálico.',s:'Funcionamiento del módulo'},
+{id:'s4',c:'sen',q:'¿Qué detectan los sensores Reed MK26?',o:['El imán del émbolo cuando el cilindro llegó al final de su carrera','Si hay aire en el depósito','La velocidad de la banda','Si la pieza es metálica'],a:0,e:'El émbolo del cilindro lleva un imán. Cuando el cilindro está completamente extendido, el Reed se activa y avisa al PLC.',s:'Cap. IV, 4.2.3'},
+{id:'s5',c:'sen',q:'Los sensores del módulo son PNP. ¿Qué significa?',o:['Que entregan +24 V a la entrada del PLC cuando se activan','Que entregan 0 V cuando se activan','Que funcionan con corriente alterna','Que no necesitan alimentación'],a:0,e:'Un sensor PNP "da positivo": conecta los 24 V hacia la entrada del PLC.',s:'Cap. IV, 4.7.1'},
+{id:'s6',c:'sen',q:'El inductivo y el fotoeléctrico son NC. ¿Cómo se ve eso en la entrada del PLC?',o:['En reposo la entrada está en 1 y al detectar cae a 0','En reposo está en 0 y al detectar sube a 1','Siempre está en 1','Siempre está en 0'],a:0,e:'Normalmente cerrado: sin pieza dan 24 V (1) y al detectar cortan (0). Por eso en Ladder se usa un contacto normalmente cerrado para esas entradas.',s:'Cap. IV, 4.7.1'},
+{id:'s7',c:'sen',q:'¿En qué dirección está conectado el sensor inductivo?',o:['%I0.4','%I0.5','%Q0.3','%I10.4'],a:0,e:'%I0.4 es el inductivo y %I0.5 el fotoeléctrico. %I10.4 es la dirección del sensor virtual en Factory I/O.',s:'Cap. IV, tabla 4.5'},
+{id:'s8',c:'sen',q:'¿Qué salida del PLC habilita el variador de la banda?',o:['%Q0.2','%Q0.0','%Q0.3','%I0.2'],a:0,e:'%Q0.2 se llama ACCIONAMIENTO VFD y activa el relé K3.',s:'Cap. IV, tabla 4.6'},
+{id:'s9',c:'sen',q:'¿Qué salida activa el cilindro que separa el metal?',o:['%Q0.3 (Y1)','%Q0.4 (Y2)','%Q0.1','%I0.6'],a:0,e:'Y1 en %Q0.3 es el cilindro 1 (metal) y Y2 en %Q0.4 el cilindro 2 (no metal).',s:'Cap. IV, tabla 4.6'},
+{id:'s10',c:'sen',q:'¿Cuántas entradas y salidas digitales usa el módulo?',o:['8 entradas y 5 salidas','14 entradas y 10 salidas','5 entradas y 8 salidas','2 entradas y 2 salidas'],a:0,e:'El CPU tiene 14 entradas y 10 salidas; el módulo usa 8 entradas (I0.0 a I0.7) y 5 salidas (Q0.0 a Q0.4).',s:'Cap. IV, 4.7'},
+{id:'s11',c:'sen',q:'¿El CPU 1214C AC/DC/RLY tiene salidas analógicas integradas?',o:['No, solo tiene 2 entradas analógicas de 0 a 10 V','Sí, tiene 2 salidas de 4 a 20 mA','Sí, una de 0 a 10 V','Tiene 10 salidas analógicas'],a:0,e:'Por eso el variador solo recibe encendido y apagado desde el PLC. La velocidad se ajusta en el propio variador.',s:'Cap. IV, 4.5 y 4.6'},
+{id:'s12',c:'sen',q:'¿Qué haría falta para variar la velocidad de la banda desde el PLC?',o:['Agregar un módulo de salida analógica, como el SB 1232','Cambiar el sensor inductivo','Usar otro cable Ethernet','Agregar más relés'],a:0,e:'El SB 1232 agrega una salida de 0 a 10 V que se conectaría a la entrada de referencia del variador. Es una propuesta de mejora, no está instalada.',s:'Cap. IV, 4.6'},
+{id:'s13',c:'sen',q:'¿Qué ventaja tiene una señal analógica de 4 a 20 mA?',o:['Resiste mejor el ruido y permite detectar si se perdió la señal','Es más barata que una digital','Funciona sin cables','Solo sirve para motores'],a:0,e:'La corriente se afecta menos por la distancia y el ruido, y como el mínimo es 4 mA, un 0 mA indica que el cable se cortó.',s:'Cap. IV, 4.5'},
+{id:'s14',c:'sen',q:'¿Qué diferencia hay entre una entrada digital y una analógica?',o:['La digital solo vale 0 o 1; la analógica puede tomar muchos valores en un rango','La digital es más rápida siempre','La analógica solo sirve para botones','No hay diferencia'],a:0,e:'Un botón o un sensor de presencia son digitales. Una temperatura o un potenciómetro de 0 a 10 V son analógicos.',s:'Cap. IV, 4.5 y 4.7'},
+
+{id:'p1',c:'prog',q:'¿En qué lenguaje se programó el PLC?',o:['Ladder (diagrama de escalera)','Texto estructurado','Lista de instrucciones','Python'],a:0,e:'Ladder imita los circuitos de relés con contactos y bobinas, por eso es fácil de leer para un electricista.',s:'Cap. IV, 4.8.2'},
+{id:'p2',c:'prog',q:'¿En qué bloque está el programa principal?',o:['Main [OB1]','DB1','FC1','Default tag table'],a:0,e:'El OB1 se ejecuta en cada ciclo del PLC. Ahí están los 11 networks.',s:'Cap. IV, 4.8.2'},
+{id:'p3',c:'prog',q:'¿Cuántos networks tiene el programa?',o:['11','5','7','20'],a:0,e:'Los networks 1 a 3 son el modo automático, el 4 habilita el manual y del 5 al 11 está la secuencia manual con contadores.',s:'Cap. IV, tabla 4.7'},
+{id:'p4',c:'prog',q:'¿Qué hace la instrucción TON?',o:['Activa su salida cuando su entrada lleva encendida el tiempo programado','Cuenta pulsos','Apaga una salida al instante','Guarda un valor permanente'],a:0,e:'TON es temporizador con retardo a la conexión. En el Network 1 tiene PT = 3 s: hay que sostener START 3 segundos.',s:'Cap. IV, Network 1'},
+{id:'p5',c:'prog',q:'En automático, ¿cuándo arranca la banda?',o:['3 segundos después de que se enciende la luz verde','En cuanto se toca START','Cuando el sensor inductivo detecta una pieza','Cuando se suelta STOP'],a:0,e:'Primer TON: START 3 s enciende la luz verde. Segundo TON: con la luz encendida, 3 s después se habilita el variador.',s:'Cap. IV, Network 1'},
+{id:'p6',c:'prog',q:'¿Para qué se usa un biestable SR?',o:['Para que una salida se quede encendida después de soltar el botón','Para contar piezas','Para medir tiempo','Para comunicarse con Factory I/O'],a:0,e:'S (set) la enciende y se queda así; R1 (reset) la apaga. Así la banda sigue corriendo aunque se suelte START.',s:'Cap. IV, Network 1'},
+{id:'p7',c:'prog',q:'En un contador CTU, ¿qué es PV?',o:['El valor al que debe llegar la cuenta para activar la salida','El valor actual de la cuenta','El tiempo de espera','La dirección de memoria'],a:0,e:'PV es el valor preestablecido y CV el valor actual. Cuando CV llega a PV, la salida Q se activa. En el Network 5 PV = 1, en el 6 PV = 2, y así hasta 7.',s:'Cap. IV, Networks 5 a 11'},
+{id:'p8',c:'prog',q:'En modo manual, ¿qué pasa al séptimo toque de START?',o:['Se reinician todos los contadores y el ciclo empieza de nuevo','Se apaga el PLC','Se pasa a modo automático','Se extienden los dos cilindros'],a:0,e:'El contador con PV = 7 activa la marca M4.3 que resetea todo. Un TON de 1 s la desactiva para poder repetir el ciclo.',s:'Cap. IV, Network 11'},
+{id:'p9',c:'prog',q:'¿Cómo se logra que la luz roja esté encendida cuando la verde está apagada?',o:['La bobina de LUZ STOP se alimenta con un contacto cerrado de LUZ START','Con un temporizador','Con un contador','Desde Factory I/O'],a:0,e:'El contacto NC de %Q0.0 deja pasar corriente a %Q0.1 solo cuando la luz verde está apagada.',s:'Cap. IV, Network 1'},
+{id:'p10',c:'prog',q:'¿Por qué el Network 2 lleva un contacto cerrado de MANUAL?',o:['Para que los sensores muevan los cilindros solo en automático','Para encender la luz roja','Para contar piezas','Para habilitar Factory I/O'],a:0,e:'Si la maneta está en manual, ese contacto se abre y los sensores ya no activan los cilindros. En manual los cilindros se mueven con los toques de START.',s:'Cap. IV, Network 2'},
+{id:'p11',c:'prog',q:'¿Cuándo se retrae el cilindro 1 en automático?',o:['Cuando el Reed S3 confirma la extensión y el inductivo ya no detecta la pieza','En cuanto se activa','Después de 10 segundos','Cuando se presiona STOP solamente'],a:0,e:'Esas dos condiciones están en la entrada R1 del biestable del Network 2. Así el cilindro no regresa mientras sigue empujando.',s:'Cap. IV, Network 2'},
+{id:'p12',c:'prog',q:'¿Para qué sirve la tabla de tags (variables)?',o:['Para darle un nombre a cada dirección del PLC','Para guardar el programa en la laptop','Para configurar la IP','Para dibujar la escena 3D'],a:0,e:'Por ejemplo, %I0.4 se llama INDUCTIVO. Las entradas y salidas están en la tabla "ETIQUETAS DE PROGRAMA" y las marcas internas en "Default tag table".',s:'Cap. IV, 4.8.1'},
+{id:'p13',c:'prog',q:'¿Qué es una marca, como %M3.5?',o:['Un bit interno de memoria del PLC, sin conexión física','Una entrada física','Una salida de relé','Un cable de la bornera'],a:0,e:'Las marcas guardan estados internos. %M3.5 "MARCA MANUAL" indica que el modo manual está habilitado.',s:'Cap. IV, Network 4'},
+{id:'p14',c:'prog',q:'¿En qué estado debe estar el PLC para ejecutar el programa?',o:['RUN','STOP','MAINT','Apagado'],a:0,e:'En STOP el PLC no ejecuta el programa y Factory I/O tampoco puede conectarse bien. Se pasa a RUN desde TIA Portal con Online → Start CPU.',s:'Cap. IV, 4.8.1'},
+{id:'p15',c:'prog',q:'¿Qué se hace después de terminar el programa en TIA Portal?',o:['Compilar y descargarlo al PLC','Imprimirlo','Copiarlo a Factory I/O','Nada, se ejecuta solo en la laptop'],a:0,e:'El programa vive en el PLC. Se compila, se descarga por Ethernet y el PLC pasa a RUN.',s:'Cap. IV, 4.8.1'},
+
+{id:'r1',c:'red',q:'¿Qué dirección IP tiene el PLC?',o:['192.168.0.5','192.168.0.2','162.168.0.5','192.168.3.71'],a:0,e:'Se configura en TIA Portal, en la interfaz PROFINET del PLC, con "Set IP address in the project".',s:'Guía 1 y Cap. IV, 4.8.1'},
+{id:'r2',c:'red',q:'¿Qué dirección IP tiene la laptop en el adaptador Ethernet?',o:['192.168.0.2','192.168.0.5','192.168.3.71','255.255.255.0'],a:0,e:'Se pone a mano en Propiedades del adaptador → TCP/IPv4. La 192.168.3.71 que aparece en ipconfig es la del Wi-Fi, no la que habla con el PLC.',s:'Guía 1'},
+{id:'r3',c:'red',q:'¿Qué máscara de subred usan el PLC y la laptop?',o:['255.255.255.0','255.255.0.0','0.0.0.0','192.168.0.1'],a:0,e:'Con esa máscara, los tres primeros grupos de la IP definen la red. Por eso ambos empiezan con 192.168.0.',s:'Guía 1'},
+{id:'r4',c:'red',q:'¿Qué regla deben cumplir las IP de la laptop y del PLC para comunicarse?',o:['Los tres primeros grupos iguales y el último distinto','Deben ser exactamente iguales','Deben ser de redes distintas','El primer grupo distinto'],a:0,e:'Deben estar en la misma red (192.168.0.x) y no repetir el último número. La guía pide que el de la PC sea menor que el del PLC; en el proyecto la PC es .2 y el PLC .5.',s:'Guía 1'},
+{id:'r5',c:'red',q:'¿Qué comando sirve para comprobar que la laptop ve al PLC?',o:['ping 192.168.0.5','ipconfig /release','cd 192.168.0.5','net use'],a:0,e:'Si llegan cuatro respuestas, la red funciona. Con ipconfig se revisa la IP que tiene la laptop.',s:'Cap. IV, 4.8.3'},
+{id:'r6',c:'red',q:'Escribieron ping 162.168.0.5 y no responde. ¿Por qué?',o:['La IP está mal escrita: es 192, no 162','El PLC está dañado','Falta instalar Factory I/O','El cable es muy largo'],a:0,e:'162.168.0.5 es otra dirección que no existe en esa red. Pasó durante las pruebas del proyecto.',s:'Pruebas del módulo'},
+{id:'r7',c:'red',q:'¿Qué protocolo usan Factory I/O y el PLC para comunicarse?',o:['El protocolo S7 de Siemens sobre TCP/IP (puerto 102)','Modbus RTU por RS-485','Bluetooth','USB'],a:0,e:'Es Ethernet con el protocolo S7 (ISO-on-TCP, puerto 102). El documento decía Modbus TCP/IP, y se corrigió.',s:'Cap. IV, tabla 4.1'},
+{id:'r8',c:'red',q:'¿Dónde se habilita PUT/GET?',o:['En TIA Portal, propiedades del PLC → Protection & Security','En Factory I/O → Drivers','En el variador','En Windows → Firewall'],a:0,e:'Se marca "Permit access with PUT/GET communication from remote partner". Sin eso Factory I/O no puede leer ni escribir en el PLC.',s:'Cap. IV, 4.8.1'},
+{id:'r9',c:'red',q:'¿Qué nivel de acceso tiene configurado el PLC?',o:['Full access (no protection)','No access','HMI access','Read access'],a:0,e:'Acceso completo sin contraseña, para facilitar las prácticas en el laboratorio.',s:'Cap. IV, 4.8.1'},
+{id:'r10',c:'red',q:'¿Por qué puerto físico se conecta el PLC a la laptop?',o:['Por el puerto PROFINET (Ethernet RJ45)','Por USB','Por un puerto serie RS-232','Por Wi-Fi'],a:0,e:'El CPU 1214C tiene un puerto PROFINET RJ45. En el módulo la conexión pasa por un switch Fast Ethernet de 5 puertos.',s:'Guía 1 y Cap. IV, 4.2'},
+{id:'r11',c:'red',q:'¿Dónde se pone la IP de la laptop en Windows?',o:['Configuración de red → más opciones del adaptador → Propiedades → TCP/IPv4','En TIA Portal','En Factory I/O','En el administrador de tareas'],a:0,e:'Es el camino que describe la Guía 1: se elige el adaptador Ethernet, Propiedades, Protocolo de Internet versión 4.',s:'Guía 1'},
+{id:'r12',c:'red',q:'En TIA Portal, ¿qué opción permite buscar el PLC conectado para asignarle IP?',o:['Online access → adaptador Ethernet → Update accessible devices','Add new block','PLC tags','Compile'],a:0,e:'La Guía 1 usa Online access para encontrar el PLC, ver su firmware en Online & diagnostics y asignarle IP con Assign IP address.',s:'Guía 1'},
+
+{id:'f1',c:'fio',q:'¿Qué driver se selecciona en Factory I/O?',o:['Siemens S7-1200/1500','Modbus TCP/IP Server','Allen-Bradley','OPC Client'],a:0,e:'Factory I/O Siemens Edition trae un driver nativo para S7-1200 y S7-1500.',s:'Cap. IV, 4.8.3'},
+{id:'f2',c:'fio',q:'¿Qué se escribe en el campo Host del driver?',o:['192.168.0.5, la IP del PLC','192.168.0.2, la IP de la laptop','El nombre del proyecto','La máscara de subred'],a:0,e:'El host es el equipo al que Factory I/O se conecta: el PLC.',s:'Cap. IV, 4.8.3'},
+{id:'f3',c:'fio',q:'Factory I/O muestra el error #510 al conectar. ¿Qué pasa?',o:['El PLC está en STOP','La licencia venció','El motor está apagado','Falta el sensor Reed'],a:0,e:'Pasó en las pruebas. Se resolvió poniendo el PLC en RUN desde TIA Portal: Online → Start CPU.',s:'Pruebas del módulo'},
+{id:'f4',c:'fio',q:'¿Por qué el botón virtual de inicio en Factory I/O no arranca la banda real?',o:['Porque escribe en %I10.0 y el programa lee el pulsador físico en %I0.0','Porque la licencia es de prueba','Porque falta un cable','Porque el PLC no tiene entradas'],a:0,e:'Las entradas tienen offset 10 en el driver. Es una decisión de diseño: Factory I/O visualiza y el mando queda en el panel físico.',s:'Cap. IV, 4.8.3'},
+{id:'f5',c:'fio',q:'Las salidas Bool del driver tienen offset 0. ¿Qué quiere decir?',o:['Que Factory I/O lee las salidas desde %Q0.0','Que no lee ninguna salida','Que las salidas empiezan en %Q10.0','Que las salidas son analógicas'],a:0,e:'Por eso la luz, el motor y los cilindros de la escena 3D se mueven igual que los reales.',s:'Cap. IV, 4.8.3'},
+{id:'f6',c:'fio',q:'¿Qué hace el elemento Emitter en la escena de Factory I/O?',o:['Genera las piezas que caen sobre la banda virtual','Emite la señal del sensor','Enciende la luz verde','Conecta con el PLC'],a:0,e:'El Emitter crea objetos en la escena para simular el material que llega a la banda.',s:'Escena de Factory I/O'},
+{id:'f7',c:'fio',q:'¿Qué hay que hacer en el driver para relacionar un elemento de la escena con el PLC?',o:['Asignar cada sensor o actuador de la escena a una dirección del PLC','Reinstalar Factory I/O','Cambiar la IP del PLC','Nada, se conecta solo'],a:0,e:'En la pantalla del driver los sensores van a direcciones %I y los actuadores a direcciones %Q. Por ejemplo, LUZ START a %Q0.0.',s:'Cap. IV, tabla 4.8'},
+{id:'f8',c:'fio',q:'¿Qué es Factory I/O, técnicamente?',o:['Un software de simulación 3D de procesos industriales, de la empresa Real Games','Un PLC virtual','Un sistema operativo','Un variador de frecuencia'],a:0,e:'Permite construir escenas industriales en 3D y controlarlas con PLCs reales. En el módulo se usa para visualizar el proceso.',s:'Cap. II, 2.17 y Guía 2'},
+{id:'f9',c:'fio',q:'Al terminar la conexión del driver, ¿qué se presiona para que la escena se mueva?',o:['CONECTAR en el driver y luego Play en la escena','Solo guardar el proyecto','Reiniciar la laptop','El paro de emergencia'],a:0,e:'Con la conexión establecida el indicador del driver cambia a verde, y con Play la escena empieza a ejecutarse.',s:'Cap. IV, 4.8.3'},
+{id:'f10',c:'fio',q:'¿Qué hay que crear en la Guía 2 de Factory I/O?',o:['Una escena nueva con banda, sensores, cilindros y panel de control','Un programa Ladder','Una dirección IP','Un diagrama eléctrico'],a:0,e:'La Guía 2 abre Factory I/O, elige "Nuevo" y monta la escena 3D que representa al módulo.',s:'Guía 2'},
+
+{id:'e1',c:'seg',q:'¿En qué orden se suben los breakers al encender el módulo?',o:['Q1, luego F2 y Q3, luego Q2 y Q4','Q4, Q2, Q3 y al final Q1','Todos al mismo tiempo','Solo Q1'],a:0,e:'Primero el principal, después los circuitos de 24 V y al final el PLC y el mando. Para apagar se hace al revés.',s:'Procedimiento de encendido'},
+{id:'e2',c:'seg',q:'¿Se debe usar el paro de emergencia para apagar el módulo todos los días?',o:['No, solo en situaciones de riesgo; para apagar se bajan los breakers en orden','Sí, es la forma normal de apagar','Solo los viernes','Solo si el PLC está en RUN'],a:0,e:'Usarlo como apagado normal causa problemas, por ejemplo el error 0E del variador al volver a arrancar.',s:'Procedimiento de encendido'},
+{id:'e3',c:'seg',q:'El variador muestra 0E después de una emergencia. ¿Qué se hace?',o:['Presionar STOP/RESET en el variador','Cambiar el motor','Reprogramar el PLC','Cambiar la IP'],a:0,e:'El código aparece porque el variador arrancó tras un corte. Con STOP/RESET se borra.',s:'Pruebas del módulo'},
+{id:'e4',c:'seg',q:'¿Cómo se libera el paro de emergencia tipo hongo?',o:['Girándolo','Presionándolo otra vez','Desconectando el PLC','Con el selector'],a:0,e:'Requiere un giro para desbloquearse, así se evita un rearme accidental.',s:'Cap. IV, 4.2.5'},
+{id:'e5',c:'seg',q:'Nada enciende en el módulo. ¿Qué se revisa primero?',o:['Que el paro de emergencia no esté presionado y que los breakers estén arriba','Que Factory I/O esté abierto','La licencia de TIA Portal','El cable Ethernet'],a:0,e:'Fue la causa real en las pruebas: la emergencia activada y Q2 y Q4 abajo.',s:'Pruebas del módulo'},
+{id:'e6',c:'seg',q:'¿Qué normas de seguridad menciona la tesis?',o:['ISO 13849, IEC 61508 e IEC 62061','ISO 9001 e ISO 14001','IEEE 802.11','NEC 2020 únicamente'],a:0,e:'Aparecen en los fundamentos normativos: evaluación de riesgos, seguridad funcional y seguridad en maquinaria.',s:'Cap. I, fundamentos normativos'},
+{id:'e7',c:'seg',q:'¿Qué protecciones tiene el módulo?',o:['Breaker principal, breakers por circuito, guardamotor y paro de emergencia','Solo un fusible','Ninguna, es didáctico','Solo el paro de emergencia'],a:0,e:'La delimitación del proyecto pide protección para el personal (paro de emergencia) y para el equipo (sobrecarga y cortocircuito).',s:'Cap. I, delimitación'}
+];
+const byId={};Q.forEach(x=>byId[x.id]=x);
+
+/* ================= UTIL ================= */
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const progress=store.get('progress',{retos:{},checks:{},best:null,flash:{}});
+function saveP(){store.set('progress',progress);updateP();}
+function updateP(){
+  $('pRetos').textContent=Object.keys(progress.retos).length+'/'+RETOS.length;
+  $('pChecks').textContent=Object.keys(progress.checks).length+'/'+document.querySelectorAll('.check').length;
+  $('pBest').textContent=progress.best==null?'sin intentos':progress.best+' %';
+}
+
+/* Renderiza una pregunta con opciones mezcladas. onAnswer(correcta) */
+function renderQuestion(host,q,onAnswer,opts){
+  opts=opts||{};
+  const order=shuffle(q.o.map((t,i)=>i));
+  host.innerHTML=(opts.label?'<span class="lbl">'+opts.label+'</span>':'')+
+    '<p class="qtext">'+esc(q.q)+'</p><div class="opts">'+
+    order.map((oi,k)=>'<button class="opt" data-i="'+oi+'"><span class="k">'+(k+1)+'</span><span>'+esc(q.o[oi])+'</span></button>').join('')+
+    '</div><div class="expl-slot"></div>';
+  const btns=[...host.querySelectorAll('.opt')];
+  let done=false;
+  function pick(b){
+    if(done)return;done=true;
+    const i=+b.dataset.i, ok=i===q.a;
+    btns.forEach(x=>{x.disabled=true;if(+x.dataset.i===q.a)x.classList.add('right');});
+    if(!ok)b.classList.add('wrong');
+    host.querySelector('.expl-slot').innerHTML='<div class="expl"><b class="v '+(ok?'ok':'bad')+'">'+(ok?'Correcto.':'No es esa.')+'</b> '+(ok?'':'La respuesta es: <b>'+esc(q.o[q.a])+'</b>. ')+esc(q.e)+'<span class="src">Fuente: '+esc(q.s)+'</span></div>';
+    onAnswer(ok);
+  }
+  btns.forEach(b=>b.addEventListener('click',()=>pick(b)));
+  host._pick=k=>{if(btns[k])pick(btns[k]);};
+  host._done=()=>done;
+}
+
+/* ================= PREGUNTAS DE REPASO EN SECCIONES ================= */
+document.querySelectorAll('.check').forEach(host=>{
+  const q=byId[host.dataset.q];
+  function draw(){
+    renderQuestion(host,q,ok=>{
+      if(ok){progress.checks[q.id]=1;saveP();}
+      const again=document.createElement('button');again.className='btn2 again';again.textContent=ok?'Responder otra vez':'Intentar de nuevo';
+      again.addEventListener('click',draw);host.appendChild(again);
+    },{label:'Comprueba'});
+  }
+  draw();
+});
+
+/* ================= TARJETAS DEL ASESOR ================= */
+const FLASH=[
+ ['¿Qué hace el módulo?','Es una banda transportadora que clasifica piezas metálicas y no metálicas de forma automática, controlada por un PLC S7-1200 y monitoreada en Factory I/O.'],
+ ['¿Cuál es la diferencia entre el modo automático y el manual?','En automático la banda trabaja sola y los sensores deciden. En manual cada toque de START activa un elemento por separado para probarlos uno por uno, y al séptimo toque se reinicia.'],
+ ['¿Por qué se usa un PLC y no solo relés?','Porque para cambiar la lógica solo se cambia el programa, sin recablear. Además el PLC trae temporizadores y contadores internos.'],
+ ['¿Cómo sabe el sistema cuándo retraer el cilindro?','El sensor Reed detecta el imán del émbolo al final de la carrera. Con esa señal, y cuando la pieza ya no está frente al sensor, el PLC lo regresa.'],
+ ['¿Para qué sirve el variador si la velocidad no cambia desde el PLC?','Hace el arranque suave y convierte los 220 V monofásicos en trifásicos para el motor SEW de ¼ HP.'],
+ ['¿Qué es un biestable SR y para qué lo usaron?','Es una memoria: con S se enciende y se queda encendido aunque se suelte el botón; con R se apaga. Lo usamos para que la banda siga corriendo después de soltar START.'],
+ ['¿Qué protecciones tiene el módulo?','Breaker principal de 32 A, breakers por circuito, guardamotor para el motor y paro de emergencia que corta la energía con el contactor KM1.'],
+ ['¿Por qué no se arranca desde Factory I/O?','Fue una decisión de diseño: Factory I/O escribe en una zona de memoria que el programa no usa (%I10.x), así que funciona como visualización. El control queda en el panel físico.'],
+ ['¿Qué protocolo de comunicación usan?','Ethernet con el protocolo S7 de Siemens sobre TCP/IP, puerto 102. Para que Factory I/O pueda leer el PLC se habilita PUT/GET en TIA Portal.'],
+ ['¿Para qué son las cuatro guías?','Para que un docente o estudiante pueda usar el módulo sin ayuda: la 1 conecta la laptop y el PLC, la 2 arma la escena en Factory I/O, la 3 programa en TIA Portal y la 4 integra todo.']
+];
+const fhost=$('flash');
+fhost.innerHTML=FLASH.map((f,i)=>'<div class="fc" data-i="'+i+'"><p class="q">'+esc(f[0])+'</p><p class="a" hidden>'+esc(f[1])+'</p><div class="row"><button class="btn2 show">Ver respuesta</button><button class="btn2 know" hidden>Ya la domino</button></div></div>').join('');
+fhost.querySelectorAll('.fc').forEach(card=>{
+  const i=card.dataset.i,a=card.querySelector('.a'),sh=card.querySelector('.show'),kn=card.querySelector('.know');
+  const paint=()=>{const k=!!progress.flash[i];kn.textContent=k?'Dominada ✓':'Ya la domino';kn.setAttribute('aria-pressed',k);};
+  sh.addEventListener('click',()=>{a.hidden=!a.hidden;sh.textContent=a.hidden?'Ver respuesta':'Ocultar respuesta';kn.hidden=a.hidden&&!progress.flash[i];});
+  kn.addEventListener('click',()=>{if(progress.flash[i])delete progress.flash[i];else progress.flash[i]=1;saveP();paint();});
+  if(progress.flash[i])kn.hidden=false;
+  paint();
+});
+
+/* ================= CUESTIONARIO ================= */
+const qb=$('quizBody');
+let sel=new Set(Object.keys(CATS)), count=15, run=null;
+function setupView(){
+  run=null;$('quizTitle').textContent='Configurar cuestionario';
+  const n=Q.filter(x=>sel.has(x.c)).length;
+  qb.innerHTML='<div class="stack" style="gap:8px"><span class="lbl">Temas ('+Q.length+' preguntas en total)</span><div class="chips">'+
+    Object.entries(CATS).map(([k,v])=>'<button class="chip" data-c="'+k+'" aria-pressed="'+sel.has(k)+'">'+v+'<small>'+Q.filter(x=>x.c===k).length+'</small></button>').join('')+
+    '</div><div class="row"><button class="btn2" id="allC">Todos los temas</button></div></div>'+
+    '<div class="stack" style="gap:8px"><span class="lbl">Cantidad</span><div class="chips">'+
+    [10,15,25,'todas'].map(v=>'<button class="chip cnt" data-n="'+v+'" aria-pressed="'+(count===v)+'">'+(v==='todas'?'Todas ('+n+')':v+' preguntas')+'</button>').join('')+'</div></div>'+
+    '<div class="row"><button class="primary" id="go"'+(n?'':' disabled')+'>Empezar</button><span class="muted" style="font-size:.9rem">'+(n?n+' preguntas disponibles en los temas elegidos.':'Elijan al menos un tema.')+'</span></div>';
+  qb.querySelectorAll('.chip[data-c]').forEach(b=>b.addEventListener('click',()=>{const c=b.dataset.c;sel.has(c)?sel.delete(c):sel.add(c);setupView();}));
+  qb.querySelectorAll('.chip.cnt').forEach(b=>b.addEventListener('click',()=>{count=b.dataset.n==='todas'?'todas':+b.dataset.n;setupView();}));
+  $('allC').addEventListener('click',()=>{sel=new Set(Object.keys(CATS));setupView();});
+  $('go').addEventListener('click',()=>{
+    const pool=shuffle(Q.filter(x=>sel.has(x.c)));
+    start(count==='todas'?pool:pool.slice(0,count));
+  });
+}
+function start(list){run={list,i:0,ok:0,wrong:[],per:{}};askView();}
+function askView(){
+  const r=run,q=r.list[r.i];
+  $('quizTitle').textContent='Pregunta '+(r.i+1)+' de '+r.list.length;
+  qb.innerHTML='<div class="bar"><i style="width:'+(r.i/r.list.length*100)+'%"></i></div>'+
+    '<div class="qmeta"><span>'+CATS[q.c]+'</span><span>Aciertos: <b>'+r.ok+'</b></span></div><div id="qHost" class="stack" style="gap:12px"></div>';
+  const host=$('qHost');
+  renderQuestion(host,q,ok=>{
+    r.per[q.c]=r.per[q.c]||[0,0];r.per[q.c][1]++;
+    if(ok){r.ok++;r.per[q.c][0]++;}else r.wrong.push(q);
+    const nx=document.createElement('button');nx.className='primary';nx.id='next';
+    nx.textContent=r.i+1<r.list.length?'Siguiente':'Ver resultado';
+    nx.addEventListener('click',()=>{r.i++;r.i<r.list.length?askView():resultView();});
+    host.appendChild(nx);nx.focus({preventScroll:true});
+  });
+  host.querySelector('.opt').focus({preventScroll:true});
+}
+function resultView(){
+  const r=run,pct=Math.round(r.ok/r.list.length*100);
+  if(r.list.length>=10&&(progress.best==null||pct>progress.best)){progress.best=pct;saveP();}
+  const msg=pct>=90?'Excelente. Están listos para explicarlo.':pct>=70?'Bien. Repasen las que fallaron y vuelvan a intentarlo.':pct>=50?'Van por buen camino. Vuelvan a las secciones de arriba y repitan las falladas.':'Conviene repasar el simulador y las secciones antes de intentarlo otra vez.';
+  $('quizTitle').textContent='Resultado';
+  qb.innerHTML='<div class="row" style="gap:18px"><span class="score">'+pct+' %</span><div><b>'+r.ok+' de '+r.list.length+' correctas.</b><p class="muted">'+msg+'</p></div></div>'+
+    '<div class="breakdown">'+Object.entries(r.per).map(([c,v])=>'<div><span>'+CATS[c]+'</span><b>'+v[0]+'/'+v[1]+'</b></div>').join('')+'</div>'+
+    '<div class="row">'+(r.wrong.length?'<button class="primary" id="redo">Repetir las '+r.wrong.length+' falladas</button>':'')+'<button class="btn2" id="newq">Nuevo cuestionario</button></div>'+
+    (r.wrong.length?'<div class="review"><span class="lbl">Para repasar</span>'+r.wrong.map(q=>'<div class="item"><b>'+esc(q.q)+'</b><br>Respuesta: '+esc(q.o[q.a])+'<br><span class="muted">'+esc(q.e)+'</span><span class="src">Fuente: '+esc(q.s)+'</span></div>').join('')+'</div>':'');
+  const redo=$('redo');if(redo)redo.addEventListener('click',()=>start(shuffle(r.wrong)));
+  $('newq').addEventListener('click',setupView);
+}
+document.addEventListener('keydown',e=>{
+  if(!run||e.target.closest('input,textarea'))return;
+  const host=$('qHost');if(!host)return;
+  if(/^[1-4]$/.test(e.key)&&!host._done()){host._pick(+e.key-1);e.preventDefault();}
+  else if(e.key==='Enter'&&host._done()&&document.activeElement!==$('next')){const n=$('next');if(n){n.click();e.preventDefault();}}
+});
+document.querySelectorAll('.guide .go').forEach(b=>b.addEventListener('click',()=>{
+  sel=new Set([b.dataset.cat]);count='todas';setupView();
+  document.getElementById('cuestionario').scrollIntoView({behavior:'smooth',block:'start'});
+}));
+setupView();
+
+/* ================= RETOS ================= */
+const RETOS=[
+ ['auto','Arranquen la banda en automático.','Hicieron falta dos temporizadores TON de 3 s: uno para la luz verde y otro para el variador.'],
+ ['short','Suelten START antes de los 3 segundos.','El TON se reinicia si la entrada se apaga antes de cumplir el tiempo. Así se evitan arranques por un toque accidental.'],
+ ['metal','Separen una pieza de metal.','El inductivo (%I0.4) cayó a 0, el PLC activó Y1 y el Reed S3 confirmó la carrera.'],
+ ['plast','Separen una pieza de plástico.','Pasó el inductivo sin activarlo. El fotoeléctrico la detectó y el PLC activó Y2.'],
+ ['lost','Hagan que una pieza llegue al final sin separarse.','Pasa en manual o cuando los cilindros no se activan: los sensores solo mueven cilindros en automático (contacto NC de MANUAL en los Networks 2 y 3).'],
+ ['man4','En manual, saquen el cilindro 2.','Fueron cuatro toques: cada contador CTU tiene un PV distinto, del 1 al 7.'],
+ ['man7','Completen el ciclo manual de 7 toques.','El contador con PV = 7 activa la marca que reinicia todos los contadores.'],
+ ['emg','Activen y liberen el paro de emergencia.','Al liberarlo el módulo no arranca solo: hay que volver a dar START. Eso es parte de la seguridad.']
+];
+function drawRetos(){
+  $('retoList').innerHTML=RETOS.map(r=>'<li class="'+(progress.retos[r[0]]?'done':'')+'"><span class="box" aria-hidden="true"></span><span class="t">'+r[1]+'<span class="why">'+r[2]+'</span></span></li>').join('');
+}
+function reto(k){if(progress.retos[k])return;progress.retos[k]=1;saveP();drawRetos();}
+$('resetRetos').addEventListener('click',()=>{progress.retos={};saveP();drawRetos();});
+drawRetos();
+
+/* ================= SIMULADOR ================= */
+const S={mode:'off',emg:false,luz:false,vfd:false,y1:false,y2:false,ext1:0,ext2:0,cnt:0,pieces:[],holdT:null,holdStart:0,vfdTimer:null,bins:{m:0,n:0,e:0}};
+const STEPS=['Luz','Banda','Cil. 1','Cil. 2','Regresa 1','Regresa 2','Reinicio'];
+const IND=28,FOT=65,C1=33,C2=70,W=3.2;
+const say=(t,s)=>{$('think').innerHTML='<b>'+t+'</b> '+(s||'');};
+function resetOut(){S.luz=false;S.vfd=false;S.y1=false;S.y2=false;S.cnt=0;clearTimeout(S.vfdTimer);S.vfdTimer=null;}
+function setMode(m){
+  if(S.emg){say('Sin energía.','Liberen el paro de emergencia primero.');return;}
+  S.mode=m;resetOut();
+  $('mMan').setAttribute('aria-pressed',m==='man');$('mOff').setAttribute('aria-pressed',m==='off');$('mAuto').setAttribute('aria-pressed',m==='auto');
+  $('manBox').hidden=m!=='man';
+  if(m==='auto')say('Modo automático.','Mantengan presionado START 3 segundos para arrancar.');
+  else if(m==='man')say('Modo manual.','Cada toque de START activa un elemento. Al séptimo toque todo se reinicia.');
+  else say('Maneta en 0.','El PLC no habilita ningún modo.');
+  paint();
+}
+function holdBegin(e){
+  if(e)e.preventDefault();
+  if(S.emg){say('Sin energía.','Liberen el paro de emergencia primero.');return;}
+  if(S.mode==='man'){manualStep();return;}
+  if(S.mode!=='auto'){say('START no hace nada.','Primero pongan la maneta en AUTO o MANUAL.');return;}
+  if(S.luz||S.holdT)return;
+  S.holdStart=performance.now();
+  say('Contando...','El temporizador TON necesita 3 segundos con START presionado.');
+  S.holdT=requestAnimationFrame(holdTick);
+}
+function holdTick(now){
+  const p=Math.min(1,(now-S.holdStart)/3000);
+  $('ringC').setAttribute('stroke-dashoffset',245*(1-p));
+  if(p>=1){
+    S.holdT=null;$('ringC').setAttribute('stroke-dashoffset',245);
+    S.luz=true;say('Luz verde encendida.','El biestable SR guardó el arranque. En 3 segundos el PLC habilita el variador.');
+    S.vfdTimer=setTimeout(()=>{if(S.luz&&S.mode==='auto'&&!S.emg){S.vfd=true;reto('auto');say('Banda en marcha.','Echen piezas de metal y de plástico.');paint();}},3000);
+    paint();return;
+  }
+  S.holdT=requestAnimationFrame(holdTick);
+}
+function holdEnd(){
+  if(S.holdT){cancelAnimationFrame(S.holdT);S.holdT=null;$('ringC').setAttribute('stroke-dashoffset',245);
+    if(!S.luz&&!S.emg){reto('short');say('Soltaron antes de tiempo.','El temporizador se reinicia. Hay que sostener START 3 segundos completos.');}}
+}
+function manualStep(){
+  S.cnt++;const c=S.cnt;
+  if(c===1){S.luz=true;say('Toque 1: luz verde.','El contador CTU llegó a PV = 1.');}
+  else if(c===2){S.vfd=true;say('Toque 2: banda en marcha.','PV = 2. En manual los sensores no mueven los cilindros.');}
+  else if(c===3){S.y1=true;say('Toque 3: cilindro 1 afuera.','PV = 3. Sirve para probar el cilindro sin poner piezas.');}
+  else if(c===4){S.y2=true;reto('man4');say('Toque 4: cilindro 2 afuera.','PV = 4.');}
+  else if(c===5){S.y1=false;say('Toque 5: regresa el cilindro 1.','PV = 5.');}
+  else if(c===6){S.y2=false;say('Toque 6: regresa el cilindro 2.','PV = 6.');}
+  else {resetOut();reto('man7');say('Toque 7: reinicio.','PV = 7 resetea todos los contadores. Se puede volver a empezar.');}
+  paint();
+}
+function stop(){if(S.emg)return;holdEnd();resetOut();say('STOP.','Se apaga la banda y la luz verde; la roja se enciende.');paint();}
+function emg(){
+  const was=S.emg;S.emg=!S.emg;
+  if(S.holdT){cancelAnimationFrame(S.holdT);S.holdT=null;$('ringC').setAttribute('stroke-dashoffset',245);}
+  resetOut();
+  $('bEmg').setAttribute('aria-pressed',S.emg);
+  $('bEmg').textContent=S.emg?'EMERGENCIA ACTIVA · TOCAR PARA LIBERAR':'PARO DE EMERGENCIA';
+  if(S.emg)say('Corte total.','El contactor KM1 suelta y nada tiene energía, ni siquiera las luces.');
+  else{if(was)reto('emg');say('Emergencia liberada.','El módulo queda detenido. Hay que arrancar de nuevo con START.');}
+  paint();
+}
+function addPiece(type,x){
+  if(S.pieces.filter(p=>!p.out).length>=6){say('Banda llena.','Esperen a que salgan algunas piezas.');return;}
+  const el=document.createElement('div');el.className='piece '+type;$('zone').appendChild(el);
+  const p={type,x:x||2,el,out:false};S.pieces.push(p);el.style.left=p.x+'%';
+  if(!S.vfd&&!x)say('Pieza en la banda.','La banda está detenida; la pieza no avanza hasta que el motor arranque.');
+}
+const inWin=(p,c)=>!p.out&&Math.abs(p.x-c)<W;
+let last=performance.now();
+function loop(now){
+  const dt=Math.min(.05,(now-last)/1000);last=now;
+  const on=!S.emg;
+  if(on&&S.vfd)S.pieces.forEach(p=>{if(!p.out)p.x+=11*dt;});
+  const indDet=on&&S.pieces.some(p=>p.type==='metal'&&inWin(p,IND));
+  const fotDet=on&&S.pieces.some(p=>inWin(p,FOT));
+  if(on&&S.mode==='auto'&&S.luz&&S.vfd){
+    if(indDet&&!S.y1){S.y1=true;say('El inductivo vio metal.','El PLC activa Y1 y el cilindro 1 empuja la pieza.');}
+    if(fotDet&&!S.y2){S.y2=true;say('El fotoeléctrico vio un objeto.','Como el metal ya salió antes, esto es no metálico: el PLC activa Y2.');}
+  }
+  S.ext1=Math.max(0,Math.min(1,S.ext1+(S.y1&&on?1:-1)*dt*4));
+  S.ext2=Math.max(0,Math.min(1,S.ext2+(S.y2&&on?1:-1)*dt*4));
+  const r1=S.ext1>=1,r2=S.ext2>=1;
+  S.pieces.forEach(p=>{
+    if(p.out)return;
+    if(S.ext1>.6&&Math.abs(p.x-C1)<6){p.out=true;p.el.classList.add('up');S.bins.m++;if(S.mode==='auto'&&p.type==='metal')reto('metal');setTimeout(()=>p.el.remove(),350);}
+    else if(S.ext2>.6&&Math.abs(p.x-C2)<6){p.out=true;p.el.classList.add('up');S.bins.n++;if(S.mode==='auto'&&p.type==='plastic')reto('plast');setTimeout(()=>p.el.remove(),350);}
+    else if(p.x>99){p.out=true;p.el.style.opacity='0';S.bins.e++;reto('lost');setTimeout(()=>p.el.remove(),300);}
+  });
+  S.pieces=S.pieces.filter(p=>!p.out||p.el.isConnected);
+  if(S.mode==='auto'){if(S.y1&&r1&&!indDet)S.y1=false;if(S.y2&&r2&&!fotDet)S.y2=false;}
+  S._ind=indDet;S._fot=fotDet;S._r1=r1&&on;S._r2=r2&&on;
+  S.pieces.forEach(p=>{if(!p.out)p.el.style.left=p.x+'%';});
+  paint();
+  requestAnimationFrame(loop);
+}
+const bit=(a,n,on)=>'<div class="bit'+(on?' on':'')+'"><i></i><span class="a">'+a+'</span><span>'+n+'</span></div>';
+let lastIO='';
+function paint(){
+  const on=!S.emg;
+  $('lampG').classList.toggle('on',on&&S.luz);$('lampR').classList.toggle('on',on&&!S.luz);
+  $('belt').classList.toggle('run',on&&S.vfd);
+  $('sInd').classList.toggle('hit',!!S._ind);$('sFot').classList.toggle('hit',!!S._fot);
+  $('cy1').classList.toggle('out',S.ext1>.5);$('cy2').classList.toggle('out',S.ext2>.5);
+  $('rd1').classList.toggle('on',!!S._r1);$('rd2').classList.toggle('on',!!S._r2);
+  $('cM').textContent=S.bins.m;$('cN').textContent=S.bins.n;$('cE').textContent=S.bins.e;
+  const io=[on&&!!S.holdT,on,on&&S.mode==='auto',on&&S.mode==='man',on&&!S._ind,on&&!S._fot,!!S._r1,!!S._r2,on&&S.luz,on&&!S.luz,on&&S.vfd,on&&S.y1,on&&S.y2,S.cnt].join();
+  if(io===lastIO)return;lastIO=io;
+  $('ioI').innerHTML=bit('%I0.0','START',on&&!!S.holdT)+bit('%I0.1','STOP (NC)',on)+bit('%I0.2','AUTO',on&&S.mode==='auto')+bit('%I0.3','MANUAL',on&&S.mode==='man')+
+    bit('%I0.4','Inductivo (NC)',on&&!S._ind)+bit('%I0.5','Fotoeléctrico (NC)',on&&!S._fot)+bit('%I0.6','Reed S3',!!S._r1)+bit('%I0.7','Reed S4',!!S._r2);
+  $('ioQ').innerHTML=bit('%Q0.0','Luz START',on&&S.luz)+bit('%Q0.1','Luz STOP',on&&!S.luz)+bit('%Q0.2','Variador / banda',on&&S.vfd)+bit('%Q0.3','Y1 · cilindro 1',on&&S.y1)+bit('%Q0.4','Y2 · cilindro 2',on&&S.y2);
+  $('steps').innerHTML=STEPS.map((s,i)=>'<span class="'+(i<S.cnt?'done':'')+'">'+(i+1)+' '+s+'</span>').join('');
+}
+const bs=$('bStart');
+bs.addEventListener('pointerdown',holdBegin);
+['pointerup','pointerleave','pointercancel'].forEach(ev=>bs.addEventListener(ev,holdEnd));
+bs.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat)holdBegin(e);});
+bs.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')holdEnd();});
+bs.addEventListener('click',e=>e.preventDefault());
+$('bStop').addEventListener('click',stop);$('bEmg').addEventListener('click',emg);
+$('mMan').addEventListener('click',()=>setMode('man'));$('mOff').addEventListener('click',()=>setMode('off'));$('mAuto').addEventListener('click',()=>setMode('auto'));
+$('addM').addEventListener('click',()=>addPiece('metal'));$('addP').addEventListener('click',()=>addPiece('plastic'));
+
+addPiece('metal',12);addPiece('plastic',4);
+say('Módulo detenido.','Hay dos piezas esperando en la banda. Pongan la maneta en AUTO y sostengan START.');
+updateP();paint();requestAnimationFrame(loop);
+})();
+</script>
+
+</body>
+</html>
