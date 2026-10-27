@@ -19,7 +19,7 @@
   --action:#22803F; --on-accent:#FFFFFF; --cue-ring:#F1D392;
   --ok-bg:#E3F3E7; --bad-bg:#F8E3E1;
   --led-off:#C6CDD0; --tag:#FFFFFF; --tag-ink:#111111;
-  --toast-bg:#1A252B; --toast-ink:#F2F5F6;
+  --toast-bg:#1A252B; --toast-ink:#F2F5F6; --violet:#8E5BB5; --scrim:rgba(10,16,20,.45);
   --display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   --body:"Barlow","Segoe UI",Roboto,Arial,sans-serif;
   --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
@@ -32,7 +32,7 @@
   --action:#2C8A4B; --on-accent:#FFFFFF; --cue-ring:#6B4E12;
   --ok-bg:#183323; --bad-bg:#3A1D1B;
   --led-off:#33424A; --tag:#E9ECEC; --tag-ink:#111111;
-  --toast-bg:#E2E9EC; --toast-ink:#11181C; color-scheme:dark}}
+  --toast-bg:#E2E9EC; --toast-ink:#11181C; --violet:#B48AD6; --scrim:rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#11181C; --surface:#19232A; --ink:#E2E9EC; --muted:#97A7AE; --line:#2D3B43;
   --petrol:#5D7C8D; --petrol-ink:#FFFFFF; --rail:#24313A; --hl-bg:#22323B;
@@ -40,7 +40,7 @@
   --action:#2C8A4B; --on-accent:#FFFFFF; --cue-ring:#6B4E12;
   --ok-bg:#183323; --bad-bg:#3A1D1B;
   --led-off:#33424A; --tag:#E9ECEC; --tag-ink:#111111;
-  --toast-bg:#E2E9EC; --toast-ink:#11181C; color-scheme:dark}
+  --toast-bg:#E2E9EC; --toast-ink:#11181C; --violet:#B48AD6; --scrim:rgba(0,0,0,.6); color-scheme:dark}
 
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -129,10 +129,11 @@ code{font-family:var(--mono);font-size:.86em}
 .tips ul{padding-left:20px}
 
 /* APRENDER */
-.lesson-nav{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;position:relative}
-.lesson-nav::before{content:"";position:absolute;left:10%;right:10%;top:22px;height:2px;background:var(--line)}
-.lesson-nav a{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--muted);font-size:.74rem;font-weight:600;text-align:center;line-height:1.15;padding:4px 0;min-width:0}
+.lesson-nav{display:grid;grid-template-columns:repeat(6,1fr);gap:2px;position:relative}
+.lesson-nav::before{content:"";position:absolute;left:8%;right:8%;top:22px;height:2px;background:var(--line)}
+.lesson-nav a{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;text-decoration:none;color:var(--muted);font-size:.7rem;font-weight:600;text-align:center;line-height:1.15;padding:4px 0;min-width:0}
 .lesson-nav .d{width:38px;height:38px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:1.05rem;color:var(--ink);background:var(--surface)}
+@media (max-width:374px){.lesson-nav a{font-size:0;gap:0}}
 .lesson-nav a.done .d{background:var(--go);border-color:var(--go);color:var(--on-accent)}
 .lesson-nav a[aria-current="step"]{color:var(--ink)}
 .lesson-nav a[aria-current="step"] .d{border-color:var(--petrol);background:var(--petrol);color:var(--petrol-ink);box-shadow:0 0 0 4px var(--hl-bg)}
@@ -170,6 +171,47 @@ code{font-family:var(--mono);font-size:.86em}
 .fault dl{margin:0;display:flex;flex-direction:column;gap:2px}
 .fault dt{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:6px}
 .fault dd{margin:0;font-size:.96rem}
+
+/* ELEMENTOS (lección 2) */
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:0 -16px;padding:2px 16px}
+.chips.scroll::-webkit-scrollbar{display:none}
+.chips.scroll .chip{flex:none}
+@media (min-width:820px){.chips.scroll{flex-wrap:wrap;overflow:visible;margin:0;padding:0}}
+.gdot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+.comp-wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:start}
+.comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.cbtn{appearance:none;cursor:pointer;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;min-height:56px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.cbtn b{font-family:var(--display);font-size:1.02rem;font-weight:600;line-height:1.15;display:flex;gap:6px;align-items:baseline}
+.cbtn small{font-size:.78rem;color:var(--muted);line-height:1.3;padding-left:15px}
+.cbtn[aria-pressed="true"]{border-color:var(--petrol);box-shadow:inset 0 0 0 2px var(--petrol)}
+.detail{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:18px;display:flex;flex-direction:column;gap:12px;position:sticky;top:calc(var(--appbar) + 12px);min-width:0}
+.detail .sheet-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.detail .sheet-head .lbl{display:flex;gap:6px;align-items:center}
+.detail dl{margin:0;display:grid;grid-template-columns:100px 1fr;gap:8px 12px;font-size:.95rem}
+.detail dt{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.detail dd{margin:0}
+.detail .ref{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.sheet-close{display:none}
+.sheet-bg{position:fixed;inset:0;background:var(--scrim);z-index:44}
+@media (max-width:819px){
+  .comp-wrap{grid-template-columns:1fr}
+  .detail{position:fixed;left:0;right:0;top:auto;bottom:0;z-index:45;max-height:82vh;overflow:auto;border-radius:16px 16px 0 0;border-bottom:0;padding:16px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));box-shadow:0 -8px 30px rgba(0,0,0,.25);transform:translateY(105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s}
+  .detail.open{transform:none;visibility:visible;transition:transform .25s ease}
+  .detail .sheet-close{display:grid}
+  .detail dl{grid-template-columns:1fr;gap:2px}
+  .detail dd{margin-bottom:8px}
+}
+@media (min-width:820px){.sheet-bg{display:none}}
+@media (prefers-reduced-motion:reduce){.detail{transition:none!important}}
+.chain{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chain .st{appearance:none;cursor:pointer;border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px 12px;font-size:.92rem;line-height:1.25;text-align:left;max-width:220px;min-height:44px}
+.chain .st small{display:block;font-family:var(--mono);font-size:.7rem;color:var(--muted)}
+.chain .st.plain{cursor:default;border-style:dashed;display:flex;align-items:center}
+.chain .ar{color:var(--muted);font-family:var(--mono)}
+.chain .st.on{border-color:var(--amber);box-shadow:0 0 0 2px var(--amber)}
+@media (max-width:559px){.chain{flex-direction:column;align-items:stretch;flex-wrap:nowrap}.chain .st{max-width:none}.chain .ar{transform:rotate(90deg);align-self:center;line-height:1}}
+.who{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--plastic);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:12px}
+.who .lbl{color:var(--plastic)}
 
 /* PREGUNTA DE REPASO */
 .check{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--amber);border-radius:var(--radius);padding:16px;display:flex;flex-direction:column;gap:12px}
@@ -365,8 +407,8 @@ code{font-family:var(--mono);font-size:.86em}
     <div class="paths">
       <a class="path-card" id="pcLearn" href="#aprender">
         <span class="num">1</span>
-        <span class="txt"><h3>Aprender</h3><p>Cinco lecciones cortas. Cada una termina con una pregunta de repaso.</p>
-          <span class="meter"><span class="bar"><i id="mLearn" style="width:0"></i></span><b id="tLearn">0 de 5</b></span></span>
+        <span class="txt"><h3>Aprender</h3><p>Seis lecciones cortas: qué es cada parte del módulo, cómo funciona y cómo se enciende.</p>
+          <span class="meter"><span class="bar"><i id="mLearn" style="width:0"></i></span><b id="tLearn">0 de 6</b></span></span>
         <svg class="i chev" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
       </a>
       <a class="path-card" id="pcSim" href="#simulador">
@@ -400,7 +442,7 @@ code{font-family:var(--mono);font-size:.86em}
   <nav class="lesson-nav" id="lessonNav" aria-label="Lecciones"></nav>
 
   <article class="lesson" data-n="1" data-title="Cuerpo, cerebro y ventana" data-short="3 partes">
-    <div class="lesson-head"><span class="eyebrow">Lección 1 de 5</span><h2>Cuerpo, cerebro y ventana</h2>
+    <div class="lesson-head"><span class="eyebrow">Lección 1 de 6</span><h2>Cuerpo, cerebro y ventana</h2>
       <p>La forma más fácil de explicarlo es comparar el módulo con una persona trabajando en una fábrica.</p></div>
     <div class="trio">
       <div class="card"><span class="tag">CUERPO</span><h3>El módulo físico</h3><p class="analogy">Los ojos y las manos.</p>
@@ -416,8 +458,26 @@ code{font-family:var(--mono);font-size:.86em}
     <div class="check" data-q="g6"></div>
   </article>
 
-  <article class="lesson" data-n="2" data-title="Qué le pasa a una pieza" data-short="Recorrido" hidden>
-    <div class="lesson-head"><span class="eyebrow">Lección 2 de 5</span><h2>Qué le pasa a una pieza, paso a paso</h2></div>
+  <article class="lesson" data-n="2" data-title="Los elementos del módulo" data-short="Elementos" hidden>
+    <div class="lesson-head"><span class="eyebrow">Lección 2 de 6</span><h2>Todo lo que tiene el módulo y para qué sirve</h2>
+      <p>Además de los sensores, el módulo tiene protecciones, fuentes, relés, un variador, una parte neumática completa y la red. Toquen cualquier elemento para ver qué es, qué hace y con qué se conecta.</p></div>
+    <div class="chips scroll" id="compFilter" role="group" aria-label="Filtrar por sistema"></div>
+    <div class="comp-wrap">
+      <div class="comp-grid" id="compGrid"></div>
+      <div class="detail" id="compDetail" aria-live="polite"></div>
+    </div>
+    <div class="card">
+      <h3>Sigue la señal</h3>
+      <p class="muted" style="font-size:.95rem">Ningún elemento trabaja solo. Elijan un recorrido para ver cómo se encadenan, de principio a fin. Toquen cada paso para ver el detalle.</p>
+      <div class="chips scroll" id="chainSel" role="group" aria-label="Recorridos"></div>
+      <p id="chainDesc"></p>
+      <div class="chain" id="chainView"></div>
+    </div>
+    <div class="who" id="who"></div>
+  </article>
+
+  <article class="lesson" data-n="3" data-title="Qué le pasa a una pieza" data-short="Recorrido" hidden>
+    <div class="lesson-head"><span class="eyebrow">Lección 3 de 6</span><h2>Qué le pasa a una pieza, paso a paso</h2></div>
     <ol class="path">
       <li><div class="stack" style="gap:4px"><h3>Arranque</h3><p>Maneta en AUTO y START sostenido 3 segundos: se enciende la luz verde. Tres segundos después el variador arranca el motor y la banda empieza a moverse.</p></div></li>
       <li><div class="stack" style="gap:4px"><h3>Primer filtro: ¿es metal?</h3><p>La pieza pasa frente al sensor inductivo. Si es metálica, el sensor la detecta y el PLC extiende el cilindro 1 (salida Y1), que la saca de la banda.</p></div></li>
@@ -431,8 +491,8 @@ code{font-family:var(--mono);font-size:.86em}
     <div class="check" data-q="p5"></div>
   </article>
 
-  <article class="lesson" data-n="3" data-title="Para qué sirven las 4 guías" data-short="Guías" hidden>
-    <div class="lesson-head"><span class="eyebrow">Lección 3 de 5</span><h2>Las 4 guías son el camino para que otro estudiante lo pueda usar</h2>
+  <article class="lesson" data-n="4" data-title="Para qué sirven las 4 guías" data-short="Guías" hidden>
+    <div class="lesson-head"><span class="eyebrow">Lección 4 de 6</span><h2>Las 4 guías son el camino para que otro estudiante lo pueda usar</h2>
       <p>El módulo se queda en el laboratorio. Las guías existen para que un docente o estudiante que nunca lo ha visto pueda ponerlo a funcionar solo. Cada guía resuelve una pregunta, en orden. Esto responde al tercer objetivo específico de la tesis.</p></div>
     <div class="guides">
       <div class="guide"><span class="n">1</span><div class="b"><h3>¿Cómo se habla con el PLC?</h3><p>Conectar el PLC, dar dirección IP a la laptop y al PLC, y comprobar que se ven en la red.</p><p class="out">Al terminar: la laptop y el PLC se comunican.</p><button class="btn2 go" data-cat="red">Practicar Guía 1</button></div></div>
@@ -444,8 +504,8 @@ code{font-family:var(--mono);font-size:.86em}
     <div class="check" data-q="r4"></div>
   </article>
 
-  <article class="lesson" data-n="4" data-title="Cinco detalles que confunden" data-short="Detalles" hidden>
-    <div class="lesson-head"><span class="eyebrow">Lección 4 de 5</span><h2>Cinco detalles que conviene tener claros</h2>
+  <article class="lesson" data-n="5" data-title="Cinco detalles que confunden" data-short="Detalles" hidden>
+    <div class="lesson-head"><span class="eyebrow">Lección 5 de 6</span><h2>Cinco detalles que conviene tener claros</h2>
       <p>Toquen cada tema para abrirlo. Cada uno trae una frase lista para decirla en la defensa.</p></div>
     <div class="accs">
       <details class="acc"><summary>Factory I/O no controla la banda</summary><div class="acc-b"><p>Factory I/O escribe sus botones en <code>%I10.x</code>, pero el programa lee las entradas físicas en <code>%I0.x</code>. Solo lee las salidas <code>%Q0.x</code>.</p><span class="eyebrow">Cómo decirlo</span><p class="say">"Factory I/O funciona como visualización. El mando es físico, desde el panel, por seguridad."</p></div></details>
@@ -458,8 +518,8 @@ code{font-family:var(--mono);font-size:.86em}
     <div class="check" data-q="s6"></div>
   </article>
 
-  <article class="lesson" data-n="5" data-title="Encendido y fallas" data-short="Encendido" hidden>
-    <div class="lesson-head"><span class="eyebrow">Lección 5 de 5</span><h2>Cómo se enciende y qué revisar si no funciona</h2></div>
+  <article class="lesson" data-n="6" data-title="Encendido y fallas" data-short="Encendido" hidden>
+    <div class="lesson-head"><span class="eyebrow">Lección 6 de 6</span><h2>Cómo se enciende y qué revisar si no funciona</h2></div>
     <div class="card">
       <h3>Orden para subir los breakers</h3>
       <div class="order"><span class="st">Q1</span><span class="ar" aria-hidden="true">→</span><span class="st">F2 / Q3</span><span class="ar" aria-hidden="true">→</span><span class="st">Q2 / Q4</span></div>
@@ -609,6 +669,7 @@ code{font-family:var(--mono);font-size:.86em}
 
 </main>
 
+<div class="sheet-bg" id="sheetBg" hidden></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
@@ -810,6 +871,12 @@ const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&qu
 const CHECK_SVG='<svg class="i" width="14" height="14" viewBox="0 0 24 24" style="stroke-width:3" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
 const progress=Object.assign({retos:{},checks:{},best:null,flash:{},lessons:{}},store.get('progress',{}));
 const LESSONS=[...document.querySelectorAll('.lesson')];
+/* La lección 2 (elementos) se agregó después: las lecciones guardadas desde la 2 se recorren un número */
+if(store.get('lessonsV',1)<2){
+  const nl={};Object.keys(progress.lessons).forEach(k=>{nl[+k>=2?+k+1:+k]=1;});progress.lessons=nl;
+  const l=+store.get('lesson',1)||1;if(l>=2)store.set('lesson',l+1);
+  store.set('progress',progress);store.set('lessonsV',2);
+}
 const nChecks=document.querySelectorAll('.check').length;
 let view='inicio';
 
@@ -905,6 +972,116 @@ document.querySelectorAll('.check').forEach(host=>{
   }
   draw();
 });
+
+/* ================= ELEMENTOS ================= */
+const GROUPS={energia:['Energía y protección','var(--stop)'],control:['Control','var(--petrol)'],mando:['Panel de mando','var(--go)'],motor:['Motor y banda','var(--amber)'],aire:['Neumática','var(--plastic)'],sens:['Sensores','var(--violet)'],red:['PC y red','var(--muted)']};
+const COMP=[
+{id:'q1',g:'energia',n:'Interruptor principal Q1',ref:'TENGEN TGB1N-63 · 3 polos · 32 A · curva C',w:'Gabinete',what:'Un breaker grande que deja entrar o corta la energía de todo el módulo.',role:'Es lo primero que se sube al encender y lo último que se baja al apagar. Protege toda la instalación contra sobrecargas y cortocircuitos.',sig:'Alimenta al contactor KM1 y a los breakers de cada circuito.',fail:'Si está abajo, no enciende nada.'},
+{id:'km1',g:'energia',n:'Contactor KM1',ref:'Telemecanique CA2 DN31 · 10 A · bobina 220–230 V AC · 3NO+1NC',w:'Gabinete',what:'Un interruptor que se cierra con un electroimán, llamado bobina.',role:'Deja pasar la energía mientras su bobina está alimentada. El paro de emergencia corta esa bobina, KM1 se abre y todo queda sin energía.',sig:'Su bobina pasa por el contacto NC del hongo de emergencia.',fail:'Si el hongo está presionado, KM1 no cierra y nada enciende.'},
+{id:'brk',g:'energia',n:'Breakers por circuito',ref:'Q2 y Q4: Siemens 5SL6116 C16 · F2 y Q3: CHINT NXB-63 C25',w:'Gabinete',what:'Breakers pequeños de un polo, uno para cada circuito.',role:'Cada uno protege una parte del módulo, así una falla no tumba todo. En el diagrama de la Guía 1, Q4 alimenta al PLC y Q3 lleva los 24 V al común de las salidas.',sig:'Se suben después de Q1: primero F2 y Q3, después Q2 y Q4.',fail:'Si Q2 o Q4 quedan abajo, el PLC o el mando no encienden. Pasó en las pruebas.'},
+{id:'q5',g:'energia',n:'Guardamotor Q5',ref:'Siemens SIRIUS 3RV2011 · ajustable 10–16 A',w:'Gabinete',what:'Un breaker diseñado para proteger motores.',role:'Protege al motor contra sobrecarga, cortocircuito y falta de fase.',sig:'Está en la línea que alimenta al variador y al motor.',fail:'Si se dispara, el variador queda sin energía y la banda no se mueve.'},
+{id:'f24',g:'energia',n:'Fuente de 24 V DC',ref:'MEAN WELL RS-150-24 · 24 V DC · 6.5 A',w:'Gabinete',what:'Convierte la corriente alterna de la red en 24 V de corriente directa.',role:'Alimenta todo el control: sensores, relés, luces, electroválvulas y las entradas del PLC.',sig:'Su salida llega a las borneras y a los comunes de entradas y salidas.',fail:'Sin 24 V el PLC enciende, pero no ve los sensores ni puede activar los relés.'},
+{id:'f12',g:'energia',n:'Fuente de 12 V DC',ref:'12 V DC · 30 A',w:'Gabinete',what:'Otra fuente, más grande, solo para el compresor.',role:'El compresor consume mucha corriente, por eso tiene su propia fuente y no se carga la de 24 V.',sig:'Alimenta al compresor a través del presostato.',fail:'Sin ella no hay aire y los cilindros no se mueven.'},
+{id:'plc',g:'control',n:'PLC S7-1200',ref:'Siemens CPU 1214C AC/DC/RLY · 6ES7214-1BG40-0XB0',w:'Gabinete',what:'Una computadora industrial que lee entradas, ejecuta un programa y activa salidas.',role:'Es el cerebro. Decide cuándo arranca la banda, cuándo sale cada cilindro y qué luz se enciende.',sig:'Entradas %I0.0 a %I0.7, salidas %Q0.0 a %Q0.4 e IP 192.168.0.5.',fail:'En STOP no ejecuta el programa y Factory I/O marca el error #510.'},
+{id:'rel',g:'control',n:'Relés K1 a K5',ref:'OMRON MY2-GS-R · bobina 24 V DC · 5 unidades',w:'Gabinete',what:'Interruptores pequeños que se cierran cuando su bobina recibe 24 V.',role:'Cada salida del PLC activa un relé y el relé enciende el elemento: K1 luz verde, K2 luz roja, K3 variador, K4 electroválvula Y1 y K5 electroválvula Y2. Así el PLC no carga directamente con los actuadores.',sig:'Sus bobinas están conectadas a %Q0.0 hasta %Q0.4.',fail:'Si un relé falla, la salida del PLC se enciende pero el elemento no responde.'},
+{id:'bor',g:'control',n:'Borneras y canaleta',ref:'KLEMSAN 10 mm² en riel DIN · canaleta ranurada 40 × 20 mm',w:'Gabinete',what:'Puntos de conexión ordenados y canales por donde van los cables.',role:'Permiten conectar y revisar cada cable sin tocar los equipos. Los cables están marcados con números.',sig:'Unen el gabinete con el panel, los sensores y las electroválvulas.',fail:'Un tornillo flojo puede hacer que una señal falle a ratos.'},
+{id:'start',g:'mando',n:'Pulsador START',ref:'CHINT NP8 · verde · NO',w:'Panel frontal',what:'Un botón que solo conduce mientras se mantiene presionado.',role:'En automático se sostiene 3 segundos para arrancar. En manual cada toque avanza un paso.',sig:'Entrada %I0.0.',fail:'Si se suelta antes de 3 segundos en automático, el temporizador se reinicia.'},
+{id:'stop',g:'mando',n:'Pulsador STOP',ref:'CHINT NP8 · rojo · NC',w:'Panel frontal',what:'Un botón normalmente cerrado: conduce hasta que se presiona.',role:'Detiene la banda, apaga la luz verde y enciende la roja.',sig:'Entrada %I0.1.',fail:'Al ser NC, si se corta su cable el sistema también se detiene. Es lo más seguro.'},
+{id:'sel',g:'mando',n:'Maneta de 3 posiciones',ref:'CHINT NP8 · 2 contactos NO',w:'Panel frontal',what:'Un selector giratorio con posiciones izquierda, centro y derecha.',role:'Elige el modo: MANUAL, 0 o AUTO.',sig:'MANUAL en %I0.3 y AUTO en %I0.2.',fail:'En la posición 0 START no hace nada.'},
+{id:'emg',g:'mando',n:'Paro de emergencia',ref:'Pulsador tipo hongo · 1NC · se libera girándolo',w:'Panel frontal',what:'Un botón grande y rojo para situaciones de riesgo.',role:'Corta la energía de todo el módulo de inmediato, porque abre el circuito de la bobina de KM1.',sig:'Actúa sobre KM1, no sobre el PLC.',fail:'No se usa para apagar todos los días. Después de usarlo el variador puede mostrar 0E.'},
+{id:'luz',g:'mando',n:'Luces indicadoras',ref:'CHINT ND16 · verde y roja',w:'Panel frontal',what:'Pilotos que muestran el estado del módulo.',role:'Verde: el sistema está en marcha. Roja: el sistema está detenido.',sig:'Verde con %Q0.0 y relé K1; roja con %Q0.1 y relé K2.',fail:'Si la salida del PLC se enciende pero la luz no, revisar el relé.'},
+{id:'vfd',g:'motor',n:'Variador de frecuencia',ref:'VEVOR 3 kW · entrada monofásica 220 V · salida trifásica 220 V',w:'Gabinete',what:'Un equipo que alimenta al motor y controla cómo arranca y a qué velocidad gira.',role:'Convierte la alimentación monofásica en trifásica para el motor y hace un arranque suave. La velocidad está fija en su perilla, porque el PLC solo le da la orden de marcha.',sig:'Recibe la orden del relé K3, que activa %Q0.2.',fail:'Si muestra 0E después de una emergencia, se borra con STOP/RESET.'},
+{id:'mot',g:'motor',n:'Motorreductor',ref:'SEW-EURODRIVE trifásico · ¼ HP · 4 polos',w:'Banda',what:'Un motor con una caja de engranes que baja la velocidad y aumenta la fuerza.',role:'Mueve la banda transportadora.',sig:'Se alimenta de la salida trifásica del variador.',fail:'Si no gira, revisar el variador y el guardamotor.'},
+{id:'banda',g:'motor',n:'Banda transportadora',ref:'Cuero liviano · eje de ¾" · 4 chumaceras KOYO',w:'Mesa',what:'La cinta que lleva las piezas de un punto a otro.',role:'Lleva cada pieza primero frente al sensor inductivo y después frente al fotoeléctrico.',sig:'La mueve el motorreductor.',fail:'Si patina o se desalinea, las piezas no pasan bien frente a los sensores.'},
+{id:'comp',g:'aire',n:'Compresor',ref:'Goodyear · 12 V DC · 0–150 psi',w:'Mesa',what:'Una bomba que comprime aire.',role:'Produce el aire que mueve los cilindros.',sig:'Lo alimenta la fuente de 12 V y lo enciende y apaga el presostato.',fail:'Sin presión, las electroválvulas cambian pero los cilindros no se mueven.'},
+{id:'dep',g:'aire',n:'Depósito de aire',ref:'Cilindro de almacenamiento de 450 psi',w:'Mesa',what:'Un tanque que guarda aire comprimido.',role:'Tiene aire listo para que los cilindros respondan rápido sin esperar al compresor.',sig:'Lo llena el compresor y entrega aire a la unidad de mantenimiento.',fail:'Si tiene fugas, el compresor se enciende muy seguido.'},
+{id:'pres',g:'aire',n:'Presostato',ref:'Genebre · 20–60 psi · regulado entre 10 y 30 psi',w:'Mesa',what:'Un interruptor que se acciona por presión.',role:'Apaga el compresor cuando el depósito llega a la presión ajustada y lo vuelve a encender cuando baja.',sig:'Está entre la fuente de 12 V y el compresor.',fail:'Mal ajustado, el compresor no arranca o no se apaga.'},
+{id:'um',g:'aire',n:'Unidad de mantenimiento',ref:'135 psi',w:'Neumática',what:'Un filtro y regulador para el aire.',role:'Limpia y regula el aire antes de que llegue a las electroválvulas.',sig:'Recibe aire del depósito y lo manda por las mangueras.',fail:'Si el filtro se llena de agua o suciedad, baja la presión.'},
+{id:'ev',g:'aire',n:'Electroválvulas 5/2',ref:'SmartSolu 4V110-06 · monoestables · bobina 24 V DC · 2 unidades',w:'Neumática',what:'Válvulas que dirigen el aire cuando su bobina recibe corriente.',role:'Son el puente entre lo eléctrico y lo neumático. Con la bobina energizada mandan aire para que el cilindro salga; sin señal, el muelle las regresa y el cilindro entra. 5/2 significa 5 vías y 2 posiciones.',sig:'Y1 la activa el relé K4 (%Q0.3) y Y2 el relé K5 (%Q0.4).',fail:'Tienen accionamiento manual para probarlas sin el PLC.'},
+{id:'estr',g:'aire',n:'Válvulas de estrangulamiento',ref:'6 mm · 4 unidades',w:'Neumática',what:'Pequeñas válvulas que limitan cuánto aire pasa.',role:'Regulan la velocidad con la que sale y entra cada cilindro.',sig:'Están en las líneas de aire de cada cilindro.',fail:'Muy cerradas, el cilindro se mueve lento o no alcanza a empujar la pieza.'},
+{id:'cil',g:'aire',n:'Cilindros neumáticos',ref:'Doble efecto · Ø12 mm · carrera 100 mm · 2 unidades',w:'Banda',what:'Actuadores que se extienden y se retraen con aire.',role:'Empujan la pieza fuera de la banda hacia su contenedor: el cilindro 1 el metal y el cilindro 2 el no metal. El émbolo lleva un imán que detectan los Reed.',sig:'Los mueven las electroválvulas Y1 y Y2.',fail:'Si no salen, revisar el aire, la electroválvula y su relé.'},
+{id:'sil',g:'aire',n:'Mangueras, racores y silenciadores',ref:'Poliuretano 6 mm · racores de 6 mm · silenciadores ¼" NPT',w:'Neumática',what:'Las tuberías y conexiones del aire.',role:'Las mangueras llevan el aire. Los silenciadores bajan el ruido del aire que escapa de las válvulas.',sig:'Unen depósito, unidad, electroválvulas y cilindros.',fail:'Una manguera floja produce fugas y pérdida de fuerza.'},
+{id:'ind',g:'sens',n:'Sensor inductivo',ref:'SICK · PNP · NC · alcance 1.4 mm',w:'Banda',what:'Un sensor que detecta metal sin tocarlo.',role:'Es el primer filtro: si la pieza es metálica, el PLC saca el cilindro 1.',sig:'Entrada %I0.4. En reposo vale 1 y al detectar cae a 0.',fail:'Si la pieza pasa muy lejos del sensor, no la detecta.'},
+{id:'fot',g:'sens',n:'Sensor fotoeléctrico',ref:'Autonics · difuso · PNP · NC · alcance 10 cm',w:'Banda',what:'Un sensor que detecta un objeto porque la luz rebota en él.',role:'Es el segundo filtro. Detecta cualquier objeto, pero como el metal ya salió antes, lo que llega es no metálico y el PLC saca el cilindro 2.',sig:'Entrada %I0.5. En reposo vale 1 y al detectar cae a 0.',fail:'Si está sucio o desalineado, no ve las piezas.'},
+{id:'reed',g:'sens',n:'Sensores Reed S3 y S4',ref:'Standex MK26 · 2 unidades',w:'Sobre los cilindros',what:'Sensores magnéticos montados en la camisa del cilindro.',role:'Avisan cuando el cilindro llegó al final de su carrera, porque detectan el imán del émbolo. Con esa señal el PLC sabe que ya puede regresarlo.',sig:'S3 en %I0.6 (cilindro 1) y S4 en %I0.7 (cilindro 2).',fail:'Si se corren de posición, el cilindro no regresa.'},
+{id:'sw',g:'red',n:'Switch Ethernet',ref:'STEREN Fast Ethernet · 5 puertos',w:'Gabinete',what:'Un repartidor de red.',role:'Une el PLC con la laptop y deja puertos libres para otros equipos.',sig:'Cable RJ45 al puerto PROFINET del PLC y a la laptop.',fail:'Sin conexión, el ping no responde y Factory I/O no conecta.'},
+{id:'lap',g:'red',n:'Laptop',ref:'TIA Portal V17 · Factory I/O 2.5.10 Siemens Edition',w:'Junto al módulo',what:'La computadora del módulo.',role:'Con TIA Portal se programa y se revisa el PLC. Con Factory I/O se ve el proceso en 3D.',sig:'IP 192.168.0.2 en el adaptador Ethernet. Se comunica con el protocolo S7.',fail:'Si usa la IP del Wi-Fi en lugar de la del cable, no ve al PLC.'}
+];
+const cById={};COMP.forEach(c=>cById[c.id]=c);
+const CHAINS=[
+{id:'ener',n:'La energía',d:'Cómo llega la electricidad a cada parte. Por eso se encienden los breakers en orden.',st:[['t','Red eléctrica del laboratorio'],'q1','km1','brk',['t','PLC, fuente de 24 V, fuente de 12 V'],'q5','vfd']},
+{id:'banda',n:'La banda',d:'Desde que se presiona START hasta que la banda se mueve.',st:['start','plc',['t','%Q0.2'],'rel','vfd','mot','banda']},
+{id:'c1',n:'Cilindro 1 (metal)',d:'El primer filtro, de punta a punta.',st:[['t','Pieza de metal'],'ind','plc',['t','%Q0.3'],'rel','ev','cil','reed','plc']},
+{id:'c2',n:'Cilindro 2 (no metal)',d:'El segundo filtro. Funciona porque el metal ya salió.',st:[['t','Pieza no metálica'],'fot','plc',['t','%Q0.4'],'rel','ev','cil','reed','plc']},
+{id:'aire',n:'El aire',d:'El camino del aire comprimido hasta los cilindros.',st:['f12','pres','comp','dep','um','sil','ev','estr','cil',['t','Escape por los silenciadores']]},
+{id:'luz',n:'Las luces',d:'Cómo el PLC enciende las luces del panel.',st:['plc',['t','%Q0.0 / %Q0.1'],'rel','luz']},
+{id:'emg',n:'Paro de emergencia',d:'Por qué el hongo apaga todo de inmediato.',st:['emg',['t','Se abre su contacto NC'],'km1',['t','Todo queda sin energía']]},
+{id:'vis',n:'La visualización',d:'Cómo llega lo que pasa en el módulo a la pantalla.',st:['plc',['t','Salidas %Q0.0 a %Q0.4'],'sw','lap',['t','Escena 3D en Factory I/O']]}
+];
+const mqSheet=matchMedia('(max-width:819px)');
+const CLOSE_SVG='<svg class="i" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
+let gSel='all',cSel='plc',chSel='c1';
+function drawFilter(){
+  const counts={};COMP.forEach(c=>counts[c.g]=(counts[c.g]||0)+1);
+  $('compFilter').innerHTML='<button class="chip" data-g="all" aria-pressed="'+(gSel==='all')+'">Todos<small>'+COMP.length+'</small></button>'+
+    Object.entries(GROUPS).map(([k,v])=>'<button class="chip" data-g="'+k+'" aria-pressed="'+(gSel===k)+'"><span class="gdot" style="background:'+v[1]+'"></span>'+v[0]+'<small>'+counts[k]+'</small></button>').join('');
+  $('compFilter').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{gSel=b.dataset.g;drawFilter();drawGrid();}));
+}
+function drawGrid(){
+  const list=COMP.filter(c=>gSel==='all'||c.g===gSel);
+  $('compGrid').innerHTML=list.map(c=>'<button class="cbtn" data-id="'+c.id+'" aria-pressed="'+(c.id===cSel)+'"><b><span class="gdot" style="background:'+GROUPS[c.g][1]+'"></span>'+esc(c.n)+'</b><small>'+esc(c.w)+'</small></button>').join('');
+  $('compGrid').querySelectorAll('.cbtn').forEach(b=>b.addEventListener('click',()=>{cSel=b.dataset.id;drawGrid();openDetail();}));
+}
+function drawDetail(){
+  const c=cById[cSel];
+  const inCh=CHAINS.filter(ch=>ch.st.includes(c.id));
+  $('compDetail').innerHTML='<div class="sheet-head"><span class="lbl"><span class="gdot" style="background:'+GROUPS[c.g][1]+'"></span>'+GROUPS[c.g][0]+'</span><button class="icon-btn sheet-close" id="compClose" aria-label="Cerrar">'+CLOSE_SVG+'</button></div>'+
+    '<h3>'+esc(c.n)+'</h3><p class="ref">'+esc(c.ref)+'</p>'+
+    '<dl><dt>Qué es</dt><dd>'+esc(c.what)+'</dd><dt>Qué hace</dt><dd>'+esc(c.role)+'</dd><dt>Dónde está</dt><dd>'+esc(c.w)+'</dd><dt>Se conecta</dt><dd>'+esc(c.sig)+'</dd><dt>Si falla</dt><dd>'+esc(c.fail)+'</dd></dl>'+
+    (inCh.length?'<div class="stack" style="gap:6px"><span class="lbl">Aparece en estos recorridos</span><div class="chips">'+inCh.map(ch=>'<button class="chip goch" data-ch="'+ch.id+'">'+ch.n+'</button>').join('')+'</div></div>':'');
+  $('compClose').addEventListener('click',closeDetail);
+  $('compDetail').querySelectorAll('.goch').forEach(b=>b.addEventListener('click',()=>{closeDetail();chSel=b.dataset.ch;drawChains();$('chainView').scrollIntoView({behavior:'smooth',block:'center'});}));
+}
+/* En teléfono la ficha sale como panel desde abajo; en pantallas anchas queda fija a un lado */
+function openDetail(){
+  drawDetail();drawChains();
+  if(mqSheet.matches){$('compDetail').classList.add('open');$('sheetBg').hidden=false;$('compClose').focus({preventScroll:true});}
+}
+function closeDetail(){$('compDetail').classList.remove('open');$('sheetBg').hidden=true;}
+$('sheetBg').addEventListener('click',closeDetail);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('sheetBg').hidden)closeDetail();});
+function drawChains(){
+  $('chainSel').innerHTML=CHAINS.map(ch=>'<button class="chip" data-ch="'+ch.id+'" aria-pressed="'+(ch.id===chSel)+'">'+ch.n+'</button>').join('');
+  $('chainSel').querySelectorAll('.chip').forEach(b=>b.addEventListener('click',()=>{chSel=b.dataset.ch;drawChains();}));
+  const ch=CHAINS.find(x=>x.id===chSel);
+  $('chainDesc').textContent=ch.d;
+  $('chainView').innerHTML=ch.st.map(x=>{
+    if(Array.isArray(x))return '<span class="st plain">'+esc(x[1])+'</span>';
+    const c=cById[x];return '<button class="st'+(x===cSel?' on':'')+'" data-id="'+x+'">'+esc(c.n)+'<small>'+esc(GROUPS[c.g][0])+'</small></button>';
+  }).join('<span class="ar" aria-hidden="true">→</span>');
+  $('chainView').querySelectorAll('.st[data-id]').forEach(b=>b.addEventListener('click',()=>{cSel=b.dataset.id;gSel='all';drawFilter();drawGrid();openDetail();}));
+}
+let whoScore=[0,0];
+function drawWho(){
+  const c=COMP[Math.floor(Math.random()*COMP.length)];
+  const opts=shuffle([c,...shuffle(COMP.filter(x=>x.id!==c.id&&x.g===c.g)).slice(0,2),...shuffle(COMP.filter(x=>x.g!==c.g)).slice(0,1)]).slice(0,4);
+  while(opts.length<4){const x=COMP[Math.floor(Math.random()*COMP.length)];if(!opts.includes(x))opts.push(x);}
+  const W=$('who');let done=false;
+  W.innerHTML='<div class="row" style="justify-content:space-between"><span class="lbl">¿Quién soy?</span><span class="muted" style="font-size:.88rem">Aciertos: '+whoScore[0]+' de '+whoScore[1]+'</span></div>'+
+    '<p class="qtext">'+esc(c.what)+' '+esc(c.role.split('. ')[0].replace(/\.$/,''))+'.</p><div class="opts">'+
+    shuffle(opts).map((o,k)=>'<button class="opt" data-id="'+o.id+'"><span class="k">'+(k+1)+'</span><span>'+esc(o.n)+'</span></button>').join('')+'</div><div class="expl-slot"></div>';
+  const bs=[...W.querySelectorAll('.opt')];
+  bs.forEach(b=>b.addEventListener('click',()=>{
+    if(done)return;done=true;
+    const ok=b.dataset.id===c.id;whoScore[1]++;if(ok)whoScore[0]++;
+    bs.forEach(x=>{x.disabled=true;if(x.dataset.id===c.id)x.classList.add('right');});if(!ok)b.classList.add('wrong');
+    W.querySelector('.expl-slot').innerHTML='<div class="expl"><b class="v '+(ok?'ok':'bad')+'">'+(ok?'Correcto.':'No es ese.')+'</b> Es <b>'+esc(c.n)+'</b> ('+esc(c.ref)+'). '+esc(c.sig)+'</div><div class="row" style="margin-top:10px"><button class="primary" id="whoNext">Otro</button><button class="btn2" id="whoSee">Ver su ficha</button></div>';
+    $('whoNext').addEventListener('click',drawWho);
+    $('whoSee').addEventListener('click',()=>{cSel=c.id;gSel='all';drawFilter();drawGrid();openDetail();});
+    W.lastElementChild.scrollIntoView({block:'nearest',behavior:'smooth'});
+  }));
+}
+drawFilter();drawGrid();drawDetail();drawChains();drawWho();
 
 /* ================= TARJETAS DEL ASESOR ================= */
 let fi=0,reveal=false;
@@ -1164,6 +1341,7 @@ function route(){
     else{$('segQuiz').setAttribute('aria-current','page');$('segFlash').removeAttribute('aria-current');}
   }
   if(v!==view)$('toast').hidden=true;
+  closeDetail();
   if(v!=='simulador')holdEnd();
   view=v;
   ['inicio','aprender','simulador','practicar'].forEach(x=>$('v-'+x).hidden=x!==v);

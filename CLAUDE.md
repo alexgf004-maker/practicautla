@@ -146,7 +146,7 @@ Es un solo archivo sin dependencias ni build. Lo único externo son las Google F
 
 Funciona como una app de cuatro pestañas. En teléfono la barra de pestañas (`.tabs`) va fija abajo; desde 900 px pasa a la barra superior. Cada pestaña es una `<section class="view">` y solo se muestra una a la vez según el hash de la URL (función `route()`):
 - `#inicio` (`#v-inicio`): qué es el módulo, "Cómo usar esta página" con el avance de cada parte y un botón de siguiente paso recomendado (`#nextStep`).
-- `#aprender-N` (`#v-aprender`): 5 lecciones, cada una es un `<article class="lesson" data-n data-title data-short>`: 1 cuerpo, cerebro y ventana · 2 recorrido de una pieza · 3 las 4 guías · 4 cinco detalles que confunden (acordeones) · 5 encendido y fallas. Arriba va el indicador de lecciones y abajo los botones Anterior/Siguiente (`#pager`). Una lección cuenta como vista al pulsar Siguiente o al acertar todas sus preguntas de repaso.
+- `#aprender-N` (`#v-aprender`): 6 lecciones, cada una es un `<article class="lesson" data-n data-title data-short>`: 1 cuerpo, cerebro y ventana · 2 los elementos (explorador de componentes, "Sigue la señal" y "¿Quién soy?") · 3 recorrido de una pieza · 4 las 4 guías · 5 cinco detalles que confunden (acordeones) · 6 encendido y fallas. Arriba va el indicador de lecciones y abajo los botones Anterior/Siguiente (`#pager`). Una lección cuenta como vista al pulsar Siguiente o al acertar todas sus preguntas de repaso.
 - `#simulador` (`#v-simulador`): simulador, retos y el panel de entradas y salidas. En teléfono la banda (`.sim-top`) se queda fija arriba mientras se usa el gabinete. `cue()` marca con borde amarillo lo que conviene tocar después, y al cumplir un reto sale un aviso (`toast()`).
 - `#practicar` y `#tarjetas` (`#v-practicar`): cuestionario y tarjetas del asesor, una tarjeta a la vez.
 
@@ -163,10 +163,13 @@ Funciona como una app de cuatro pestañas. En teléfono la barra de pestañas (`
 - Ids por categoría: `r` Guía 1, `f` Guía 2, `p` Guía 3, `i` o `f` Guía 4, `g` general, `c` componentes, `s` sensores, `e` seguridad.
 
 ### Otras piezas
+- `COMP`: los 30 componentes del explorador (lección 2). Cada uno es `{id, g, n, ref, w, what, role, sig, fail}`: grupo (clave de `GROUPS`: `energia`, `control`, `mando`, `motor`, `aire`, `sens`, `red`), nombre, modelo, dónde está, qué es, qué hace, con qué se conecta y qué revisar si falla. El juego "¿Quién soy?" usa `what` y la primera frase de `role`, así que `what` no debe incluir el nombre del componente.
+- En teléfono (menos de 820 px) la ficha del componente (`#compDetail`) sale como panel desde abajo con `openDetail()`/`closeDetail()`; en pantallas anchas queda fija a un lado de la cuadrícula.
+- `CHAINS`: recorridos de "Sigue la señal". Cada paso es el `id` de un componente o `['t','texto']` para un paso que no es componente. En teléfono los pasos se ven en vertical.
 - `FLASH`: tarjetas del asesor, cada una es `[pregunta, respuesta]`.
 - `RETOS`: cada reto es `[clave, texto, explicación]`. Se marca llamando a `reto('clave')` desde la lógica del simulador.
 - Simulador: el objeto `S` guarda el estado. Las posiciones están en `IND, FOT, C1, C2` (en % del ancho). `paint()` dibuja y `loop()` corre en `requestAnimationFrame`.
-- El avance se guarda en `localStorage` con el prefijo `modbanda-`, envuelto en try/catch. La página tiene que funcionar aunque falle. El objeto `progress` tiene `retos`, `checks`, `best`, `flash` y `lessons`; también se guardan `lesson` (última lección abierta), `theme` y `howtoClosed`.
+- El avance se guarda en `localStorage` con el prefijo `modbanda-`, envuelto en try/catch. La página tiene que funcionar aunque falle. El objeto `progress` tiene `retos`, `checks`, `best`, `flash` y `lessons`; también se guardan `lesson` (última lección abierta), `theme`, `howtoClosed` y `lessonsV` (versión de la numeración de lecciones: al agregar la lección 2, el avance guardado se recorrió un número; si se vuelve a insertar una lección, hay que subir esta versión y migrar igual).
 - Hay botón de tema claro/oscuro en la barra superior: pone `data-theme` en `<html>`.
 - Colores: todos son tokens CSS en `:root`, con versión oscura en `@media (prefers-color-scheme: dark)` y en `[data-theme="dark"]`. No se usan colores sueltos.
 - Tiene que verse bien a 400 px de ancho sin scroll horizontal.
