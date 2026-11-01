@@ -388,6 +388,27 @@ code{font-family:var(--mono);font-size:.86em}
 
 /* PROGRAMAR (LADDER) */
 .seg.s3{grid-template-columns:repeat(3,1fr)}
+.seg.s4{grid-template-columns:repeat(4,1fr)}
+#v-programar:not([data-pane="l"]) .view-head p{display:none}
+.ldiag.sb .lhead{border-bottom:0;border-top:2px solid var(--edge);border-radius:0 0 calc(var(--radius) - 2px) calc(var(--radius) - 2px)}
+.sb-try{display:block;padding:10px 12px 0}
+.palette{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px;background:var(--surface);border:2px solid var(--edge);border-radius:var(--radius);box-shadow:var(--shadow);position:sticky;top:calc(var(--appbar) + env(safe-area-inset-top,0px) + 8px);z-index:6}
+@media (min-width:640px){.palette{grid-template-columns:repeat(8,1fr)}}
+.symb{appearance:none;cursor:grab;border:2px solid var(--line);background:var(--bg);border-radius:12px;padding:6px 2px;min-height:62px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:.68rem;font-weight:800;line-height:1.1;text-align:center;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.symb .sym{width:56px;height:22px}
+.symb .sym path{stroke:var(--ink)}
+.symb .sym .wl,.symb .sym .wr{stroke:var(--muted)}
+.symb .sym text{fill:var(--ink)}
+.symb .mbox{display:grid;place-items:center;width:40px;height:22px;border:2px solid var(--ink);border-radius:4px;font-family:var(--mono);font-size:.6rem;font-weight:700}
+.symb[aria-pressed="true"]{background:var(--petrol);color:var(--on-fill);border-color:var(--edge);box-shadow:var(--shadow-sm)}
+.symb[aria-pressed="true"] .sym path{stroke:var(--on-fill)}
+.symb[aria-pressed="true"] .sym text{fill:var(--on-fill)}
+.symb[aria-pressed="true"] .mbox{border-color:var(--on-fill)}
+.ghost{position:fixed;left:0;top:0;width:72px;z-index:60;pointer-events:none;background:var(--petrol);color:var(--on-fill);border-color:var(--edge);box-shadow:var(--shadow)}
+.arm-msg{background:var(--hl-bg);border:2px dashed var(--edge);border-radius:12px;padding:8px 12px;color:var(--ink)}
+body.arm-ct [data-drop="ser"],body.arm-ct [data-drop="par"],body.arm-ct [data-drop="new"],body.arm-out [data-drop="out"],body.arm-out [data-drop="new"]{outline:3px dashed var(--acc-text);outline-offset:3px;animation:cue 1.2s ease-in-out infinite}
+.drop-hover{background:var(--petrol)!important;color:var(--on-fill)!important;border-color:var(--edge)!important}
+
 .lesson-nav.compact a{font-size:0;gap:0}
 .lesson-nav.compact::before{left:6%;right:6%}
 .plesson{display:flex;flex-direction:column;gap:18px}
@@ -776,10 +797,11 @@ button.ct:hover,button.ou:hover{background:var(--hl-bg)}
     <h2 id="prog-t">Programar en Ladder</h2>
     <p class="muted">Ladder, o lenguaje de escalera, es con el que se programó el PLC en TIA Portal. Empiecen por las lecciones, vean el programa del módulo funcionando y después armen sus propios escalones en el taller.</p>
   </div>
-  <nav class="seg s3" aria-label="Partes de Programar">
+  <nav class="seg s4" aria-label="Partes de Programar">
     <a href="#programar" id="segPL">Lecciones</a>
-    <a href="#programa-modulo" id="segPM">Programa del módulo</a>
+    <a href="#programa-modulo" id="segPM">Módulo</a>
     <a href="#taller" id="segPT">Taller</a>
+    <a href="#libre" id="segPS">Libre</a>
   </nav>
 
   <div id="pgL" class="stack" style="gap:20px">
@@ -823,6 +845,17 @@ button.ct:hover,button.ou:hover{background:var(--hl-bg)}
       <button class="link-btn" id="txClear" style="align-self:flex-start">Empezar de nuevo este ejercicio</button>
     </div>
     <div id="txResult" class="expl" role="status" hidden></div>
+  </div>
+
+  <div id="pgS" class="stack" style="gap:14px" hidden>
+    <div class="keybox"><span class="eyebrow">Zona libre</span><p>Armen el programa que quieran. Arrastren un símbolo a un espacio punteado, o tóquenlo y luego toquen el espacio. Toquen un elemento ya puesto para cambiarlo o borrarlo.</p></div>
+    <div class="palette" id="sbPal" role="toolbar" aria-label="Símbolos de Ladder"></div>
+    <p class="hint arm-msg" id="sbArm" role="status" hidden></p>
+    <div class="ldiag sb"><div class="lrungs" id="sbRungs"></div>
+      <div class="tx-foot"><button class="btn2" id="sbAdd" data-drop="new">+ Agregar escalón</button></div>
+      <div class="lhead"><span class="lbl sb-try">Pruébenlo</span><div class="lctl" id="sbCtl"></div><div class="louts" id="sbOuts"></div></div></div>
+    <div class="row"><button class="btn2" id="sbLoad">Cargar el programa del módulo</button><button class="link-btn" id="sbClear">Borrar todo</button></div>
+    <p class="hint">Bits disponibles: entradas %I0.0 a %I0.7, salidas %Q0.0 a %Q0.4, marcas %M0.0 a %M0.3, dos temporizadores (T1 y T2) y dos contadores (C1 y C2). Las marcas son bits internos: sirven para guardar un estado sin encender nada. Lo que armen se guarda en este navegador.</p>
   </div>
 </section>
 
@@ -1537,7 +1570,8 @@ say('Módulo detenido.','Hay dos piezas esperando en la banda. Pongan la maneta 
 const MT={'I0.0':['%I0.0','START'],'I0.1':['%I0.1','STOP'],'I0.2':['%I0.2','AUTO'],'I0.3':['%I0.3','MANUAL'],'I0.4':['%I0.4','INDUCTIVO'],'I0.5':['%I0.5','FOTOELÉC.'],'I0.6':['%I0.6','REED S3'],'I0.7':['%I0.7','REED S4'],
  'Q0.0':['%Q0.0','LUZ START'],'Q0.1':['%Q0.1','LUZ STOP'],'Q0.2':['%Q0.2','VFD'],'Q0.3':['%Q0.3','Y1'],'Q0.4':['%Q0.4','Y2'],
  'M2.0':['%M2.0','Tag_1'],'M2.1':['%M2.1','Tag_2'],'M2.2':['%M2.2','Tag_3'],'M2.3':['%M2.3','Tag_4'],'M3.5':['%M3.5','M. MANUAL'],'M3.6':['%M3.6','M. MAN. LUZ'],'M3.7':['%M3.7','M. MAN. VFD'],'M4.4':['%M4.4','M. MAN. Y1'],'M4.5':['%M4.5','M. MAN. Y2'],
- 'DB1':['DB1.Q','TON 3 s'],'DB2':['DB2.Q','TON 3 s'],'T1':['T1.Q','TEMPORIZ.'],'C1':['C1.Q','CONTADOR'],'M0.0':['%M0.0','MARCA']};
+ 'DB1':['DB1.Q','TON 3 s'],'DB2':['DB2.Q','TON 3 s'],'T1':['T1.Q','TEMPORIZ. 1'],'T2':['T2.Q','TEMPORIZ. 2'],'C1':['C1.Q','CONTADOR 1'],'C2':['C2.Q','CONTADOR 2'],
+ 'M0.0':['%M0.0','MARCA 0'],'M0.1':['%M0.1','MARCA 1'],'M0.2':['%M0.2','MARCA 2'],'M0.3':['%M0.3','MARCA 3']};
 const tagsOf=keys=>{const o={};keys.forEach(k=>o[k]={a:MT[k][0],n:MT[k][1]});return o;};
 const kindOf=k=>/^I/.test(k)?'in':/^Q/.test(k)?'out':/^(T|DB)/.test(k)?'tmr':/^C/.test(k)?'cnt':'mem';
 const NO=k=>({t:'NO',k}),NC=k=>({t:'NC',k});
@@ -1588,8 +1622,8 @@ function contactHTML(D,c,r,g,i,edit){
   return '<'+tag+' class="ct" data-r="'+r+'" data-g="'+g+'" data-c="'+i+'"'+(edit?' type="button" data-act="ct" aria-label="Contacto '+c.t+' de '+esc(t.n)+'. Tocar para cambiarlo"':'')+'><span class="ad">'+esc(t.a)+' <b class="bv"></b></span>'+SYM_CT(c.t==='NC')+'<span class="nm">'+esc(t.n)+'</span></'+tag+'>';
 }
 function outHTML(D,o,r,edit){
-  if(!o||!o.k)return edit?'<button class="ou empty" type="button" data-act="out" data-r="'+r+'">+ salida</button>':'';
-  const t=tagInfo(D,o.k),tag=edit?'button':'div',at=edit?' type="button" data-act="out" aria-label="'+OUT_NAMES[o.t]+' de '+esc(t.n)+'. Tocar para cambiarla"':'';
+  if(!o||!o.k)return edit?'<button class="ou empty" type="button" data-act="out" data-drop="out" data-r="'+r+'">+ salida</button>':'';
+  const t=tagInfo(D,o.k),tag=edit?'button':'div',at=edit?' type="button" data-act="out" data-drop="out" aria-label="'+OUT_NAMES[o.t]+' de '+esc(t.n)+'. Tocar para cambiarla"':'';
   if(o.t==='TON')return '<'+tag+' class="ou bx" data-r="'+r+'"'+at+'><span class="box"><b>TON</b><span>'+esc(t.a.replace('.Q',''))+'</span><span>PT '+(o.pt/1000)+' s</span><span class="et">ET 0.0 s</span><span class="tb"><i></i></span></span></'+tag+'>';
   if(o.t==='CTU')return '<'+tag+' class="ou bx" data-r="'+r+'"'+at+'><span class="box"><b>CTU</b><span>'+esc(t.a.replace('.Q',''))+'</span><span>PV '+o.pv+'</span><span class="cv">CV 0</span></span></'+tag+'>';
   const l=o.t==='S'?'S':o.t==='R'||o.t==='RC'?'R':'';
@@ -1600,9 +1634,9 @@ function rungsHTML(D,rungs,edit){
     let h=r.h?'<div class="net-h"><h3>'+esc(r.h)+'</h3>'+(r.hp?'<p class="muted">'+esc(r.hp)+'</p>':'')+'</div>':'';
     const gs=r.g.map((g,gi)=>{
       const inner=g.length===1?contactHTML(D,g[0],ri,gi,0,edit):'<div class="par" data-r="'+ri+'" data-g="'+gi+'">'+g.map((c,ci)=>contactHTML(D,c,ri,gi,ci,edit)).join('')+'</div>';
-      return '<span class="w" data-r="'+ri+'" data-g="'+gi+'"></span>'+(edit?'<div class="gcol">'+inner+'<button class="addp" type="button" data-act="par" data-r="'+ri+'" data-g="'+gi+'">+ paralelo</button></div>':inner);
+      return '<span class="w" data-r="'+ri+'" data-g="'+gi+'"></span>'+(edit?'<div class="gcol">'+inner+'<button class="addp" type="button" data-act="par" data-drop="par" data-r="'+ri+'" data-g="'+gi+'">+ paralelo</button></div>':inner);
     }).join('');
-    const add=edit?'<span class="w"></span><button class="adds'+(r.g.length?'':' wide')+'" type="button" data-act="ser" data-r="'+ri+'" aria-label="Agregar contacto en serie">'+(r.g.length?'+':'+ contacto')+'</button>':'';
+    const add=edit?'<span class="w"></span><button class="adds'+(r.g.length?'':' wide')+'" type="button" data-act="ser" data-drop="ser" data-r="'+ri+'" aria-label="Agregar contacto en serie">'+(r.g.length?'+':'+ contacto')+'</button>':'';
     return h+'<div class="rung"><div class="rung-h"><span class="lbl">'+(r.lbl||'Escalón '+(ri+1))+'</span>'+(edit?'<button class="link-btn" type="button" data-act="delr" data-r="'+ri+'">Borrar escalón</button>':'')+'</div>'+
       '<div class="rung-sc"><div class="rg"><i class="rail l"></i>'+gs+add+'<span class="w fill" data-r="'+ri+'"></span>'+outHTML(D,r.o,ri,edit)+'<i class="rail r"></i></div></div>'+
       (r.note?'<p class="rung-note">'+r.note+'</p>':'')+'</div>';
@@ -1839,26 +1873,28 @@ function showEx(i){
   const k=LDS.indexOf(TD);if(k>=0)LDS.splice(k,1);
   mountLD(TD);
 }
-/* Editor: tocar un contacto o una salida abre el panel para cambiarlo */
-let pk=null;
+/* Editor: lo usan el taller y la zona libre. Tocar un contacto o una salida abre el panel para cambiarlo.
+   ED es el editor activo: {d (diagrama), prog() (escalones), tags (bits permitidos), outs (tipos de salida), save()} */
+const EDT={d:TD,prog:()=>progOf(EX[exi]),get tags(){return EX[exi].tags;},get outs(){return EX[exi].outs;},save:saveProg};
+let ED=EDT,pk=null;
 function openPick(o){pk=o;drawPick();$('lpick').classList.add('open');$('lpBg').hidden=false;const f=$('lpick').querySelector('button');if(f)f.focus({preventScroll:true});}
-function closePick(){if(!pk)return;pk=null;$('lpick').classList.remove('open');$('lpBg').hidden=true;cleanProg();renderLD(TD);saveProg();}
-function cleanProg(){const p=progOf(EX[exi]);p.forEach(r=>{r.g=r.g.filter(g=>g.length);});}
+function closePick(){if(!pk)return;pk=null;$('lpick').classList.remove('open');$('lpBg').hidden=true;cleanProg();renderLD(ED.d);ED.save();}
+function cleanProg(){ED.prog().forEach(r=>{r.g=r.g.filter(g=>g.length);});}
 function tagChips(keys,sel,act){return '<div class="chips">'+keys.map(k=>'<button type="button" class="chip" data-act="'+act+'" data-k="'+k+'" aria-pressed="'+(k===sel)+'">'+esc(MT[k][1])+'<small>'+esc(MT[k][0])+'</small></button>').join('')+'</div>';}
+const outKinds=t=>t==='TON'?['tmr']:t==='CTU'||t==='RC'?['cnt']:['out','mem'];
 function drawPick(){
-  const ex=EX[exi],p=progOf(ex);let h;
+  const p=ED.prog();let h;
   if(pk.m==='ct'){
     const c=p[pk.r].g[pk.g][pk.c];
     h='<div class="sheet-head"><h3 id="lpT">Contacto</h3><button class="icon-btn" type="button" data-act="close" aria-label="Cerrar">'+CLOSE_SVG+'</button></div>'+
       '<div class="seg"><a href="#" role="button" data-act="ctt" data-t="NO"'+(c.t==='NO'?' aria-current="page"':'')+'>Abierto (NO)</a><a href="#" role="button" data-act="ctt" data-t="NC"'+(c.t==='NC'?' aria-current="page"':'')+'>Cerrado (NC)</a></div>'+
       '<p class="hint">'+(c.t==='NO'?'NO deja pasar la energía cuando el bit vale 1.':'NC deja pasar la energía cuando el bit vale 0.')+'</p>'+
-      '<span class="lbl">¿Qué bit revisa?</span>'+tagChips(ex.tags,c.k,'ctk')+
+      '<span class="lbl">¿Qué bit revisa?</span>'+tagChips(ED.tags,c.k,'ctk')+
       '<div class="row"><button class="primary" type="button" data-act="close">Listo</button><button class="btn2" type="button" data-act="delc">Borrar contacto</button></div>';
   }else{
-    const o=p[pk.r].o;const kinds=o.t==='TON'?['tmr']:o.t==='CTU'||o.t==='RC'?['cnt']:['out','mem'];
-    const keys=ex.tags.filter(k=>kinds.includes(kindOf(k)));
+    const o=p[pk.r].o,keys=ED.tags.filter(k=>outKinds(o.t).includes(kindOf(k)));
     h='<div class="sheet-head"><h3 id="lpT">Salida</h3><button class="icon-btn" type="button" data-act="close" aria-label="Cerrar">'+CLOSE_SVG+'</button></div>'+
-      '<span class="lbl">Tipo</span><div class="chips">'+ex.outs.map(t=>'<button type="button" class="chip" data-act="ot" data-t="'+t+'" aria-pressed="'+(o.t===t)+'">'+OUT_NAMES[t]+'</button>').join('')+'</div>'+
+      '<span class="lbl">Tipo</span><div class="chips">'+ED.outs.map(t=>'<button type="button" class="chip" data-act="ot" data-t="'+t+'" aria-pressed="'+(o.t===t)+'">'+OUT_NAMES[t]+'</button>').join('')+'</div>'+
       '<span class="lbl">'+(o.t==='TON'?'¿Qué temporizador?':o.t==='CTU'||o.t==='RC'?'¿Qué contador?':'¿Qué bit activa?')+'</span>'+tagChips(keys,o.k,'ok')+
       (o.t==='TON'?'<span class="lbl">Tiempo (PT)</span><div class="chips">'+[1,2,3,5].map(s=>'<button type="button" class="chip" data-act="pt" data-v="'+s*1000+'" aria-pressed="'+(o.pt===s*1000)+'">'+s+' s</button>').join('')+'</div>':'')+
       (o.t==='CTU'?'<span class="lbl">Cuenta a la que llega (PV)</span><div class="chips">'+[1,2,3,4,5,6,7].map(v=>'<button type="button" class="chip" data-act="pv" data-v="'+v+'" aria-pressed="'+(o.pv===v)+'">'+v+'</button>').join('')+'</div>':'')+
@@ -1866,32 +1902,44 @@ function drawPick(){
   }
   $('lpick').innerHTML=h;
 }
-function fixOut(ex,o){const kinds=o.t==='TON'?['tmr']:o.t==='CTU'||o.t==='RC'?['cnt']:['out','mem'];const keys=ex.tags.filter(k=>kinds.includes(kindOf(k)));if(!keys.includes(o.k))o.k=keys[0];if(o.t==='TON'&&!o.pt)o.pt=3000;if(o.t==='CTU'&&!o.pv)o.pv=3;}
+function fixOut(tags,o){const keys=tags.filter(k=>outKinds(o.t).includes(kindOf(k)));if(!keys.includes(o.k))o.k=keys[0];if(o.t==='TON'&&!o.pt)o.pt=3000;if(o.t==='CTU'&&!o.pv)o.pv=3;}
 $('lpick').addEventListener('click',e=>{
   const b=e.target.closest('[data-act]');if(!b||!pk)return;e.preventDefault();
-  const ex=EX[exi],p=progOf(ex),a=b.dataset.act;
+  const p=ED.prog(),a=b.dataset.act;
   if(a==='close'){closePick();return;}
   if(pk.m==='ct'){const c=p[pk.r].g[pk.g][pk.c];
     if(a==='ctt')c.t=b.dataset.t;else if(a==='ctk')c.k=b.dataset.k;
     else if(a==='delc'){p[pk.r].g[pk.g].splice(pk.c,1);closePick();return;}
   }else{const o=p[pk.r].o;
-    if(a==='ot'){o.t=b.dataset.t;fixOut(ex,o);}else if(a==='ok')o.k=b.dataset.k;else if(a==='pt')o.pt=+b.dataset.v;else if(a==='pv')o.pv=+b.dataset.v;
+    if(a==='ot'){o.t=b.dataset.t;fixOut(ED.tags,o);}else if(a==='ok')o.k=b.dataset.k;else if(a==='pt')o.pt=+b.dataset.v;else if(a==='pv')o.pv=+b.dataset.v;
     else if(a==='delo'){p[pk.r].o=null;closePick();return;}
   }
-  drawPick();renderLD(TD);saveProg();
+  drawPick();renderLD(ED.d);ED.save();
 });
 $('lpBg').addEventListener('click',closePick);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pk)closePick();});
-TD.host.addEventListener('click',e=>{
-  const b=e.target.closest('[data-act]');if(!b)return;
-  const ex=EX[exi],p=progOf(ex),a=b.dataset.act,r=+b.dataset.r;
-  const firstIn=ex.tags.find(k=>kindOf(k)==='in')||ex.tags[0];
-  if(a==='ct')openPick({m:'ct',r,g:+b.dataset.g,c:+b.dataset.c});
-  else if(a==='ser'){p[r].g.push([NO(firstIn)]);renderLD(TD);openPick({m:'ct',r,g:p[r].g.length-1,c:0});}
-  else if(a==='par'){const g=+b.dataset.g;p[r].g[g].push(NO(firstIn));renderLD(TD);openPick({m:'ct',r,g,c:p[r].g[g].length-1});}
-  else if(a==='out'){if(!p[r].o){p[r].o={t:ex.outs[0]};fixOut(ex,p[r].o);renderLD(TD);}openPick({m:'out',r});}
-  else if(a==='delr'){p.splice(r,1);if(!p.length)p.push({g:[],o:null});renderLD(TD);saveProg();}
-});
+/* Coloca un elemento en un espacio: sym = {m:'ct',t:'NO'|'NC'} o {m:'out',t:tipo}; el espacio sale de data-drop */
+function placeSym(E,sym,drop,r,g){
+  ED=E;const p=E.prog(),firstIn=E.tags.find(k=>kindOf(k)==='in')||E.tags[0];
+  if(drop==='new'){p.push({g:[],o:null});r=p.length-1;drop=sym.m==='ct'?'ser':'out';}
+  if(sym.m==='ct'&&drop==='ser'){p[r].g.push([{t:sym.t,k:firstIn}]);renderLD(E.d);openPick({m:'ct',r,g:p[r].g.length-1,c:0});return true;}
+  if(sym.m==='ct'&&drop==='par'){p[r].g[g].push({t:sym.t,k:firstIn});renderLD(E.d);openPick({m:'ct',r,g,c:p[r].g[g].length-1});return true;}
+  if(sym.m==='out'&&drop==='out'){const o=p[r].o||{};o.t=sym.t;fixOut(E.tags,o);p[r].o=o;renderLD(E.d);openPick({m:'out',r});return true;}
+  return false;
+}
+function editorClicks(E){
+  E.d.host.addEventListener('click',e=>{
+    const b=e.target.closest('[data-act]');if(!b)return;
+    ED=E;const p=E.prog(),a=b.dataset.act,r=+b.dataset.r;
+    if(E.armed&&b.dataset.drop){if(!placeSym(E,E.armed,b.dataset.drop,r,+b.dataset.g))wrongSpot(E.armed);disarm(E);return;}
+    if(a==='ct')openPick({m:'ct',r,g:+b.dataset.g,c:+b.dataset.c});
+    else if(a==='ser')placeSym(E,{m:'ct',t:'NO'},'ser',r);
+    else if(a==='par')placeSym(E,{m:'ct',t:'NO'},'par',r,+b.dataset.g);
+    else if(a==='out'){if(!p[r].o)placeSym(E,{m:'out',t:E.outs[0]},'out',r);else openPick({m:'out',r});}
+    else if(a==='delr'){p.splice(r,1);if(!p.length)p.push({g:[],o:null});renderLD(E.d);E.save();}
+  });
+}
+editorClicks(EDT);
 $('txAdd').addEventListener('click',()=>{progOf(EX[exi]).push({g:[],o:null});renderLD(TD);saveProg();});
 $('txClear').addEventListener('click',()=>{
   const ex=EX[exi];if(!confirm('¿Borrar su programa de este ejercicio y empezar de nuevo?'))return;
@@ -1907,11 +1955,74 @@ $('txCheck').addEventListener('click',()=>{
   }else box.innerHTML='<b class="v bad">Todavía no.</b> '+esc(res.m)+'<span class="src">Esperábamos '+esc(MT[res.k][0])+' = '+res.want+' y quedó en '+res.got+'.</span>';
   box.scrollIntoView({block:'nearest',behavior:'smooth'});
 });
-/* Cambia entre lecciones, programa del módulo y taller */
+/* ================= LADDER: ZONA LIBRE ================= */
+const SB_TAGS=['I0.0','I0.1','I0.2','I0.3','I0.4','I0.5','I0.6','I0.7','Q0.0','Q0.1','Q0.2','Q0.3','Q0.4','M0.0','M0.1','M0.2','M0.3','T1','T2','C1','C2'];
+const SB_D={tags:tagsOf(Object.keys(MT)),modeCtl:true,inputs:MOD_D.inputs,outputs:MOD_D.outputs};
+const SYMS=[{m:'ct',t:'NO',l:'Contacto NO'},{m:'ct',t:'NC',l:'Contacto NC'},{m:'out',t:'coil',l:'Bobina'},{m:'out',t:'S',l:'Set'},{m:'out',t:'R',l:'Reset'},{m:'out',t:'TON',l:'TON'},{m:'out',t:'CTU',l:'CTU'},{m:'out',t:'RC',l:'Reset contador'}];
+let sbProg=store.get('lad-libre',null)||[{g:[],o:null}];
+const SD={edit:true,D:SB_D,host:$('sbRungs'),ctl:$('sbCtl'),outs:$('sbOuts'),rungs:()=>sbProg};
+const EDS={d:SD,prog:()=>sbProg,tags:SB_TAGS,outs:['coil','S','R','TON','CTU','RC'],save:()=>store.set('lad-libre',sbProg),armed:null};
+mountLD(SD);editorClicks(EDS);
+const symIcon=x=>x.m==='ct'?SYM_CT(x.t==='NC'):x.t==='TON'||x.t==='CTU'?'<span class="mbox">'+x.t+'</span>':SYM_COIL(x.t==='S'?'S':x.t==='coil'?'':'R');
+$('sbPal').innerHTML=SYMS.map((x,i)=>'<button type="button" class="symb" data-i="'+i+'" aria-pressed="false" aria-label="'+x.l+'. Arrástrenlo o tóquenlo y después toquen un espacio">'+symIcon(x)+'<span>'+x.l+'</span></button>').join('');
+const validDrop=(sym,drop)=>sym.m==='ct'?['ser','par','new'].includes(drop):['out','new'].includes(drop);
+function wrongSpot(sym){toast('Ahí no va',sym.m==='ct'?'Los contactos van a la izquierda':'Las salidas van a la derecha',sym.m==='ct'?'Suéltenlo en un + del escalón, en "+ paralelo" o en "+ Agregar escalón".':'Suéltenla en el espacio de salida, al final del escalón, o en "+ Agregar escalón".');}
+function setArmClass(sym){document.body.classList.toggle('arm-ct',!!sym&&sym.m==='ct');document.body.classList.toggle('arm-out',!!sym&&sym.m==='out');}
+function arm(E,i){E.armed=SYMS[i];setArmClass(E.armed);
+  $('sbPal').querySelectorAll('.symb').forEach(b=>b.setAttribute('aria-pressed',+b.dataset.i===i));
+  $('sbArm').hidden=false;$('sbArm').textContent='Ahora toquen un espacio con borde punteado para poner: '+E.armed.l+'. Toquen el símbolo otra vez para cancelar.';}
+function disarm(E){if(E!==EDS)return;E.armed=null;setArmClass(null);$('sbPal').querySelectorAll('.symb').forEach(b=>b.setAttribute('aria-pressed','false'));$('sbArm').hidden=true;}
+/* Arrastrar: funciona con dedo y mouse (eventos pointer); la pantalla se desplaza sola cerca de los bordes */
+let drag=null,skipClick=0;
+function dropAt(x,y){const el=document.elementFromPoint(x,y);return el&&el.closest('#sbRungs [data-drop], #sbAdd');}
+function dragFrame(){
+  if(!drag||!drag.on)return;
+  const top=parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--appbar'))+140,bottom=innerHeight-(innerWidth<900?110:40);
+  if(drag.cy<top)scrollBy(0,-12);else if(drag.cy>bottom)scrollBy(0,12);
+  hover(dropAt(drag.cx,drag.cy));
+  requestAnimationFrame(dragFrame);
+}
+function hover(t){if(drag.over&&drag.over!==t)drag.over.classList.remove('drop-hover');drag.over=t&&validDrop(SYMS[drag.i],t.dataset.drop)?t:null;if(drag.over)drag.over.classList.add('drop-hover');}
+$('sbPal').addEventListener('pointerdown',e=>{const b=e.target.closest('.symb');if(!b)return;drag={b,i:+b.dataset.i,x:e.clientX,y:e.clientY,cx:e.clientX,cy:e.clientY,on:false,id:e.pointerId,over:null};try{b.setPointerCapture(e.pointerId);}catch(_){}});
+$('sbPal').addEventListener('pointermove',e=>{
+  if(!drag||e.pointerId!==drag.id)return;drag.cx=e.clientX;drag.cy=e.clientY;
+  if(!drag.on&&Math.hypot(e.clientX-drag.x,e.clientY-drag.y)>8){
+    drag.on=true;disarm(EDS);setArmClass(SYMS[drag.i]);
+    const g=drag.b.cloneNode(true);g.classList.add('ghost');g.removeAttribute('aria-label');document.body.appendChild(g);drag.g=g;requestAnimationFrame(dragFrame);
+  }
+  if(drag.on){e.preventDefault();drag.g.style.transform='translate('+(e.clientX-36)+'px,'+(e.clientY-34)+'px)';}
+});
+function endDrag(ok){
+  const d=drag;drag=null;if(!d||!d.on)return;skipClick=Date.now();
+  d.g.remove();setArmClass(null);if(d.over)d.over.classList.remove('drop-hover');
+  if(!ok)return;
+  const t=dropAt(d.cx,d.cy);if(!t)return;
+  if(!validDrop(SYMS[d.i],t.dataset.drop)){wrongSpot(SYMS[d.i]);return;}
+  placeSym(EDS,SYMS[d.i],t.dataset.drop,+t.dataset.r,+t.dataset.g);
+}
+$('sbPal').addEventListener('pointerup',e=>{if(drag&&e.pointerId===drag.id){if(drag.on)endDrag(true);else drag=null;}});
+$('sbPal').addEventListener('pointercancel',()=>endDrag(false));
+/* Tocar (o Enter con el teclado): arma el símbolo; el siguiente toque en un espacio lo coloca */
+$('sbPal').addEventListener('click',e=>{const b=e.target.closest('.symb');if(!b||Date.now()-skipClick<400)return;const i=+b.dataset.i;if(EDS.armed===SYMS[i])disarm(EDS);else arm(EDS,i);});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&EDS.armed)disarm(EDS);});
+$('sbAdd').addEventListener('click',()=>{
+  if(EDS.armed){placeSym(EDS,EDS.armed,'new');disarm(EDS);return;}
+  sbProg.push({g:[],o:null});renderLD(SD);EDS.save();
+});
+$('sbLoad').addEventListener('click',()=>{
+  if(sbProg.some(r=>r.g.length||r.o)&&!confirm('¿Reemplazar lo que tienen por el programa del módulo?'))return;
+  sbProg=MOD_R.map(r=>({g:clone(r.g),o:clone(r.o),lbl:r.lbl}));SD.S=newState(SB_D);renderLD(SD);EDS.save();
+});
+$('sbClear').addEventListener('click',()=>{
+  if(!confirm('¿Borrar todo lo que armaron en la zona libre?'))return;
+  sbProg=[{g:[],o:null}];SD.S=newState(SB_D);renderLD(SD);EDS.save();
+});
+/* Cambia entre lecciones, programa del módulo, taller y zona libre */
 function showProg(h){
-  const m=h.match(/^programar(?:-(\d))?$/),t=h.match(/^taller(?:-(\d))?$/),pane=m?'l':t?'t':'m';
-  $('pgL').hidden=pane!=='l';$('pgM').hidden=pane!=='m';$('pgT').hidden=pane!=='t';
-  [['segPL','l'],['segPM','m'],['segPT','t']].forEach(([id,p])=>{if(p===pane)$(id).setAttribute('aria-current','page');else $(id).removeAttribute('aria-current');});
+  const m=h.match(/^programar(?:-(\d))?$/),t=h.match(/^taller(?:-(\d))?$/),pane=m?'l':t?'t':h==='libre'?'s':'m';
+  $('pgL').hidden=pane!=='l';$('pgM').hidden=pane!=='m';$('pgT').hidden=pane!=='t';$('pgS').hidden=pane!=='s';$('v-programar').dataset.pane=pane;
+  if(pane!=='s')disarm(EDS);
+  [['segPL','l'],['segPM','m'],['segPT','t'],['segPS','s']].forEach(([id,p])=>{if(p===pane)$(id).setAttribute('aria-current','page');else $(id).removeAttribute('aria-current');});
   if(m)showPL(Math.min(PL.length,Math.max(1,m[1]?+m[1]:plCur)));
   if(t)showEx(Math.min(EX.length,Math.max(1,t[1]?+t[1]:exi+1))-1);
 }
@@ -1924,7 +2035,7 @@ function route(){
   const m=h.match(/^aprender(?:-(\d))?$/);
   if(m){v='aprender';showLesson(Math.min(LESSONS.length,Math.max(1,m[1]?+m[1]:lesson)));}
   else if(h==='simulador')v='simulador';
-  else if(/^(programar(-\d)?|programa-modulo|taller(-\d)?)$/.test(h)){v='programar';showProg(h);}
+  else if(/^(programar(-\d)?|programa-modulo|taller(-\d)?|libre)$/.test(h)){v='programar';showProg(h);}
   else if(h==='practicar'||h==='tarjetas'){
     v='practicar';const f=h==='tarjetas';
     $('paneQuiz').hidden=f;$('paneFlash').hidden=!f;
@@ -1932,7 +2043,7 @@ function route(){
     else{$('segQuiz').setAttribute('aria-current','page');$('segFlash').removeAttribute('aria-current');}
   }
   if(v!==view)$('toast').hidden=true;
-  closeDetail();closePick();
+  closeDetail();closePick();if(v!=='programar')disarm(EDS);
   if(v!=='simulador')holdEnd();
   view=v;document.body.dataset.view=v;
   ['inicio','aprender','simulador','programar','practicar'].forEach(x=>$('v-'+x).hidden=x!==v);
