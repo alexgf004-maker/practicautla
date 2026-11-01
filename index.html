@@ -83,7 +83,7 @@ code{font-family:var(--mono);font-size:.86em}
 .brand b{font-family:var(--display);font-size:1.2rem;font-weight:700;line-height:1;display:block}
 .brand small{display:block;font-size:.75rem;color:var(--muted);line-height:1.25}
 .icon-btn{appearance:none;cursor:pointer;border:1px solid var(--line);background:var(--surface);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;flex:none}
-.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(4,1fr);padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--surface);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:0 env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
 .tabs a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:var(--tabbar);color:var(--muted);text-decoration:none;font-size:.78rem;font-weight:600}
 .tabs .ic{width:56px;height:30px;border-radius:15px;display:grid;place-items:center;transition:background .15s}
 .tabs svg{width:22px;height:22px}
@@ -124,8 +124,9 @@ code{font-family:var(--mono);font-size:.86em}
 .path-card p{font-size:.94rem;color:var(--muted);line-height:1.4}
 .path-card .chev{color:var(--muted)}
 .meter{display:flex;align-items:center;gap:10px;margin-top:4px;font-size:.85rem;color:var(--muted)}
-.meter .bar{flex:1}
-.meter b{font-family:var(--mono);font-size:.8rem;color:var(--ink);white-space:nowrap}
+.meter{flex-wrap:wrap}
+.meter .bar{flex:1 1 90px}
+.meter b{font-family:var(--mono);font-size:.8rem;color:var(--ink);text-align:right;flex:0 1 auto;min-width:0}
 .tips ul{padding-left:20px}
 
 /* APRENDER */
@@ -348,6 +349,81 @@ code{font-family:var(--mono);font-size:.86em}
 .fc-dots button[aria-current="true"]{border:2px solid var(--petrol);color:var(--ink);font-weight:700}
 .fc-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
+/* PROGRAMAR (LADDER) */
+.seg.s3{grid-template-columns:repeat(3,1fr)}
+.lesson-nav.compact a{font-size:0;gap:0}
+.lesson-nav.compact::before{left:6%;right:6%}
+.plesson{display:flex;flex-direction:column;gap:18px}
+.plesson ul{padding-left:20px;display:flex;flex-direction:column;gap:6px}
+.ldiag{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)}
+.lhead{background:var(--hl-bg);border-bottom:1px solid var(--line);border-radius:var(--radius) var(--radius) 0 0}
+@media (max-width:899px) and (min-height:740px){.pm .lhead{position:sticky;top:calc(var(--appbar) + env(safe-area-inset-top,0px));z-index:5;border-radius:0}}
+.lctl{padding:10px;display:flex;flex-wrap:wrap;gap:8px}
+.lctl .lsel{flex:1 1 100%}
+.lk{appearance:none;cursor:pointer;border:1px solid var(--line);background:var(--surface);border-radius:10px;min-height:52px;padding:6px 12px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;font-weight:600;font-size:.92rem;line-height:1.2;text-align:left;touch-action:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;flex:1 1 140px}
+.lk small{font-family:var(--mono);font-size:.68rem;color:var(--muted);font-weight:500}
+.lk.down,.lk[aria-pressed="true"]{background:var(--petrol);color:var(--petrol-ink);border-color:var(--petrol)}
+.lk.down small,.lk[aria-pressed="true"] small{color:inherit;opacity:.85}
+.louts{display:flex;flex-wrap:wrap;gap:6px 14px;padding:0 12px 10px;font-size:.86rem}
+.louts:empty{display:none}
+.lo{display:inline-flex;align-items:center;gap:6px;color:var(--muted)}
+.lo i{width:14px;height:14px;border-radius:50%;background:var(--led-off);flex:none}
+.lo.on{color:var(--ink);font-weight:600}
+.lo.on i{background:var(--go);box-shadow:0 0 8px var(--go)}
+.lo.r.on i{background:var(--stop);box-shadow:0 0 8px var(--stop)}
+.lrungs{padding:6px 12px 12px;display:flex;flex-direction:column;gap:4px}
+.rung{display:flex;flex-direction:column;gap:2px;padding-top:6px}
+.rung+.rung{border-top:1px dashed var(--line)}
+.rung-h{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:24px}
+.rung-h .link-btn{padding:2px 0;font-size:.8rem}
+.rung-sc{overflow-x:auto;padding-bottom:4px}
+.rg{display:flex;align-items:flex-start;min-width:max-content}
+.rail{width:3px;align-self:stretch;min-height:66px;background:var(--line);flex:none;border-radius:2px}
+.rail.l{background:var(--go)}
+.w{height:2px;width:8px;margin-top:30px;background:var(--line);flex:none}
+.w.on{background:var(--go)}
+.w.fill{flex:1 1 16px;min-width:16px}
+.ct,.ou{appearance:none;border:0;background:transparent;padding:0;width:76px;height:66px;display:flex;flex-direction:column;align-items:center;flex:none;font:inherit;color:var(--ink);border-radius:8px}
+button.ct,button.ou{cursor:pointer}
+button.ct:hover,button.ou:hover{background:var(--hl-bg)}
+.ct .ad,.ou .ad{height:16px;font-family:var(--mono);font-size:.6rem;color:var(--muted);white-space:nowrap;line-height:16px}
+.ct .ad b,.ou .ad b{color:var(--ink)}
+.ct .nm,.ou .nm{font-family:var(--mono);font-size:.6rem;font-weight:700;max-width:76px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;line-height:18px}
+.sym{width:76px;height:30px;display:block;overflow:visible}
+.sym path{fill:none;stroke:var(--muted);stroke-width:2.5;stroke-linecap:round}
+.sym .wl,.sym .wr{stroke:var(--line)}
+.sym text{font-family:var(--mono);font-size:11px;font-weight:700;fill:var(--ink)}
+.ct.pre .sym .wl,.ct.pass .sym .bars,.ct.out .sym .wr,.ou.on .sym path{stroke:var(--go)}
+.ct.pass{background:var(--ok-bg)}
+.ou.on .sym text{fill:var(--go)}
+.par{position:relative;display:flex;flex-direction:column}
+.par::before,.par::after{content:"";position:absolute;top:30px;bottom:34px;width:2px;background:var(--line)}
+.par::before{left:0}.par::after{right:0}
+.par.pre::before,.par.gp::after{background:var(--go)}
+.ou.bx{width:auto;height:auto;padding:0;align-items:stretch}
+.box{width:96px;margin-top:6px;border:2px solid var(--muted);border-radius:6px;padding:4px 7px;font-family:var(--mono);font-size:.62rem;line-height:1.4;display:flex;flex-direction:column;background:var(--surface);text-align:left}
+.box b{font-size:.76rem}
+.ou.on .box{border-color:var(--go)}
+.tb{height:4px;background:var(--rail);border-radius:2px;margin-top:3px;overflow:hidden}
+.tb i{display:block;height:100%;width:0;background:var(--amber)}
+.ou.empty{height:40px;margin-top:11px;border:1.5px dashed var(--petrol);font-size:.8rem;font-weight:600;justify-content:center}
+.gcol{display:flex;flex-direction:column;align-items:center}
+.addp{appearance:none;border:1px dashed var(--line);background:transparent;border-radius:6px;font-size:.68rem;padding:3px 6px;margin-top:2px;cursor:pointer;color:var(--muted);min-height:26px}
+.adds{appearance:none;width:34px;height:34px;margin-top:14px;border-radius:50%;border:1.5px dashed var(--petrol);background:var(--surface);cursor:pointer;flex:none;font-weight:700;font-size:1rem}
+.adds.wide{width:auto;border-radius:10px;padding:0 12px;font-size:.82rem}
+.rung-note{font-size:.84rem;color:var(--muted)}
+.net-h{display:flex;flex-direction:column;gap:4px;padding:14px 0 4px}
+.net-h h3{font-size:1.15rem}
+.net-h p{font-size:.92rem}
+.tx-foot{padding:0 12px 12px}
+.ok-box{background:var(--ok-bg)} .bad-box{background:var(--bad-bg)}
+.lp{position:fixed;left:50%;bottom:0;width:min(560px,100%);max-height:85vh;overflow:auto;z-index:47;background:var(--surface);border:1px solid var(--line);border-bottom:0;border-radius:16px 16px 0 0;padding:16px max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));box-shadow:0 -8px 30px rgba(0,0,0,.25);display:flex;flex-direction:column;gap:12px;transform:translate(-50%,105%);visibility:hidden;transition:transform .25s ease,visibility 0s .25s}
+.lp.open{transform:translate(-50%,0);visibility:visible;transition:transform .25s ease}
+.lp .sheet-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.lp-bg{position:fixed;inset:0;background:var(--scrim);z-index:46}
+@media (prefers-reduced-motion:reduce){.lp{transition:none!important}}
+@media (max-width:359px){.tabs a{font-size:.68rem}.tabs .ic{width:44px}}
+
 /* AVISO */
 .toast{position:fixed;left:50%;bottom:calc(var(--tabbar) + 12px + env(safe-area-inset-bottom,0px));z-index:40;width:min(520px,calc(100% - 32px));transform:translateX(-50%);background:var(--toast-bg);color:var(--toast-ink);border-radius:12px;padding:12px 16px;font-size:.93rem;line-height:1.4;box-shadow:0 6px 24px rgba(0,0,0,.25);cursor:pointer}
 .toast .eyebrow{color:inherit;opacity:.75}
@@ -370,6 +446,7 @@ code{font-family:var(--mono);font-size:.86em}
       <a href="#inicio" data-tab="inicio"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg></span>Inicio</a>
       <a href="#aprender" data-tab="aprender"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h6a4 4 0 0 1 4 4v13a3 3 0 0 0-3-3H2z"/><path d="M22 4h-6a4 4 0 0 0-4 4v13a3 3 0 0 1 3-3h7z"/></svg></span>Aprender</a>
       <a href="#simulador" data-tab="simulador"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="13" width="20" height="6" rx="3"/><circle cx="6" cy="16" r=".6"/><circle cx="18" cy="16" r=".6"/><rect x="8" y="6" width="6" height="7" rx="1"/></svg></span>Simulador</a>
+      <a href="#programar" data-tab="programar"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v18M17 3v18M7 8h10M7 13h10M7 18h10"/></svg></span>Programar</a>
       <a href="#practicar" data-tab="practicar"><span class="ic"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/></svg></span>Practicar</a>
     </nav>
     <button class="icon-btn" id="themeBtn" aria-label="Cambiar entre tema claro y oscuro">
@@ -403,7 +480,7 @@ code{font-family:var(--mono);font-size:.86em}
 
   <div class="stack">
     <h2>Cómo usar esta página</h2>
-    <p>Tiene tres partes. La primera vez vayan en orden; después entren a la que necesiten desde la barra de abajo.</p>
+    <p>Tiene cuatro partes. La primera vez vayan en orden; después entren a la que necesiten desde la barra de abajo.</p>
     <div class="paths">
       <a class="path-card" id="pcLearn" href="#aprender">
         <span class="num">1</span>
@@ -417,8 +494,14 @@ code{font-family:var(--mono);font-size:.86em}
           <span class="meter"><span class="bar"><i id="mSim" style="width:0"></i></span><b id="tSim">0 de 8</b></span></span>
         <svg class="i chev" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
       </a>
-      <a class="path-card" id="pcQuiz" href="#practicar">
+      <a class="path-card" id="pcProg" href="#programar">
         <span class="num">3</span>
+        <span class="txt"><h3>Programar</h3><p>Aprendan Ladder con ejemplos sencillos, vean el programa del módulo funcionando y armen sus propios escalones.</p>
+          <span class="meter"><span class="bar"><i id="mProg" style="width:0"></i></span><b id="tProg">0 de 8 lecciones</b></span></span>
+        <svg class="i chev" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+      </a>
+      <a class="path-card" id="pcQuiz" href="#practicar">
+        <span class="num">4</span>
         <span class="txt"><h3>Practicar</h3><p>Cuestionario con 143 preguntas y tarjetas para ensayar las preguntas del asesor.</p>
           <span class="meter"><span class="bar"><i id="mQuiz" style="width:0"></i></span><b id="tQuiz">sin intentos</b></span></span>
         <svg class="i chev" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
@@ -630,6 +713,62 @@ code{font-family:var(--mono);font-size:.86em}
   </details>
 </section>
 
+<!-- ================= PROGRAMAR ================= -->
+<section class="view" id="v-programar" aria-labelledby="prog-t" hidden>
+  <div class="view-head">
+    <h2 id="prog-t">Programar en Ladder</h2>
+    <p class="muted">Ladder, o lenguaje de escalera, es con el que se programó el PLC en TIA Portal. Empiecen por las lecciones, vean el programa del módulo funcionando y después armen sus propios escalones en el taller.</p>
+  </div>
+  <nav class="seg s3" aria-label="Partes de Programar">
+    <a href="#programar" id="segPL">Lecciones</a>
+    <a href="#programa-modulo" id="segPM">Programa del módulo</a>
+    <a href="#taller" id="segPT">Taller</a>
+  </nav>
+
+  <div id="pgL" class="stack" style="gap:20px">
+    <nav class="lesson-nav compact" id="plNav" aria-label="Lecciones de Ladder" style="grid-template-columns:repeat(8,1fr)"></nav>
+    <div id="plHost"></div>
+    <div class="pager" id="plPager"></div>
+  </div>
+
+  <div id="pgM" class="stack" style="gap:16px" hidden>
+    <div class="keybox"><span class="eyebrow">Cómo leerlo</span><p>Estos son los Networks 1 a 4 del programa, dibujados de forma simplificada. En TIA Portal cada biestable se ve como una caja SR; aquí se dibuja como una bobina S y una bobina R, que hacen lo mismo. Usen la maneta, START, STOP y las piezas, y sigan el verde.</p></div>
+    <div id="pmHost" class="pm"></div>
+    <button class="btn2" id="pmReset" style="align-self:flex-start">Reiniciar el programa</button>
+    <div class="card">
+      <h3>Networks 5 a 11 · Modo manual</h3>
+      <p>Son siete contadores CTU, uno por network, con PV del 1 al 7. Cada toque de START en manual hace subir las cuentas, y cada contador activa una marca que enciende un elemento. Las marcas %M3.6, %M3.7, %M4.4 y %M4.5 que aparecen en paralelo en los Networks 1 a 3 vienen de aquí; en esta vista se quedan en 0.</p>
+      <div class="faults">
+        <div class="order" style="gap:6px"><span class="st">PV 1</span><span>Luz verde</span></div>
+        <div class="order" style="gap:6px"><span class="st">PV 2</span><span>Banda</span></div>
+        <div class="order" style="gap:6px"><span class="st">PV 3</span><span>Cilindro 1</span></div>
+        <div class="order" style="gap:6px"><span class="st">PV 4</span><span>Cilindro 2</span></div>
+        <div class="order" style="gap:6px"><span class="st">PV 5 y 6</span><span>Regresan los cilindros (sin confirmar en TIA Portal)</span></div>
+        <div class="order" style="gap:6px"><span class="st">PV 7</span><span>Reinicia todos los contadores con %M4.3; un TON de 1 s la suelta</span></div>
+      </div>
+      <p class="hint">Para practicar el modo manual completo usen la pestaña Simulador.</p>
+    </div>
+  </div>
+
+  <div id="pgT" class="stack" style="gap:16px" hidden>
+    <nav class="lesson-nav compact" id="txNav" aria-label="Ejercicios" style="grid-template-columns:repeat(6,1fr)"></nav>
+    <div class="card">
+      <span class="eyebrow" id="txEyebrow">Ejercicio 1 de 6</span>
+      <h3 id="txTitle"></h3>
+      <p id="txGoal"></p>
+      <details class="acc" id="txHintBox"><summary>Ver una pista</summary><div class="acc-b"><p id="txHint"></p></div></details>
+    </div>
+    <p class="hint">Toquen un contacto o una salida para cambiarlo. El botón + agrega un contacto en serie y "+ paralelo" agrega uno debajo. El programa corre en vivo: prueben con los botones de arriba.</p>
+    <div class="ldiag"><div class="lhead"><div class="lctl" id="txCtl"></div><div class="louts" id="txOuts"></div></div><div class="lrungs" id="txRungs"></div>
+      <div class="tx-foot"><button class="btn2" id="txAdd">+ Agregar escalón</button></div></div>
+    <div class="stack" style="gap:8px">
+      <button class="primary block" id="txCheck">Revisar mi programa</button>
+      <button class="link-btn" id="txClear" style="align-self:flex-start">Empezar de nuevo este ejercicio</button>
+    </div>
+    <div id="txResult" class="expl" role="status" hidden></div>
+  </div>
+</section>
+
 <!-- ================= PRACTICAR ================= -->
 <section class="view" id="v-practicar" aria-labelledby="prac-t" hidden>
   <div class="view-head">
@@ -670,6 +809,8 @@ code{font-family:var(--mono);font-size:.86em}
 </main>
 
 <div class="sheet-bg" id="sheetBg" hidden></div>
+<div class="lp-bg" id="lpBg" hidden></div>
+<div class="lp" id="lpick" role="dialog" aria-modal="true" aria-labelledby="lpT"></div>
 <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
 
 <script>
@@ -869,7 +1010,7 @@ const RETOS=[
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const CHECK_SVG='<svg class="i" width="14" height="14" viewBox="0 0 24 24" style="stroke-width:3" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg>';
-const progress=Object.assign({retos:{},checks:{},best:null,flash:{},lessons:{}},store.get('progress',{}));
+const progress=Object.assign({retos:{},checks:{},best:null,flash:{},lessons:{},ladder:{l:{},t:{}}},store.get('progress',{}));
 const LESSONS=[...document.querySelectorAll('.lesson')];
 /* La lección 2 (elementos) se agregó después: las lecciones guardadas desde la 2 se recorren un número */
 if(store.get('lessonsV',1)<2){
@@ -891,11 +1032,16 @@ function updateP(){
   $('pcLearn').classList.toggle('done',nl===LESSONS.length);
   $('pcSim').classList.toggle('done',nr===RETOS.length);
   $('pcQuiz').classList.toggle('done',progress.best!=null&&progress.best>=90);
+  const npl=count(progress.ladder.l),nex=count(progress.ladder.t);
+  $('mProg').style.width=((npl+nex)/(PL.length+EX.length)*100)+'%';$('tProg').textContent=npl+' de '+PL.length+' lecciones · '+nex+' de '+EX.length+' ejercicios';
+  $('pcProg').classList.toggle('done',npl===PL.length&&nex===EX.length);
   $('retoCount').textContent=nr+' de '+RETOS.length;$('retoBar').style.width=(nr/RETOS.length*100)+'%';
   document.querySelectorAll('#lessonNav a').forEach((a,i)=>a.classList.toggle('done',!!progress.lessons[i+1]));
   const ns=$('nextStep'),firstOpen=LESSONS.findIndex((l,i)=>!progress.lessons[i+1])+1;
   if(firstOpen>0){ns.href='#aprender-'+firstOpen;ns.textContent=nl?'Seguir con la lección '+firstOpen+': '+LESSONS[firstOpen-1].dataset.title:'Empezar por la lección 1';}
   else if(nr<RETOS.length){ns.href='#simulador';ns.textContent='Seguir con el simulador ('+nr+' de '+RETOS.length+' retos)';}
+  else if(npl<PL.length){ns.href='#programar';ns.textContent='Aprender a programar en Ladder';}
+  else if(nex<EX.length){ns.href='#taller';ns.textContent='Seguir con el taller de Ladder ('+nex+' de '+EX.length+' ejercicios)';}
   else{ns.href='#practicar';ns.textContent=progress.best==null?'Hacer el cuestionario':'Mejorar la nota del cuestionario';}
 }
 
@@ -958,20 +1104,22 @@ function showLesson(n){
   $('pgNext').addEventListener('click',()=>markLesson(n));
 }
 
-document.querySelectorAll('.check').forEach(host=>{
-  const q=byId[host.dataset.q],ls=host.closest('.lesson');
+function initCheck(host){
+  const q=byId[host.dataset.q],ls=host.closest('.lesson'),pl=host.closest('.plesson');
   function draw(){
     renderQuestion(host,q,ok=>{
       if(ok){
         progress.checks[q.id]=1;saveP();
-        if([...ls.querySelectorAll('.check')].every(c=>progress.checks[c.dataset.q]))markLesson(+ls.dataset.n);
+        if(ls&&[...ls.querySelectorAll('.check')].every(c=>progress.checks[c.dataset.q]))markLesson(+ls.dataset.n);
+        if(pl)markPL(+pl.dataset.n);
       }
       const again=document.createElement('button');again.className='btn2 again';again.textContent=ok?'Responder otra vez':'Intentar de nuevo';
       again.addEventListener('click',draw);host.appendChild(again);
     },{label:'Pregunta de repaso'});
   }
   draw();
-});
+}
+document.querySelectorAll('.check').forEach(initCheck);
 
 /* ================= ELEMENTOS ================= */
 const GROUPS={energia:['Energía y protección','var(--stop)'],control:['Control','var(--petrol)'],mando:['Panel de mando','var(--go)'],motor:['Motor y banda','var(--amber)'],aire:['Neumática','var(--plastic)'],sens:['Sensores','var(--violet)'],red:['PC y red','var(--muted)']};
@@ -1327,6 +1475,391 @@ howto.addEventListener('toggle',()=>store.set('howtoClosed',!howto.open));
 addPiece('metal',12);addPiece('plastic',4);
 say('Módulo detenido.','Hay dos piezas esperando en la banda. Pongan la maneta en AUTO y sostengan START.');
 
+/* ================= LADDER: MOTOR ================= */
+/* Etiquetas del módulo que usan el programa en vivo y el taller: [dirección, nombre] */
+const MT={'I0.0':['%I0.0','START'],'I0.1':['%I0.1','STOP'],'I0.2':['%I0.2','AUTO'],'I0.3':['%I0.3','MANUAL'],'I0.4':['%I0.4','INDUCTIVO'],'I0.5':['%I0.5','FOTOELÉC.'],'I0.6':['%I0.6','REED S3'],'I0.7':['%I0.7','REED S4'],
+ 'Q0.0':['%Q0.0','LUZ START'],'Q0.1':['%Q0.1','LUZ STOP'],'Q0.2':['%Q0.2','VFD'],'Q0.3':['%Q0.3','Y1'],'Q0.4':['%Q0.4','Y2'],
+ 'M2.0':['%M2.0','Tag_1'],'M2.1':['%M2.1','Tag_2'],'M2.2':['%M2.2','Tag_3'],'M2.3':['%M2.3','Tag_4'],'M3.5':['%M3.5','M. MANUAL'],'M3.6':['%M3.6','M. MAN. LUZ'],'M3.7':['%M3.7','M. MAN. VFD'],'M4.4':['%M4.4','M. MAN. Y1'],'M4.5':['%M4.5','M. MAN. Y2'],
+ 'DB1':['DB1.Q','TON 3 s'],'DB2':['DB2.Q','TON 3 s'],'T1':['T1.Q','TEMPORIZ.'],'C1':['C1.Q','CONTADOR'],'M0.0':['%M0.0','MARCA']};
+const tagsOf=keys=>{const o={};keys.forEach(k=>o[k]={a:MT[k][0],n:MT[k][1]});return o;};
+const kindOf=k=>/^I/.test(k)?'in':/^Q/.test(k)?'out':/^(T|DB)/.test(k)?'tmr':/^C/.test(k)?'cnt':'mem';
+const NO=k=>({t:'NO',k}),NC=k=>({t:'NC',k});
+
+function newState(D){const S={v:{},t:{},c:{},ctl:{},ext:{},f:[]};(D.inputs||[]).forEach(x=>{S.ctl[x.k]=!!x.on;});if(D.modeCtl)S.ctl.mode='off';return S;}
+/* Convierte lo que pasa físicamente (botón presionado, pieza frente al sensor) en el bit que lee el PLC */
+function restBits(D,S){
+  const b={};
+  (D.inputs||[]).forEach(x=>{const on=!!S.ctl[x.k];
+    if(x.t==='push'||x.t==='toggle')b[x.k]=on?1:0;
+    else if(x.t==='ncpush'||x.t==='sensor')b[x.k]=on?0:1;
+    else if(x.t==='reed')b[x.k]=(S.ext[x.k]||0)>=1?1:0;
+  });
+  if(D.modeCtl){b['I0.2']=S.ctl.mode==='auto'?1:0;b['I0.3']=S.ctl.mode==='man'?1:0;}
+  return b;
+}
+/* Un ciclo del PLC: revisa los escalones de arriba hacia abajo */
+function scan(rungs,S,dt){
+  S.f=rungs.map(r=>{
+    const f={pre:[],gp:[],pass:[],p:false};let p=r.g.length>0;
+    r.g.forEach((g,gi)=>{f.pre[gi]=p;const ps=g.map(c=>{const v=!!S.v[c.k];return c.t==='NO'?v:!v;});f.pass[gi]=ps;f.gp[gi]=ps.some(Boolean);p=p&&f.gp[gi];});
+    f.p=p;const o=r.o;
+    if(o&&o.k){
+      if(o.t==='coil')S.v[o.k]=p;
+      else if(o.t==='S'){if(p)S.v[o.k]=true;}
+      else if(o.t==='R'){if(p)S.v[o.k]=false;}
+      else if(o.t==='TON'){const t=S.t[o.k]||(S.t[o.k]={acc:0});t.acc=p?Math.min(o.pt,t.acc+dt):0;t.pt=o.pt;S.v[o.k]=t.acc>=o.pt;}
+      else if(o.t==='CTU'){const c=S.c[o.k]||(S.c[o.k]={cv:0,prev:false});if(p&&!c.prev)c.cv++;c.prev=p;c.pv=o.pv;S.v[o.k]=c.cv>=o.pv;}
+      else if(o.t==='RC'){const c=S.c[o.k]||(S.c[o.k]={cv:0,prev:false});if(p){c.cv=0;S.v[o.k]=false;}}
+    }
+    return f;
+  });
+}
+function step(D,rungs,S,dt,bits){
+  Object.assign(S.v,bits||restBits(D,S));
+  scan(rungs,S,dt);
+  /* Los cilindros tardan 0.4 s en llegar al final; ahí se activa su Reed */
+  (D.inputs||[]).forEach(x=>{if(x.t==='reed')S.ext[x.k]=Math.max(0,Math.min(1,(S.ext[x.k]||0)+(S.v[x.follow]?1:-1)*dt/400));});
+}
+
+/* ================= LADDER: DIBUJO ================= */
+const SYM_CT=nc=>'<svg class="sym" viewBox="0 0 76 30" aria-hidden="true"><path class="wl" d="M0 15H28"/><path class="bars" d="M28 4V26M48 4V26'+(nc?'M23 27L53 3':'')+'"/><path class="wr" d="M48 15H76"/></svg>';
+const SYM_COIL=l=>'<svg class="sym" viewBox="0 0 76 30" aria-hidden="true"><path class="wl" d="M0 15H25"/><path class="bars" d="M31 3Q22 15 31 27M45 3Q54 15 45 27"/><path class="wr" d="M51 15H76"/>'+(l?'<text x="38" y="19.5" text-anchor="middle">'+l+'</text>':'')+'</svg>';
+const OUT_NAMES={coil:'Bobina',S:'Set (S)',R:'Reset (R)',TON:'Temporizador TON',CTU:'Contador CTU',RC:'Reset contador'};
+function tagInfo(D,k){return D.tags[k]||{a:k,n:k};}
+function contactHTML(D,c,r,g,i,edit){
+  const t=tagInfo(D,c.k),tag=edit?'button':'div';
+  return '<'+tag+' class="ct" data-r="'+r+'" data-g="'+g+'" data-c="'+i+'"'+(edit?' type="button" data-act="ct" aria-label="Contacto '+c.t+' de '+esc(t.n)+'. Tocar para cambiarlo"':'')+'><span class="ad">'+esc(t.a)+' <b class="bv"></b></span>'+SYM_CT(c.t==='NC')+'<span class="nm">'+esc(t.n)+'</span></'+tag+'>';
+}
+function outHTML(D,o,r,edit){
+  if(!o||!o.k)return edit?'<button class="ou empty" type="button" data-act="out" data-r="'+r+'">+ salida</button>':'';
+  const t=tagInfo(D,o.k),tag=edit?'button':'div',at=edit?' type="button" data-act="out" aria-label="'+OUT_NAMES[o.t]+' de '+esc(t.n)+'. Tocar para cambiarla"':'';
+  if(o.t==='TON')return '<'+tag+' class="ou bx" data-r="'+r+'"'+at+'><span class="box"><b>TON</b><span>'+esc(t.a.replace('.Q',''))+'</span><span>PT '+(o.pt/1000)+' s</span><span class="et">ET 0.0 s</span><span class="tb"><i></i></span></span></'+tag+'>';
+  if(o.t==='CTU')return '<'+tag+' class="ou bx" data-r="'+r+'"'+at+'><span class="box"><b>CTU</b><span>'+esc(t.a.replace('.Q',''))+'</span><span>PV '+o.pv+'</span><span class="cv">CV 0</span></span></'+tag+'>';
+  const l=o.t==='S'?'S':o.t==='R'||o.t==='RC'?'R':'';
+  return '<'+tag+' class="ou" data-r="'+r+'"'+at+'><span class="ad">'+esc(o.t==='RC'?t.a.replace('.Q',''):t.a)+' <b class="bv"></b></span>'+SYM_COIL(l)+'<span class="nm">'+esc(o.t==='RC'?'RESET':t.n)+'</span></'+tag+'>';
+}
+function rungsHTML(D,rungs,edit){
+  return rungs.map((r,ri)=>{
+    let h=r.h?'<div class="net-h"><h3>'+esc(r.h)+'</h3>'+(r.hp?'<p class="muted">'+esc(r.hp)+'</p>':'')+'</div>':'';
+    const gs=r.g.map((g,gi)=>{
+      const inner=g.length===1?contactHTML(D,g[0],ri,gi,0,edit):'<div class="par" data-r="'+ri+'" data-g="'+gi+'">'+g.map((c,ci)=>contactHTML(D,c,ri,gi,ci,edit)).join('')+'</div>';
+      return '<span class="w" data-r="'+ri+'" data-g="'+gi+'"></span>'+(edit?'<div class="gcol">'+inner+'<button class="addp" type="button" data-act="par" data-r="'+ri+'" data-g="'+gi+'">+ paralelo</button></div>':inner);
+    }).join('');
+    const add=edit?'<span class="w"></span><button class="adds'+(r.g.length?'':' wide')+'" type="button" data-act="ser" data-r="'+ri+'" aria-label="Agregar contacto en serie">'+(r.g.length?'+':'+ contacto')+'</button>':'';
+    return h+'<div class="rung"><div class="rung-h"><span class="lbl">'+(r.lbl||'Escalón '+(ri+1))+'</span>'+(edit?'<button class="link-btn" type="button" data-act="delr" data-r="'+ri+'">Borrar escalón</button>':'')+'</div>'+
+      '<div class="rung-sc"><div class="rg"><i class="rail l"></i>'+gs+add+'<span class="w fill" data-r="'+ri+'"></span>'+outHTML(D,r.o,ri,edit)+'<i class="rail r"></i></div></div>'+
+      (r.note?'<p class="rung-note">'+r.note+'</p>':'')+'</div>';
+  }).join('');
+}
+function ctlHTML(D){
+  let h='';
+  if(D.modeCtl)h+='<div class="sel lsel" role="group" aria-label="Maneta"><button type="button" data-mode="man">MANUAL</button><button type="button" data-mode="off">0</button><button type="button" data-mode="auto">AUTO</button></div>';
+  h+=(D.inputs||[]).filter(x=>x.t!=='reed').map(x=>{
+    const push=x.t==='push'||x.t==='ncpush';
+    return '<button type="button" class="lk'+(push?' push':'')+'" data-k="'+x.k+'"'+(push?'':' aria-pressed="false"')+'><span>'+esc(x.label)+'</span><small class="bvx"></small></button>';
+  }).join('');
+  return h;
+}
+function outsHTML(D){return (D.outputs||[]).map(o=>'<span class="lo '+(o.c||'')+'" data-k="'+o.k+'"><i></i>'+esc(o.label)+'</span>').join('');}
+
+const LDS=[];
+/* d = {D, rungs()→escalones, S, host (escalones), ctl (controles), outs, edit} */
+function mountLD(d){
+  d.S=d.S||newState(d.D);
+  d.ctl.innerHTML=ctlHTML(d.D);d.outs.innerHTML=outsHTML(d.D);
+  d.ctl.querySelectorAll('.lk').forEach(b=>{
+    const x=d.D.inputs.find(i=>i.k===b.dataset.k);
+    if(x.t==='push'||x.t==='ncpush'){
+      const dn=e=>{e.preventDefault();d.S.ctl[x.k]=true;b.classList.add('down');try{b.setPointerCapture(e.pointerId);}catch(_){}},
+            up=()=>{d.S.ctl[x.k]=false;b.classList.remove('down');};
+      b.addEventListener('pointerdown',dn);['pointerup','pointercancel','lostpointercapture'].forEach(ev=>b.addEventListener(ev,up));
+      b.addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&!e.repeat){e.preventDefault();d.S.ctl[x.k]=true;b.classList.add('down');}});
+      b.addEventListener('keyup',e=>{if(e.key===' '||e.key==='Enter')up();});
+      b.addEventListener('contextmenu',e=>e.preventDefault());
+    }else b.addEventListener('click',()=>{d.S.ctl[x.k]=!d.S.ctl[x.k];});
+  });
+  d.ctl.querySelectorAll('[data-mode]').forEach(b=>b.addEventListener('click',()=>{d.S.ctl.mode=b.dataset.mode;}));
+  renderLD(d);LDS.push(d);
+}
+function renderLD(d){
+  d.host.innerHTML=rungsHTML(d.D,d.rungs(),d.edit);
+  d.q={ct:[...d.host.querySelectorAll('.ct')],w:[...d.host.querySelectorAll('.w[data-g]')],par:[...d.host.querySelectorAll('.par')],fill:[...d.host.querySelectorAll('.w.fill')],ou:[...d.host.querySelectorAll('.ou[data-r]')]};
+}
+function updateLD(d){
+  const S=d.S,R=d.rungs(),F=i=>S.f[i]||{pre:[],gp:[],pass:[],p:false};
+  d.q.ct.forEach(el=>{const r=+el.dataset.r,g=+el.dataset.g,c=+el.dataset.c,f=F(r),ct=R[r]&&R[r].g[g]&&R[r].g[g][c];if(!ct)return;
+    const pre=!!f.pre[g],pass=!!(f.pass[g]&&f.pass[g][c]);
+    el.classList.toggle('pre',pre);el.classList.toggle('pass',pass);el.classList.toggle('out',pre&&pass);
+    el.querySelector('.bv').textContent='= '+(S.v[ct.k]?1:0);});
+  d.q.w.forEach(el=>el.classList.toggle('on',!!F(+el.dataset.r).pre[+el.dataset.g]));
+  d.q.par.forEach(el=>{const f=F(+el.dataset.r),g=+el.dataset.g;el.classList.toggle('pre',!!f.pre[g]);el.classList.toggle('gp',!!(f.pre[g]&&f.gp[g]));});
+  d.q.fill.forEach(el=>el.classList.toggle('on',F(+el.dataset.r).p));
+  d.q.ou.forEach(el=>{const r=+el.dataset.r,o=R[r]&&R[r].o;if(!o)return;el.classList.toggle('on',F(r).p);
+    if(o.t==='TON'){const t=S.t[o.k]||{acc:0};el.querySelector('.et').textContent='ET '+(t.acc/1000).toFixed(1)+' s';el.querySelector('.tb i').style.width=(t.acc/o.pt*100)+'%';}
+    else if(o.t==='CTU'){const c=S.c[o.k]||{cv:0};el.querySelector('.cv').textContent='CV '+c.cv;}
+    else{const b=el.querySelector('.bv');if(b)b.textContent=o.t==='RC'?'':'= '+(S.v[o.k]?1:0);}});
+  d.ctl.querySelectorAll('.lk').forEach(b=>{const k=b.dataset.k,x=d.D.inputs.find(i=>i.k===k);
+    if(!b.classList.contains('push'))b.setAttribute('aria-pressed',!!S.ctl[k]);
+    b.querySelector('.bvx').textContent=tagInfo(d.D,k).a+' = '+(S.v[k]?1:0)+(x.t==='push'||x.t==='ncpush'?' · mantener':'');});
+  d.ctl.querySelectorAll('[data-mode]').forEach(b=>b.setAttribute('aria-pressed',S.ctl.mode===b.dataset.mode));
+  d.outs.querySelectorAll('.lo').forEach(el=>el.classList.toggle('on',!!S.v[el.dataset.k]));
+}
+let ldLast=performance.now();
+function ldLoop(now){
+  const dt=Math.min(100,now-ldLast);ldLast=now;
+  if(view==='programar')LDS.forEach(d=>{if(d.host.offsetParent!==null){step(d.D,d.rungs(),d.S,dt);updateLD(d);}});
+  requestAnimationFrame(ldLoop);
+}
+function ldDiagHTML(id){return '<div class="ldiag"><div class="lhead"><div class="lctl" id="'+id+'Ctl"></div><div class="louts" id="'+id+'Outs"></div></div><div class="lrungs" id="'+id+'Rungs"></div></div>';}
+
+/* ================= LADDER: LECCIONES ================= */
+const PL=[
+{s:'Ladder',t:'¿Qué es Ladder?',life:'Piensen en un foco con su interruptor en la pared: la corriente sale de un lado, pasa por el interruptor y llega al foco. Ladder dibuja eso mismo, pero acostado.',
+ body:'<p>Ladder significa "escalera" y es el lenguaje con el que se programó el PLC en TIA Portal. Se lee así:</p><ul><li>La línea de la <b>izquierda</b> es de donde sale la energía. La de la <b>derecha</b> es a donde llega.</li><li>Cada línea horizontal es un <b>escalón</b>. En TIA Portal se llama <b>network</b>.</li><li>A la izquierda van las <b>condiciones</b> (contactos) y a la derecha lo que se <b>activa</b> (bobina).</li><li>Si hay un camino completo de izquierda a derecha, la bobina se activa. En esta página, el camino con energía se pinta de <b>verde</b>.</li></ul><p>El PLC repite esto una y otra vez, muy rápido: lee las entradas, revisa los escalones de arriba hacia abajo y actualiza las salidas.</p>',
+ D:{tags:{B:{a:'%I0.0',n:'BOTÓN'},T:{a:'%Q0.0',n:'TIMBRE'}},inputs:[{t:'push',k:'B',label:'Botón del timbre'}],outputs:[{k:'T',label:'Timbre'}]},
+ R:[{g:[[NO('B')]],o:{t:'coil',k:'T'}}],
+ tryit:'Mantengan presionado el botón y vean cómo el verde llega hasta el timbre. Al soltarlo, el camino se corta.',
+ mod:'En el módulo, START está en %I0.0 y la luz verde en %Q0.0. Las direcciones que empiezan con %I son entradas y las que empiezan con %Q son salidas.'},
+{s:'NO y NC',t:'Contacto abierto (NO) y contacto cerrado (NC)',life:'La luz del refrigerador: con la puerta cerrada, la puerta aprieta un botoncito y la luz está apagada. Al abrir la puerta, el botón se suelta y la luz se enciende.',
+ body:'<p>Un contacto le hace una pregunta al PLC sobre un bit, que solo puede valer 1 o 0:</p><ul><li><b>Contacto NO</b> (normalmente abierto) <code>-| |-</code>: deja pasar la energía cuando el bit vale <b>1</b>.</li><li><b>Contacto NC</b> (normalmente cerrado) <code>-|/|-</code>: deja pasar la energía cuando el bit vale <b>0</b>.</li></ul><p>En el ejemplo, el botón de la puerta vale 1 cuando la puerta está cerrada. Con un contacto NC, la luz se enciende justo cuando ese bit cae a 0.</p>',
+ D:{tags:{P:{a:'%I0.1',n:'PUERTA'},L:{a:'%Q0.0',n:'LUZ'}},inputs:[{t:'toggle',k:'P',label:'Puerta cerrada',on:true}],outputs:[{k:'L',label:'Luz del refrigerador'}]},
+ R:[{g:[[NC('P')]],o:{t:'coil',k:'L'}}],
+ tryit:'Toquen "Puerta cerrada" para abrir y cerrar la puerta. Fíjense en el valor del bit: con 1 el contacto NC corta, y con 0 deja pasar.',
+ mod:'En el módulo, la luz roja se enciende con un contacto NC de LUZ START (%Q0.0): está prendida justo cuando la verde está apagada.'},
+{s:'Serie y paralelo',t:'En serie es "Y", en paralelo es "O"',life:'Una prensa industrial pide los dos botones a la vez, uno con cada mano, para que nadie meta la mano: eso es "Y". Un timbre que suena desde la puerta de enfrente o desde la de atrás: eso es "O".',
+ body:'<ul><li><b>En serie</b> (uno detrás de otro): la energía pasa solo si <b>todos</b> los contactos dejan pasar. Es una condición "Y".</li><li><b>En paralelo</b> (uno encima de otro): basta con que <b>uno</b> deje pasar. Es una condición "O".</li></ul>',
+ D:{tags:{BI:{a:'%I0.0',n:'BOTÓN IZQ.'},BD:{a:'%I0.1',n:'BOTÓN DER.'},PR:{a:'%Q0.0',n:'PRENSA'},P1:{a:'%I0.2',n:'PUERTA 1'},P2:{a:'%I0.3',n:'PUERTA 2'},TI:{a:'%Q0.1',n:'TIMBRE'}},
+   inputs:[{t:'toggle',k:'BI',label:'Botón izquierdo'},{t:'toggle',k:'BD',label:'Botón derecho'},{t:'toggle',k:'P1',label:'Puerta de enfrente'},{t:'toggle',k:'P2',label:'Puerta de atrás'}],outputs:[{k:'PR',label:'Prensa'},{k:'TI',label:'Timbre'}]},
+ R:[{g:[[NO('BI')],[NO('BD')]],o:{t:'coil',k:'PR'},note:'Serie: los dos botones tienen que estar activos.'},{g:[[NO('P1'),NO('P2')]],o:{t:'coil',k:'TI'},note:'Paralelo: basta con una de las dos puertas.'}],
+ tryit:'Activen un botón de la prensa y luego los dos. Después prueben las puertas por separado.',
+ mod:'En el Network 2 del módulo hay cuatro condiciones en serie para sacar el cilindro 1: no estar en manual, luz verde encendida, banda en marcha y el inductivo detectando metal.'},
+{s:'Enclavamiento',t:'Enclavamiento: que se quede encendido',life:'El motor de una bomba de agua: se presiona START y la bomba sigue trabajando aunque suelten el botón. Solo se apaga con STOP.',
+ body:'<p>Si la bobina dependiera solo de START, se apagaría al soltar el botón. El truco es poner, <b>en paralelo con START</b>, un contacto de la <b>misma salida</b>. Cuando la salida se enciende, ese contacto la mantiene encendida: se "enclava" o se autorretiene.</p><p>Para apagarla, se pone en serie un contacto NC de STOP: al presionarlo, corta el camino.</p>',
+ D:{tags:{S:{a:'%I0.0',n:'START'},P:{a:'%I0.1',n:'STOP'},M:{a:'%Q0.2',n:'BOMBA'}},inputs:[{t:'push',k:'S',label:'START'},{t:'push',k:'P',label:'STOP'}],outputs:[{k:'M',label:'Bomba'}]},
+ R:[{g:[[NO('S'),NO('M')],[NC('P')]],o:{t:'coil',k:'M'},note:'El contacto de BOMBA, debajo de START, es el que la mantiene encendida.'}],
+ tryit:'Toquen START y suéltenlo: la bomba sigue encendida gracias al contacto de abajo. Después toquen STOP.',
+ mod:'En este ejemplo STOP es un botón NO, para que sea fácil de entender. En el módulo real STOP es NC; eso se explica en la lección 8.'},
+{s:'Set y Reset',t:'Set y Reset: encender y apagar con órdenes separadas',life:'Como una lámpara con dos botones: uno solo la enciende y el otro solo la apaga. No importa cuánto tiempo los presionen.',
+ body:'<ul><li>Una bobina <b>S</b> (Set) enciende el bit y lo deja encendido, aunque la condición desaparezca.</li><li>Una bobina <b>R</b> (Reset) lo apaga y lo deja apagado.</li></ul><p>El programa del módulo usa la caja <b>SR</b> de TIA Portal, que hace lo mismo en un solo bloque: la entrada S enciende y la entrada R1 apaga. Si las dos llegan a la vez, gana R1 y se apaga, que es lo más seguro.</p>',
+ D:{tags:{S:{a:'%I0.0',n:'START'},P:{a:'%I0.1',n:'STOP'},M:{a:'%Q0.2',n:'BOMBA'}},inputs:[{t:'push',k:'S',label:'START'},{t:'push',k:'P',label:'STOP'}],outputs:[{k:'M',label:'Bomba'}]},
+ R:[{g:[[NO('S')]],o:{t:'S',k:'M'}},{g:[[NO('P')]],o:{t:'R',k:'M'}}],
+ tryit:'Toquen START y luego STOP. Fíjense que la bomba se queda como la dejó la última orden, sin necesidad de un contacto de enclavamiento.',
+ mod:'En el Network 1, la caja SR Tag_1 guarda el arranque de la luz verde y la caja SR Tag_2 guarda el arranque del variador.',chk:'p6'},
+{s:'TON',t:'Temporizador TON: esperar antes de activar',life:'El botón de encendido del teléfono: si lo tocan rapidito no pasa nada; hay que sostenerlo unos segundos para que encienda.',
+ body:'<p>El <b>TON</b> (retardo a la conexión) cuenta tiempo mientras su entrada tiene energía:</p><ul><li><b>PT</b> es el tiempo programado, por ejemplo 3 s.</li><li><b>ET</b> es el tiempo que lleva contado.</li><li>Cuando ET llega a PT, su salida <b>Q</b> se activa.</li><li>Si la entrada se corta antes, vuelve a cero.</li></ul><p>La salida del temporizador se usa como contacto en otro escalón.</p>',
+ D:{tags:{B:{a:'%I0.0',n:'BOTÓN'},T1:{a:'T1.Q',n:'TON'},PA:{a:'%Q0.0',n:'PANTALLA'}},inputs:[{t:'push',k:'B',label:'Botón de encendido'}],outputs:[{k:'PA',label:'Pantalla encendida'}]},
+ R:[{g:[[NO('B')]],o:{t:'TON',k:'T1',pt:3000}},{g:[[NO('T1')]],o:{t:'coil',k:'PA'}}],
+ tryit:'Sostengan el botón y miren cómo se llena la barra del TON. Si lo sueltan antes de 3 s, vuelve a cero.',
+ mod:'Así arranca el módulo: en el Network 1, AUTO y START sostenido 3 s activan el primer TON (DB1). Otro TON (DB2) espera 3 s más para habilitar el variador.',chk:'p4'},
+{s:'CTU',t:'Contador CTU: contar veces',life:'Una caja que se llena con 3 piezas: cada pieza que cae suma uno, y al llegar a 3 se enciende el aviso de "caja llena". Un botón vacía la caja y la cuenta vuelve a cero.',
+ body:'<ul><li>El <b>CTU</b> suma 1 cada vez que su entrada pasa de 0 a 1. Mantener la entrada encendida no suma más.</li><li><b>CV</b> es la cuenta actual y <b>PV</b> el número al que hay que llegar.</li><li>Cuando CV llega a PV, su salida <b>Q</b> se activa.</li><li>Con el <b>reset</b>, la cuenta vuelve a cero.</li></ul>',
+ D:{tags:{SE:{a:'%I0.4',n:'PIEZA'},C1:{a:'C1.Q',n:'CONTADOR'},AV:{a:'%Q0.4',n:'CAJA LLENA'},RS:{a:'%I0.1',n:'VACIAR'}},inputs:[{t:'push',k:'SE',label:'Cae una pieza'},{t:'push',k:'RS',label:'Vaciar la caja'}],outputs:[{k:'AV',label:'Caja llena'}]},
+ R:[{g:[[NO('SE')]],o:{t:'CTU',k:'C1',pv:3}},{g:[[NO('C1')]],o:{t:'coil',k:'AV'}},{g:[[NO('RS')]],o:{t:'RC',k:'C1'}}],
+ tryit:'Toquen "Cae una pieza" tres veces y vean cómo sube CV. Si dejan el botón presionado, solo cuenta una vez.',
+ mod:'El modo manual del módulo usa siete contadores, del Network 5 al 11, con PV del 1 al 7. Así cada toque de START activa un paso diferente.',chk:'p7'},
+{s:'NC del módulo',t:'El STOP y los sensores del módulo son NC',life:'Es como un hilo tendido en una puerta: mientras está entero, todo está bien; si alguien lo corta, salta la alarma. Un botón o sensor NC avisa justamente cuando su señal se corta.',
+ body:'<p>Aquí hay que separar dos cosas: el <b>tipo de botón o sensor</b>, que es físico, y el <b>tipo de contacto</b> en Ladder.</p><ul><li>El <b>STOP</b> es un botón NC: sin presionar, %I0.1 vale <b>1</b>; al presionarlo cae a <b>0</b>. Si su cable se corta, también cae a 0 y el sistema se detiene, que es lo más seguro.</li><li>El <b>inductivo</b> y el <b>fotoeléctrico</b> son NC: sin pieza dan 1 y al detectar caen a 0.</li><li>Por eso, para hacer algo <b>cuando se detecta la pieza</b>, en Ladder se usa un <b>contacto NC</b>, que deja pasar cuando el bit vale 0.</li></ul>',
+ D:{tags:tagsOf(['I0.2','I0.4','Q0.3']),inputs:[{t:'toggle',k:'I0.2',label:'Maneta en AUTO'},{t:'sensor',k:'I0.4',label:'Pieza de metal frente al sensor'}],outputs:[{k:'Q0.3',label:'Cilindro 1 (Y1)'}]},
+ R:[{g:[[NO('I0.2')],[NC('I0.4')]],o:{t:'coil',k:'Q0.3'}}],
+ tryit:'Pongan la maneta en AUTO y después pongan una pieza frente al sensor. Fíjense que %I0.4 cae a 0, y por eso el contacto NC deja pasar.',
+ mod:'Esta es la idea del Network 2. El escalón real tiene más condiciones y usa Set y Reset para que el cilindro termine su carrera; lo pueden ver en "Programa del módulo".',chk:'s6'}
+];
+
+/* ================= LADDER: PROGRAMA DEL MÓDULO ================= */
+const MOD_D={tags:tagsOf(Object.keys(MT)),modeCtl:true,
+  inputs:[{t:'push',k:'I0.0',label:'START'},{t:'ncpush',k:'I0.1',label:'STOP'},{t:'sensor',k:'I0.4',label:'Pieza frente al inductivo'},{t:'sensor',k:'I0.5',label:'Pieza frente al fotoeléctrico'},{t:'reed',k:'I0.6',follow:'Q0.3'},{t:'reed',k:'I0.7',follow:'Q0.4'}],
+  outputs:[{k:'Q0.0',label:'Luz verde',c:'g'},{k:'Q0.1',label:'Luz roja',c:'r'},{k:'Q0.2',label:'Banda (VFD)'},{k:'Q0.3',label:'Y1'},{k:'Q0.4',label:'Y2'},{k:'I0.6',label:'Reed S3'},{k:'I0.7',label:'Reed S4'}]};
+const MOD_R=[
+ {h:'Network 1 · Arranque, luces y banda',hp:'Con la maneta en AUTO y START sostenido 3 s, el primer TON (DB1) activa Tag_1, que enciende la luz verde. Con la luz verde y sin modo manual, el segundo TON (DB2) espera 3 s más y activa Tag_2, que habilita el variador. STOP apaga los dos. La luz roja se enciende con un contacto NC de la luz verde.',
+  lbl:'N1 · TON del arranque',g:[[NO('I0.2')],[NO('I0.0')]],o:{t:'TON',k:'DB1',pt:3000}},
+ {lbl:'N1 · SR Tag_1 (entrada S)',g:[[NO('DB1')]],o:{t:'S',k:'M2.0'}},
+ {lbl:'N1 · SR Tag_1 (entrada R1)',g:[[NC('I0.1')]],o:{t:'R',k:'M2.0'},note:'STOP es NC: al presionarlo, %I0.1 cae a 0 y el contacto NC deja pasar.'},
+ {lbl:'N1 · Luz verde',g:[[NO('M2.0'),NO('M3.6')]],o:{t:'coil',k:'Q0.0'}},
+ {lbl:'N1 · Luz roja',g:[[NC('Q0.0')]],o:{t:'coil',k:'Q0.1'}},
+ {lbl:'N1 · TON del variador',g:[[NO('Q0.0')],[NC('I0.3')]],o:{t:'TON',k:'DB2',pt:3000}},
+ {lbl:'N1 · SR Tag_2 (entrada S)',g:[[NO('DB2')]],o:{t:'S',k:'M2.1'}},
+ {lbl:'N1 · SR Tag_2 (entrada R1)',g:[[NC('I0.1')]],o:{t:'R',k:'M2.1'}},
+ {lbl:'N1 · Variador',g:[[NO('M2.1'),NO('M3.7')]],o:{t:'coil',k:'Q0.2'}},
+ {h:'Network 2 · Cilindro 1 (metal)',hp:'Si no está en manual, la luz verde y la banda están encendidas y el inductivo detecta metal, Tag_3 se enciende y sale el cilindro 1. Regresa cuando el Reed S3 confirma que llegó al final y el inductivo ya no ve la pieza.',
+  lbl:'N2 · SR Tag_3 (entrada S)',g:[[NC('I0.3')],[NO('Q0.0')],[NO('Q0.2')],[NC('I0.4')]],o:{t:'S',k:'M2.2'}},
+ {lbl:'N2 · SR Tag_3 (entrada R1)',g:[[NO('I0.6')],[NO('I0.4')]],o:{t:'R',k:'M2.2'}},
+ {lbl:'N2 · Y1',g:[[NO('M2.2'),NO('M4.4')]],o:{t:'coil',k:'Q0.3'}},
+ {h:'Network 3 · Cilindro 2 (no metal)',hp:'Igual que el Network 2, pero con el fotoeléctrico, el Reed S4, Tag_4 y el cilindro 2.',
+  lbl:'N3 · SR Tag_4 (entrada S)',g:[[NC('I0.3')],[NO('Q0.0')],[NO('Q0.2')],[NC('I0.5')]],o:{t:'S',k:'M2.3'}},
+ {lbl:'N3 · SR Tag_4 (entrada R1)',g:[[NO('I0.7')],[NO('I0.5')]],o:{t:'R',k:'M2.3'}},
+ {lbl:'N3 · Y2',g:[[NO('M2.3'),NO('M4.5')]],o:{t:'coil',k:'Q0.4'}},
+ {h:'Network 4 · Habilitar el modo manual',hp:'Con la maneta en MANUAL se enciende la MARCA MANUAL (%M3.5). Se apaga con STOP, al salir de manual o al pasar a AUTO.',
+  lbl:'N4 · SR Tag_7 (entrada S)',g:[[NO('I0.3')]],o:{t:'S',k:'M3.5'}},
+ {lbl:'N4 · SR Tag_7 (entrada R1)',g:[[NC('I0.1'),NC('I0.3'),NO('I0.2')]],o:{t:'R',k:'M3.5'}}
+];
+
+/* ================= LADDER: TALLER ================= */
+const IN_START={t:'push',k:'I0.0',label:'START'},IN_STOP={t:'ncpush',k:'I0.1',label:'STOP'},IN_AUTO={t:'toggle',k:'I0.2',label:'Maneta en AUTO'};
+const EX=[
+{id:'e1',t:'Luz mientras presionan START',goal:'Hagan que la luz verde (%Q0.0) esté encendida solo mientras START (%I0.0) está presionado.',
+ hint:'Un contacto NO de START y una bobina de LUZ START.',tags:['I0.0','Q0.0'],outs:['coil'],inputs:[IN_START],outputs:[{k:'Q0.0',label:'Luz verde',c:'g'}],start:[],
+ tests:[{set:{'I0.0':0},ex:{'Q0.0':0},m:'Sin presionar START, la luz verde debe estar apagada.'},{set:{'I0.0':1},ex:{'Q0.0':1},m:'Al presionar START, la luz verde debe encenderse.'},{set:{'I0.0':0},ex:{'Q0.0':0},m:'Al soltar START, la luz verde debe apagarse.'}]},
+{id:'e2',t:'La luz roja es lo contrario',goal:'El primer escalón ya enciende la luz verde con START. Agreguen un escalón para que la luz roja (%Q0.1) esté encendida siempre que la verde esté apagada.',
+ hint:'Usen un contacto NC de LUZ START (%Q0.0) y una bobina de LUZ STOP. Así está hecho en el Network 1.',tags:['I0.0','Q0.0','Q0.1'],outs:['coil'],inputs:[IN_START],outputs:[{k:'Q0.0',label:'Luz verde',c:'g'},{k:'Q0.1',label:'Luz roja',c:'r'}],
+ start:[{g:[[NO('I0.0')]],o:{t:'coil',k:'Q0.0'}}],
+ tests:[{set:{'I0.0':0},ex:{'Q0.0':0,'Q0.1':1},m:'Con la luz verde apagada, la roja debe estar encendida.'},{set:{'I0.0':1},ex:{'Q0.0':1,'Q0.1':0},m:'Con la luz verde encendida, la roja debe apagarse.'},{set:{'I0.0':0},ex:{'Q0.1':1},m:'Al apagarse la verde, la roja debe volver a encenderse.'}]},
+{id:'e3',t:'Enclavamiento con START y STOP',goal:'Al tocar START, la luz verde se enciende y se queda encendida aunque suelten el botón. STOP la apaga. Ojo: STOP es NC, así que sin presionar %I0.1 vale 1.',
+ hint:'Pongan en paralelo START y un contacto de LUZ START, y en serie un contacto NO de %I0.1, que deja pasar mientras STOP no está presionado. También se puede con bobinas S y R.',tags:['I0.0','I0.1','Q0.0'],outs:['coil','S','R'],inputs:[IN_START,IN_STOP],outputs:[{k:'Q0.0',label:'Luz verde',c:'g'}],start:[],
+ tests:[{set:{'I0.0':1},ex:{'Q0.0':1},m:'Al presionar START, la luz verde debe encenderse.'},{set:{'I0.0':0},w:200,ex:{'Q0.0':1},m:'Al soltar START, la luz verde debe seguir encendida.'},{set:{'I0.1':0},ex:{'Q0.0':0},m:'Al presionar STOP (%I0.1 cae a 0), la luz verde debe apagarse.'},{set:{'I0.1':1},w:200,ex:{'Q0.0':0},m:'Al soltar STOP, la luz verde debe quedarse apagada.'}]},
+{id:'e4',t:'Arranque con 3 segundos',goal:'Con la maneta en AUTO, hay que sostener START 3 segundos para que la luz verde se encienda y se quede encendida. STOP la apaga. Así empieza el Network 1.',
+ hint:'Escalón 1: AUTO y START en serie hacia un TON de 3 s (T1). Escalón 2: un contacto de T1 hacia una bobina S de LUZ START. Escalón 3: un contacto NC de STOP hacia una bobina R de LUZ START.',tags:['I0.0','I0.1','I0.2','Q0.0','T1'],outs:['coil','S','R','TON'],inputs:[IN_AUTO,IN_START,IN_STOP],outputs:[{k:'Q0.0',label:'Luz verde',c:'g'}],start:[],
+ tests:[{set:{'I0.2':0,'I0.0':1},w:3300,ex:{'Q0.0':0},m:'Sin la maneta en AUTO, START no debe encender la luz.'},{set:{'I0.0':0,'I0.2':1},ex:{'Q0.0':0},m:'Con solo poner la maneta en AUTO, la luz todavía no debe encender.'},{set:{'I0.0':1},w:1000,ex:{'Q0.0':0},m:'Con START sostenido solo 1 segundo, la luz todavía no debe encender.'},{set:{'I0.0':0},w:200,ex:{'Q0.0':0},m:'Si sueltan START antes de 3 s, la luz no debe encender.'},{set:{'I0.0':1},w:3300,ex:{'Q0.0':1},m:'Con START sostenido más de 3 s, la luz verde debe encenderse.'},{set:{'I0.0':0},w:200,ex:{'Q0.0':1},m:'Al soltar START, la luz debe quedarse encendida.'},{set:{'I0.1':0},ex:{'Q0.0':0},m:'STOP debe apagar la luz verde.'},{set:{'I0.1':1},w:200,ex:{'Q0.0':0},m:'Al soltar STOP, la luz debe quedarse apagada.'}]},
+{id:'e5',t:'Separar el metal',goal:'Con la maneta en AUTO, cuando el inductivo detecta una pieza (%I0.4 cae a 0), el cilindro 1 (Y1, %Q0.3) debe salir y terminar su carrera. Regresa cuando el Reed S3 (%I0.6) confirma que llegó al final y la pieza ya no está frente al sensor.',
+ hint:'Una bobina S de Y1 con AUTO y un contacto NC del inductivo. Una bobina R de Y1 con un contacto de REED S3 y un contacto NO del inductivo en serie. El Reed S3 se activa solo cuando el cilindro llega al final.',tags:['I0.2','I0.4','I0.6','Q0.3'],outs:['coil','S','R'],
+ inputs:[IN_AUTO,{t:'sensor',k:'I0.4',label:'Pieza frente al inductivo'},{t:'reed',k:'I0.6',follow:'Q0.3'}],outputs:[{k:'Q0.3',label:'Cilindro 1 (Y1)'},{k:'I0.6',label:'Reed S3'}],start:[],
+ tests:[{set:{'I0.2':1},w:200,ex:{'Q0.3':0},m:'Sin pieza, el cilindro 1 debe estar adentro.'},{set:{'I0.4':0},ex:{'Q0.3':1},m:'Cuando el inductivo detecta la pieza, el cilindro 1 debe salir.'},{set:{'I0.4':1},ex:{'Q0.3':1},m:'Aunque la pieza ya no esté frente al sensor, el cilindro debe terminar su carrera hasta que el Reed S3 lo confirme.'},{w:800,ex:{'Q0.3':0},m:'Cuando el Reed S3 confirma el final de carrera y ya no hay pieza, el cilindro debe regresar.'},{set:{'I0.2':0,'I0.4':0},w:300,ex:{'Q0.3':0},m:'Sin la maneta en AUTO, el sensor no debe mover el cilindro.'}]},
+{id:'e6',t:'Contar toques de START',goal:'Cada toque de START suma uno. Al tercer toque, el cilindro 2 (Y2, %Q0.4) debe salir. STOP reinicia la cuenta. Así trabajan los contadores del modo manual.',
+ hint:'START hacia un CTU (C1) con PV = 3. Un contacto de C1 hacia la bobina de Y2. Un contacto NC de STOP hacia "Reset contador" de C1.',tags:['I0.0','I0.1','C1','Q0.4'],outs:['coil','CTU','RC'],inputs:[IN_START,IN_STOP],outputs:[{k:'Q0.4',label:'Cilindro 2 (Y2)'}],start:[],
+ tests:[{set:{'I0.0':1}},{set:{'I0.0':0},ex:{'Q0.4':0},m:'Después de un toque, Y2 todavía no debe salir.'},{set:{'I0.0':1}},{set:{'I0.0':0},ex:{'Q0.4':0},m:'Después de dos toques, Y2 todavía no debe salir.'},{set:{'I0.0':1}},{set:{'I0.0':0},ex:{'Q0.4':1},m:'Al tercer toque, Y2 debe salir.'},{set:{'I0.1':0},ex:{'Q0.4':0},m:'STOP debe reiniciar la cuenta y regresar Y2.'},{set:{'I0.1':1}},{set:{'I0.0':1}},{set:{'I0.0':0},ex:{'Q0.4':0},m:'Después de reiniciar, un solo toque no debe sacar Y2.'}]}
+];
+EX.forEach(e=>{e.D={tags:tagsOf(e.tags),inputs:e.inputs,outputs:e.outputs};});
+/* Prueba el programa con una secuencia de entradas, avanzando el tiempo de 20 en 20 ms */
+function runTests(ex,prog){
+  const S=newState(ex.D),cur={};
+  const tick=ms=>{for(let t=0;t<ms;t+=20)step(ex.D,prog,S,20,Object.assign(restBits(ex.D,S),cur));};
+  tick(100);
+  for(const st of ex.tests){
+    if(st.set)Object.assign(cur,st.set);
+    tick(st.w||100);
+    if(st.ex)for(const k in st.ex){const got=S.v[k]?1:0;if(got!==st.ex[k])return {ok:false,m:st.m,k,want:st.ex[k],got};}
+  }
+  return {ok:true};
+}
+
+/* ================= LADDER: PANTALLA ================= */
+const clone=o=>JSON.parse(JSON.stringify(o));
+const LP=progress.ladder;
+function markPL(n){if(!LP.l[n]){LP.l[n]=1;saveP();}}
+function navHTML(n,cur,done,href,lbl){
+  return Array.from({length:n},(_,i)=>'<a href="'+href(i+1)+'" class="'+(done(i+1)?'done':'')+'"'+(i+1===cur?' aria-current="step"':'')+' aria-label="'+lbl(i+1)+'"><span class="d">'+(i+1)+'</span></a>').join('');
+}
+/* Lecciones */
+$('plHost').innerHTML=PL.map((l,i)=>'<article class="plesson" data-n="'+(i+1)+'" hidden>'+
+  '<div class="lesson-head"><span class="eyebrow">Lección '+(i+1)+' de '+PL.length+'</span><h2>'+esc(l.t)+'</h2></div>'+
+  '<div class="keybox"><span class="eyebrow">Ejemplo de la vida diaria</span><p>'+esc(l.life)+'</p></div>'+
+  '<p class="hint"><b>Pruébenlo:</b> '+esc(l.tryit)+'</p>'+ldDiagHTML('pl'+i)+
+  '<div class="stack"><h3>Cómo funciona</h3>'+l.body+'</div>'+
+  '<div class="card"><span class="eyebrow">En el módulo</span><p>'+esc(l.mod)+'</p></div>'+
+  (l.chk?'<div class="check" data-q="'+l.chk+'"></div>':'')+'</article>').join('');
+const PLS=[...document.querySelectorAll('.plesson')];
+PL.forEach((l,i)=>mountLD({D:l.D,rungs:()=>l.R,host:$('pl'+i+'Rungs'),ctl:$('pl'+i+'Ctl'),outs:$('pl'+i+'Outs')}));
+PLS.forEach(a=>a.querySelectorAll('.check').forEach(initCheck));
+let plCur=Math.min(PL.length,Math.max(1,+store.get('plesson',1)||1));
+function showPL(n){
+  plCur=n;store.set('plesson',n);
+  PLS.forEach((a,i)=>a.hidden=i+1!==n);
+  $('plNav').innerHTML=navHTML(PL.length,n,k=>!!LP.l[k],k=>'#programar-'+k,k=>'Lección '+k+': '+PL[k-1].t);
+  const last=n===PL.length;
+  $('plPager').innerHTML=(n>1?'<a class="btn2" href="#programar-'+(n-1)+'">Anterior</a>':'')+
+    '<a class="primary'+(n>1?'':' solo')+'" id="plNext" href="'+(last?'#programa-modulo':'#programar-'+(n+1))+'">'+(last?'Terminé: ver el programa del módulo':'Siguiente: '+esc(PL[n].t))+'</a>';
+  $('plNext').addEventListener('click',()=>markPL(n));
+}
+/* Programa del módulo */
+$('pmHost').innerHTML=ldDiagHTML('pm');
+const PM={D:MOD_D,rungs:()=>MOD_R,host:$('pmRungs'),ctl:$('pmCtl'),outs:$('pmOuts')};
+mountLD(PM);
+$('pmReset').addEventListener('click',()=>{PM.S=newState(MOD_D);});
+
+/* Taller */
+let exi=Math.min(EX.length-1,Math.max(0,(+store.get('exercise',1)||1)-1));
+const progs={};
+const progOf=ex=>progs[ex.id]||(progs[ex.id]=(store.get('lad-'+ex.id,null)||clone(ex.start.length?ex.start.concat([{g:[],o:null}]):[{g:[],o:null}])));
+const saveProg=()=>{const ex=EX[exi];store.set('lad-'+ex.id,progOf(ex));};
+const TD={edit:true,host:$('txRungs'),ctl:$('txCtl'),outs:$('txOuts')};
+TD.rungs=()=>progOf(EX[exi]);
+function showEx(i){
+  exi=i;store.set('exercise',i+1);const ex=EX[i];
+  $('txNav').innerHTML=navHTML(EX.length,i+1,k=>!!LP.t[EX[k-1].id],k=>'#taller-'+k,k=>'Ejercicio '+k+': '+EX[k-1].t);
+  $('txEyebrow').textContent='Ejercicio '+(i+1)+' de '+EX.length;$('txTitle').textContent=ex.t;$('txGoal').textContent=ex.goal;$('txHint').textContent=ex.hint;
+  $('txHintBox').open=false;$('txResult').hidden=true;
+  TD.D=ex.D;TD.S=newState(ex.D);
+  TD.ctl.innerHTML='';
+  const k=LDS.indexOf(TD);if(k>=0)LDS.splice(k,1);
+  mountLD(TD);
+}
+/* Editor: tocar un contacto o una salida abre el panel para cambiarlo */
+let pk=null;
+function openPick(o){pk=o;drawPick();$('lpick').classList.add('open');$('lpBg').hidden=false;const f=$('lpick').querySelector('button');if(f)f.focus({preventScroll:true});}
+function closePick(){if(!pk)return;pk=null;$('lpick').classList.remove('open');$('lpBg').hidden=true;cleanProg();renderLD(TD);saveProg();}
+function cleanProg(){const p=progOf(EX[exi]);p.forEach(r=>{r.g=r.g.filter(g=>g.length);});}
+function tagChips(keys,sel,act){return '<div class="chips">'+keys.map(k=>'<button type="button" class="chip" data-act="'+act+'" data-k="'+k+'" aria-pressed="'+(k===sel)+'">'+esc(MT[k][1])+'<small>'+esc(MT[k][0])+'</small></button>').join('')+'</div>';}
+function drawPick(){
+  const ex=EX[exi],p=progOf(ex);let h;
+  if(pk.m==='ct'){
+    const c=p[pk.r].g[pk.g][pk.c];
+    h='<div class="sheet-head"><h3 id="lpT">Contacto</h3><button class="icon-btn" type="button" data-act="close" aria-label="Cerrar">'+CLOSE_SVG+'</button></div>'+
+      '<div class="seg"><a href="#" role="button" data-act="ctt" data-t="NO"'+(c.t==='NO'?' aria-current="page"':'')+'>Abierto (NO)</a><a href="#" role="button" data-act="ctt" data-t="NC"'+(c.t==='NC'?' aria-current="page"':'')+'>Cerrado (NC)</a></div>'+
+      '<p class="hint">'+(c.t==='NO'?'NO deja pasar la energía cuando el bit vale 1.':'NC deja pasar la energía cuando el bit vale 0.')+'</p>'+
+      '<span class="lbl">¿Qué bit revisa?</span>'+tagChips(ex.tags,c.k,'ctk')+
+      '<div class="row"><button class="primary" type="button" data-act="close">Listo</button><button class="btn2" type="button" data-act="delc">Borrar contacto</button></div>';
+  }else{
+    const o=p[pk.r].o;const kinds=o.t==='TON'?['tmr']:o.t==='CTU'||o.t==='RC'?['cnt']:['out','mem'];
+    const keys=ex.tags.filter(k=>kinds.includes(kindOf(k)));
+    h='<div class="sheet-head"><h3 id="lpT">Salida</h3><button class="icon-btn" type="button" data-act="close" aria-label="Cerrar">'+CLOSE_SVG+'</button></div>'+
+      '<span class="lbl">Tipo</span><div class="chips">'+ex.outs.map(t=>'<button type="button" class="chip" data-act="ot" data-t="'+t+'" aria-pressed="'+(o.t===t)+'">'+OUT_NAMES[t]+'</button>').join('')+'</div>'+
+      '<span class="lbl">'+(o.t==='TON'?'¿Qué temporizador?':o.t==='CTU'||o.t==='RC'?'¿Qué contador?':'¿Qué bit activa?')+'</span>'+tagChips(keys,o.k,'ok')+
+      (o.t==='TON'?'<span class="lbl">Tiempo (PT)</span><div class="chips">'+[1,2,3,5].map(s=>'<button type="button" class="chip" data-act="pt" data-v="'+s*1000+'" aria-pressed="'+(o.pt===s*1000)+'">'+s+' s</button>').join('')+'</div>':'')+
+      (o.t==='CTU'?'<span class="lbl">Cuenta a la que llega (PV)</span><div class="chips">'+[1,2,3,4,5,6,7].map(v=>'<button type="button" class="chip" data-act="pv" data-v="'+v+'" aria-pressed="'+(o.pv===v)+'">'+v+'</button>').join('')+'</div>':'')+
+      '<div class="row"><button class="primary" type="button" data-act="close">Listo</button><button class="btn2" type="button" data-act="delo">Borrar salida</button></div>';
+  }
+  $('lpick').innerHTML=h;
+}
+function fixOut(ex,o){const kinds=o.t==='TON'?['tmr']:o.t==='CTU'||o.t==='RC'?['cnt']:['out','mem'];const keys=ex.tags.filter(k=>kinds.includes(kindOf(k)));if(!keys.includes(o.k))o.k=keys[0];if(o.t==='TON'&&!o.pt)o.pt=3000;if(o.t==='CTU'&&!o.pv)o.pv=3;}
+$('lpick').addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b||!pk)return;e.preventDefault();
+  const ex=EX[exi],p=progOf(ex),a=b.dataset.act;
+  if(a==='close'){closePick();return;}
+  if(pk.m==='ct'){const c=p[pk.r].g[pk.g][pk.c];
+    if(a==='ctt')c.t=b.dataset.t;else if(a==='ctk')c.k=b.dataset.k;
+    else if(a==='delc'){p[pk.r].g[pk.g].splice(pk.c,1);closePick();return;}
+  }else{const o=p[pk.r].o;
+    if(a==='ot'){o.t=b.dataset.t;fixOut(ex,o);}else if(a==='ok')o.k=b.dataset.k;else if(a==='pt')o.pt=+b.dataset.v;else if(a==='pv')o.pv=+b.dataset.v;
+    else if(a==='delo'){p[pk.r].o=null;closePick();return;}
+  }
+  drawPick();renderLD(TD);saveProg();
+});
+$('lpBg').addEventListener('click',closePick);
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&pk)closePick();});
+TD.host.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]');if(!b)return;
+  const ex=EX[exi],p=progOf(ex),a=b.dataset.act,r=+b.dataset.r;
+  const firstIn=ex.tags.find(k=>kindOf(k)==='in')||ex.tags[0];
+  if(a==='ct')openPick({m:'ct',r,g:+b.dataset.g,c:+b.dataset.c});
+  else if(a==='ser'){p[r].g.push([NO(firstIn)]);renderLD(TD);openPick({m:'ct',r,g:p[r].g.length-1,c:0});}
+  else if(a==='par'){const g=+b.dataset.g;p[r].g[g].push(NO(firstIn));renderLD(TD);openPick({m:'ct',r,g,c:p[r].g[g].length-1});}
+  else if(a==='out'){if(!p[r].o){p[r].o={t:ex.outs[0]};fixOut(ex,p[r].o);renderLD(TD);}openPick({m:'out',r});}
+  else if(a==='delr'){p.splice(r,1);if(!p.length)p.push({g:[],o:null});renderLD(TD);saveProg();}
+});
+$('txAdd').addEventListener('click',()=>{progOf(EX[exi]).push({g:[],o:null});renderLD(TD);saveProg();});
+$('txClear').addEventListener('click',()=>{
+  const ex=EX[exi];if(!confirm('¿Borrar su programa de este ejercicio y empezar de nuevo?'))return;
+  progs[ex.id]=clone(ex.start.length?ex.start.concat([{g:[],o:null}]):[{g:[],o:null}]);saveProg();TD.S=newState(ex.D);renderLD(TD);$('txResult').hidden=true;
+});
+$('txCheck').addEventListener('click',()=>{
+  const ex=EX[exi],res=runTests(ex,progOf(ex)),box=$('txResult');
+  box.hidden=false;box.className='expl tx-res '+(res.ok?'ok-box':'bad-box');
+  if(res.ok){
+    box.innerHTML='<b class="v ok">Correcto.</b> Su programa cumple todo lo que pide el ejercicio.'+(exi<EX.length-1?' <a href="#taller-'+(exi+2)+'">Sigan con el ejercicio '+(exi+2)+'.</a>':' Terminaron todos los ejercicios.');
+    if(!LP.t[ex.id]){LP.t[ex.id]=1;saveP();toast('Ejercicio resuelto · '+count(LP.t)+' de '+EX.length,ex.t,'Su programa pasó todas las pruebas.');}
+    $('txNav').innerHTML=navHTML(EX.length,exi+1,k=>!!LP.t[EX[k-1].id],k=>'#taller-'+k,k=>'Ejercicio '+k+': '+EX[k-1].t);
+  }else box.innerHTML='<b class="v bad">Todavía no.</b> '+esc(res.m)+'<span class="src">Esperábamos '+esc(MT[res.k][0])+' = '+res.want+' y quedó en '+res.got+'.</span>';
+  box.scrollIntoView({block:'nearest',behavior:'smooth'});
+});
+/* Cambia entre lecciones, programa del módulo y taller */
+function showProg(h){
+  const m=h.match(/^programar(?:-(\d))?$/),t=h.match(/^taller(?:-(\d))?$/),pane=m?'l':t?'t':'m';
+  $('pgL').hidden=pane!=='l';$('pgM').hidden=pane!=='m';$('pgT').hidden=pane!=='t';
+  [['segPL','l'],['segPM','m'],['segPT','t']].forEach(([id,p])=>{if(p===pane)$(id).setAttribute('aria-current','page');else $(id).removeAttribute('aria-current');});
+  if(m)showPL(Math.min(PL.length,Math.max(1,m[1]?+m[1]:plCur)));
+  if(t)showEx(Math.min(EX.length,Math.max(1,t[1]?+t[1]:exi+1))-1);
+}
+requestAnimationFrame(ldLoop);
+
 /* ================= NAVEGACIÓN ================= */
 function route(){
   const h=location.hash.slice(1)||'inicio';
@@ -1334,6 +1867,7 @@ function route(){
   const m=h.match(/^aprender(?:-(\d))?$/);
   if(m){v='aprender';showLesson(Math.min(LESSONS.length,Math.max(1,m[1]?+m[1]:lesson)));}
   else if(h==='simulador')v='simulador';
+  else if(/^(programar(-\d)?|programa-modulo|taller(-\d)?)$/.test(h)){v='programar';showProg(h);}
   else if(h==='practicar'||h==='tarjetas'){
     v='practicar';const f=h==='tarjetas';
     $('paneQuiz').hidden=f;$('paneFlash').hidden=!f;
@@ -1341,17 +1875,18 @@ function route(){
     else{$('segQuiz').setAttribute('aria-current','page');$('segFlash').removeAttribute('aria-current');}
   }
   if(v!==view)$('toast').hidden=true;
-  closeDetail();
+  closeDetail();closePick();
   if(v!=='simulador')holdEnd();
   view=v;
-  ['inicio','aprender','simulador','practicar'].forEach(x=>$('v-'+x).hidden=x!==v);
+  ['inicio','aprender','simulador','programar','practicar'].forEach(x=>$('v-'+x).hidden=x!==v);
   document.querySelectorAll('.tabs a').forEach(a=>{if(a.dataset.tab===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);
 $('resetAll').addEventListener('click',()=>{
-  if(!confirm('¿Borrar todo su avance? Se pierden las lecciones, retos, preguntas de repaso, la mejor nota y las tarjetas dominadas.'))return;
-  progress.retos={};progress.checks={};progress.best=null;progress.flash={};progress.lessons={};
+  if(!confirm('¿Borrar todo su avance? Se pierden las lecciones, retos, preguntas de repaso, la mejor nota, las tarjetas dominadas y sus programas del taller de Ladder.'))return;
+  progress.retos={};progress.checks={};progress.best=null;progress.flash={};progress.lessons={};progress.ladder={l:{},t:{}};
+  EX.forEach(e=>store.set('lad-'+e.id,null));store.set('plesson',1);store.set('exercise',1);
   store.set('progress',progress);store.set('lesson',1);location.hash='';location.reload();
 });
 
