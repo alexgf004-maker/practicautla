@@ -142,7 +142,7 @@ Figuras de la Guía 1 que se usan en preguntas: diagrama del CPU (alimentación 
 
 ## 6. Cómo está hecho `index.html`
 
-Es un solo archivo sin dependencias ni build. Lo único externo son las Google Fonts (Barlow Condensed, Barlow, JetBrains Mono). Todo el JS va en un IIFE al final.
+Es un solo archivo sin dependencias ni build. Lo único externo son las Google Fonts (Bricolage Grotesque para títulos, Nunito para texto y JetBrains Mono para direcciones). Todo el JS va en un IIFE al final.
 
 Funciona como una app de cinco pestañas. En teléfono la barra de pestañas (`.tabs`) va fija abajo; desde 900 px pasa a la barra superior. Cada pestaña es una `<section class="view">` y solo se muestra una a la vez según el hash de la URL (función `route()`):
 - `#inicio` (`#v-inicio`): qué es el módulo, "Cómo usar esta página" con el avance de cada parte y un botón de siguiente paso recomendado (`#nextStep`).
@@ -177,6 +177,7 @@ Funciona como una app de cinco pestañas. En teléfono la barra de pestañas (`.
 - El avance se guarda en `localStorage` con el prefijo `modbanda-`, envuelto en try/catch. La página tiene que funcionar aunque falle. El objeto `progress` tiene `retos`, `checks`, `best`, `flash`, `lessons` y `ladder` (`l`: lecciones de Ladder vistas, `t`: ejercicios resueltos); también se guardan `lesson` (última lección abierta), `theme`, `howtoClosed`, `plesson` y `exercise` (última lección de Ladder y último ejercicio), `lad-<id>` (programa de cada ejercicio del taller) y `lessonsV` (versión de la numeración de lecciones: al agregar la lección 2, el avance guardado se recorrió un número; si se vuelve a insertar una lección, hay que subir esta versión y migrar igual).
 - Hay botón de tema claro/oscuro en la barra superior: pone `data-theme` en `<html>`.
 - Colores: todos son tokens CSS en `:root`, con versión oscura en `@media (prefers-color-scheme: dark)` y en `[data-theme="dark"]`. No se usan colores sueltos.
+- Estilo propio, que no debe verse genérico: fondo de papel con cuadrícula de puntos como un protoboard (`--dot`), tarjetas y botones tipo calcomanía con contorno de tinta (`--edge`) y sombra sólida (`--shadow`, `--shadow-sm`), y un color plano y vivo por sección: `--c-home` (amarillo), `--c-learn` (azul), `--c-sim` (coral), `--c-prog` (menta) y `--c-prac` (lavanda), cada uno con `-text` (para texto sobre fondo claro) y `-soft` (fondo suave). `route()` pone `data-view` en `<body>` y eso cambia `--petrol` (relleno de lo seleccionado, siempre con texto `--on-fill` encima), `--acc-text` y `--hl-bg`. Nunca usar `--petrol` como color de texto: no se lee sobre fondo claro. Lo que es parte del módulo (banda, cilindros, sensores) usa `--slate`. Verde, rojo y amarillo (`--go`, `--stop`, `--amber`) se reservan para marcha, paro y sensor activo. Evitar degradados genéricos.
 - Tiene que verse bien a 400 px de ancho sin scroll horizontal.
 
 ---
