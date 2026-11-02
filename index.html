@@ -482,6 +482,38 @@ button.ct:hover,button.ou:hover{background:var(--hl-bg)}
 @media (prefers-reduced-motion:reduce){.lp{transition:none!important}}
 @media (max-width:359px){.tabs a{font-size:.68rem}.tabs .ic{width:44px}}
 
+.lesson-nav.compact .d{width:30px;height:30px;font-size:.85rem}
+.lesson-nav.compact::before{top:18px}
+.route{padding-left:20px;display:flex;flex-direction:column;gap:4px}
+.tipc{border-color:var(--edge);background:var(--bad-bg)}
+.tipc .eyebrow{color:var(--stop)}
+.cycle{background:var(--surface);border:2px solid var(--edge);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:12px}
+.cyc-top,.cyc-bot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.cyc-bot .lk{flex:0 1 220px}
+.cyc-steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+.cyc-steps li{border:2px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;transition:background .2s,border-color .2s}
+.cyc-steps li span{font-size:.92rem;color:var(--muted)}
+.cyc-steps li.on{background:var(--petrol);border-color:var(--edge);color:var(--on-fill);box-shadow:var(--shadow-sm)}
+.cyc-steps li.on span{color:var(--on-fill)}
+.addr{background:var(--surface);border:2px solid var(--edge);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;gap:10px}
+.adr-out{display:flex;flex-direction:column;gap:8px}
+.adr-big{font-family:var(--mono);font-size:2.2rem;font-weight:700;line-height:1.1}
+.adr-leg{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:4px;font-size:.94rem}
+.adr-leg span{font-family:var(--mono);font-weight:700;display:inline-grid;place-items:center;min-width:26px;padding:0 4px;border-radius:6px;border:2px solid var(--edge);color:var(--on-fill)}
+.adr-big span{padding:0 2px;border-radius:6px}
+.ap{background:var(--c-home)}.al{background:var(--c-learn)}.ab{background:var(--c-sim)}.abt{background:var(--c-prog)}
+.adr-big .ap,.adr-big .al,.adr-big .ab,.adr-big .abt{color:var(--on-fill)}
+.rel-svg{width:100%;max-width:420px;height:auto;display:block}
+.rel-svg .k{fill:none;stroke:var(--ink);stroke-width:2.5;stroke-linecap:round}
+.rel-svg .t{font-family:var(--body);font-weight:800;font-size:11px;fill:var(--ink)}
+.walk{display:flex;flex-direction:column;gap:10px;border-top:2px dashed var(--line);padding-top:12px}
+.walk-txt p{font-size:1rem}
+.focus{outline:3px solid var(--amber);outline-offset:3px;border-radius:6px;animation:cue 1.2s ease-in-out infinite}
+.gloss dl{margin:0;display:grid;grid-template-columns:minmax(110px,30%) 1fr;gap:8px 14px;font-size:.94rem}
+.gloss dt{font-weight:900}
+.gloss dd{margin:0}
+@media (max-width:480px){.gloss dl{grid-template-columns:1fr;gap:2px}.gloss dd{margin-bottom:8px}}
+
 /* CALCOMANÍAS: contorno de tinta y sombra sólida */
 .card,.path-card,.check,.sim,.quiz,.ldiag,.flow li,.guide,.acc,.fc-big,.who,.retos,.detail,.lp{box-shadow:var(--shadow);border:2px solid var(--edge)}
 .cbtn{border-width:2px}
@@ -575,7 +607,7 @@ button.ct:hover,button.ou:hover{background:var(--hl-bg)}
       <a class="path-card" id="pcProg" href="#programar">
         <span class="num">3</span>
         <span class="txt"><h3>Programar</h3><p>Aprendan Ladder con ejemplos sencillos, vean el programa del módulo funcionando y armen sus propios escalones.</p>
-          <span class="meter"><span class="bar"><i id="mProg" style="width:0"></i></span><b id="tProg">0 de 8 lecciones</b></span></span>
+          <span class="meter"><span class="bar"><i id="mProg" style="width:0"></i></span><b id="tProg">0 de 11 lecciones</b></span></span>
         <svg class="i chev" width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
       </a>
       <a class="path-card" id="pcQuiz" href="#practicar">
@@ -795,7 +827,7 @@ button.ct:hover,button.ou:hover{background:var(--hl-bg)}
 <section class="view" id="v-programar" aria-labelledby="prog-t" hidden>
   <div class="view-head">
     <h2 id="prog-t">Programar en Ladder</h2>
-    <p class="muted">Ladder, o lenguaje de escalera, es con el que se programó el PLC en TIA Portal. Empiecen por las lecciones, vean el programa del módulo funcionando y después armen sus propios escalones en el taller.</p>
+    <p class="muted">Ladder, o lenguaje de escalera, es con el que se programó el PLC en TIA Portal. Si nunca han programado, no se preocupen: la lección 1 empieza desde cero. Después vean el programa del módulo funcionando y armen sus propios escalones en el taller.</p>
   </div>
   <nav class="seg s4" aria-label="Partes de Programar">
     <a href="#programar" id="segPL">Lecciones</a>
@@ -805,9 +837,10 @@ button.ct:hover,button.ou:hover{background:var(--hl-bg)}
   </nav>
 
   <div id="pgL" class="stack" style="gap:20px">
-    <nav class="lesson-nav compact" id="plNav" aria-label="Lecciones de Ladder" style="grid-template-columns:repeat(8,1fr)"></nav>
+    <nav class="lesson-nav compact" id="plNav" aria-label="Lecciones de Ladder" style="grid-template-columns:repeat(11,1fr)"></nav>
     <div id="plHost"></div>
     <div class="pager" id="plPager"></div>
+    <details class="acc gloss"><summary>Palabras clave (glosario)</summary><div class="acc-b"><dl><dt>Bit</dt><dd>La información más pequeña: solo vale 0 o 1, como un foco apagado o encendido.</dd><dt>Entrada (%I)</dt><dd>Lo que el PLC escucha: botones, la maneta y los sensores.</dd><dt>Salida (%Q)</dt><dd>Lo que el PLC ordena: luces, el variador y las electroválvulas.</dd><dt>Marca (%M)</dt><dd>Un bit de memoria interna, sin cable hacia afuera. Sirve para que el PLC recuerde algo.</dd><dt>Byte</dt><dd>Un grupo de 8 bits. En %I0.4, el 0 es el byte y el 4 el bit.</dd><dt>Etiqueta o tag</dt><dd>El nombre que se le pone a una dirección para no tener que recordarla. Ejemplo: %I0.4 se llama INDUCTIVO.</dd><dt>Contacto NO</dt><dd>Deja pasar la energía cuando su bit vale 1.</dd><dt>Contacto NC</dt><dd>Deja pasar la energía cuando su bit vale 0.</dd><dt>Bobina</dt><dd>La orden al final del escalón: si le llega energía, pone su bit en 1.</dd><dt>Escalón o network</dt><dd>Una línea del programa: condiciones a la izquierda y lo que se activa a la derecha.</dd><dt>Ciclo de scan</dt><dd>La vuelta que da el PLC una y otra vez: leer entradas, revisar el programa y escribir salidas.</dd><dt>Enclavamiento</dt><dd>Truco para que una salida se quede encendida después de soltar el botón: un contacto de la misma salida en paralelo con START.</dd><dt>Set y Reset (S, R)</dt><dd>Bobinas que encienden (S) o apagan (R) un bit y lo dejan así. En TIA Portal se juntan en la caja SR.</dd><dt>Flanco</dt><dd>El momento en que un bit pasa de 0 a 1. El contador suma solo en ese momento.</dd><dt>TON, PT y ET</dt><dd>Temporizador con retardo a la conexión. PT es el tiempo programado y ET el tiempo que lleva contado.</dd><dt>CTU, PV y CV</dt><dd>Contador que suma. PV es el número al que hay que llegar y CV la cuenta actual.</dd><dt>TIA Portal</dt><dd>El programa de Siemens, en la laptop, con el que se configura y programa el PLC.</dd><dt>OB1 (Main)</dt><dd>El bloque principal del programa: el que el PLC repite en cada ciclo.</dd><dt>Descargar</dt><dd>Pasar el programa de la laptop al PLC por el cable de red.</dd></dl></div></details>
   </div>
 
   <div id="pgM" class="stack" style="gap:16px" hidden>
@@ -1705,17 +1738,40 @@ function ldDiagHTML(id){return '<div class="ldiag"><div class="lhead"><div class
 
 /* ================= LADDER: LECCIONES ================= */
 const PL=[
-{s:'Ladder',t:'¿Qué es Ladder?',life:'Piensen en un foco con su interruptor en la pared: la corriente sale de un lado, pasa por el interruptor y llega al foco. Ladder dibuja eso mismo, pero acostado.',
- body:'<p>Ladder significa "escalera" y es el lenguaje con el que se programó el PLC en TIA Portal. Se lee así:</p><ul><li>La línea de la <b>izquierda</b> es de donde sale la energía. La de la <b>derecha</b> es a donde llega.</li><li>Cada línea horizontal es un <b>escalón</b>. En TIA Portal se llama <b>network</b>.</li><li>A la izquierda van las <b>condiciones</b> (contactos) y a la derecha lo que se <b>activa</b> (bobina).</li><li>Si hay un camino completo de izquierda a derecha, la bobina se activa. En esta página, el camino con energía se pinta de <b>verde</b>.</li></ul><p>El PLC repite esto una y otra vez, muy rápido: lee las entradas, revisa los escalones de arriba hacia abajo y actualiza las salidas.</p>',
+{s:'Programar',t:'¿Qué es programar un PLC?',intro:true,life:'Piensen en una receta de cocina: dice qué hacer y en qué orden. Si dice "cuando hierva el agua, agreguen el arroz", la persona espera a que hierva y entonces actúa. Un programa de PLC es una lista de reglas así: "cuando pase esto, hagan aquello".',
+ html:'<div class="card"><span class="eyebrow">Cómo vamos a aprender</span><ol class="route"><li><b>Lecciones 1 a 3:</b> lo básico, desde cero. No hace falta saber nada antes.</li><li><b>Lecciones 4 a 11:</b> los símbolos de Ladder, uno por uno, con un ejemplo que pueden tocar.</li><li><b>Módulo:</b> el programa real de la banda, funcionando.</li><li><b>Taller y Libre:</b> armar sus propios programas.</li></ol><p class="hint">Vayan despacio. Si una palabra no la entienden, búsquenla en el glosario, al final de cada lección.</p></div>'+
+  '<div class="cycle" id="cyc"><div class="cyc-top"><span class="lbl">El ciclo del PLC, en cámara lenta</span><button class="btn2" type="button" id="cycPause">Pausa</button></div>'+
+  '<ol class="cyc-steps"><li data-s="0"><b>1. Leer las entradas</b><span id="cy0">Revisa cómo están los botones y sensores.</span></li><li data-s="1"><b>2. Revisar el programa</b><span id="cy1">Aplica las reglas, de arriba hacia abajo.</span></li><li data-s="2"><b>3. Escribir las salidas</b><span id="cy2">Enciende o apaga lo que las reglas digan.</span></li></ol>'+
+  '<div class="cyc-bot"><button type="button" class="lk" id="cycBtn" aria-pressed="false"><span>START presionado</span><small>Tóquenlo para cambiarlo</small></button><span class="lo g" id="cycLamp"><i></i>Luz verde</span></div></div>',
+ tryit:'Toquen "START presionado" y fíjense que la luz no cambia al instante: espera a que el ciclo llegue al paso 3. En el PLC real esto pasa tan rápido que parece inmediato.',
+ body:'<p>Un <b>PLC</b> (controlador lógico programable) es una computadora pequeña y resistente, hecha para fábricas. No piensa por su cuenta: solo sigue las reglas que alguien le escribió.</p><ul><li>Las reglas se escriben en la laptop con el programa <b>TIA Portal</b>.</li><li>Después se <b>descargan</b> al PLC por el cable de red. A partir de ahí, el PLC trabaja solo, aunque se desconecte la laptop.</li><li>El PLC repite siempre el mismo <b>ciclo</b>: lee las entradas, revisa las reglas de arriba hacia abajo y escribe las salidas. Ese ciclo se llama <b>ciclo de scan</b> y se repite muchas veces por segundo.</li></ul><p>Programar, entonces, es escribir esas reglas de forma que el PLC las entienda. En el módulo se escribieron en un lenguaje de dibujos llamado <b>Ladder</b>, que es lo que van a aprender aquí.</p>',
+ mod:'El programa del módulo está en el proyecto "PRUEBA TESIS" de TIA Portal V17, dentro del bloque Main [OB1], que es el que el PLC repite en cada ciclo. Tiene 11 reglas grandes, llamadas networks.'},
+{s:'Bits',t:'Entradas, salidas y bits',intro:true,life:'Un bit es como un foco: solo puede estar apagado (0) o encendido (1). No existe "medio encendido". Todo lo que el PLC sabe y todo lo que ordena son bits así.',
+ html:'<div class="addr"><span class="lbl">Lector de direcciones: toquen una</span><div class="chips" id="adrChips"></div><div class="adr-out" id="adrOut" aria-live="polite"></div></div>',
+ body:'<ul><li>Un <b>bit</b> es la información más pequeña: 0 o 1. Para un botón, 1 puede ser "presionado" y 0 "suelto".</li><li>Las <b>entradas</b> son lo que el PLC <b>escucha</b>: botones, la maneta y los sensores. Sus direcciones empiezan con <b>%I</b>.</li><li>Las <b>salidas</b> son lo que el PLC <b>ordena</b>: luces, el variador y las electroválvulas. Sus direcciones empiezan con <b>%Q</b>, la letra que usa Siemens para las salidas.</li><li>Las <b>marcas</b> son bits de memoria interna, sin cable hacia afuera. Sirven para que el PLC "recuerde" algo. Empiezan con <b>%M</b>.</li></ul><p>Una dirección como <code>%I0.4</code> se lee por partes: <b>%</b> indica que es una dirección del PLC, <b>I</b> que es entrada, <b>0</b> es el número de grupo (un grupo de 8 bits se llama <b>byte</b>) y <b>4</b> es el bit dentro de ese grupo, del 0 al 7.</p><p>Como cada dirección es difícil de recordar, en TIA Portal cada una tiene un nombre, llamado <b>etiqueta</b> o <b>tag</b>. Por ejemplo, %I0.4 se llama INDUCTIVO.</p>',
+ mod:'El módulo usa 8 entradas (%I0.0 a %I0.7) y 5 salidas (%Q0.0 a %Q0.4). Sus nombres están en la tabla de etiquetas "ETIQUETAS DE PROGRAMA", y las marcas internas en "Default tag table".',chk:'p13'},
+{s:'Relés',t:'De los relés a Ladder',intro:true,life:'Un relé es un interruptor que se acciona con un imán: cuando su bobina recibe corriente, jala sus contactos y los cierra. En el gabinete del módulo hay cinco de verdad: K1 a K5.',
+ pre:'<div class="card relay"><span class="eyebrow">El mismo circuito, dos dibujos</span>'+
+  '<svg viewBox="0 0 320 96" class="rel-svg" role="img" aria-label="Arriba, un circuito con interruptor y bobina entre 24 V y 0 V. Abajo, el mismo circuito en Ladder."><path class="k" d="M20 14V82M300 14V82M20 40H110M150 40H200M240 40H300"/><path class="k" d="M110 40L146 28"/><circle class="k" cx="220" cy="40" r="20"/><text class="t" x="220" y="44" text-anchor="middle">K1</text><text class="t" x="20" y="96" text-anchor="middle">+24 V</text><text class="t" x="300" y="96" text-anchor="middle">0 V</text><text class="t" x="128" y="62" text-anchor="middle">botón</text><text class="t" x="220" y="76" text-anchor="middle">bobina</text></svg>'+
+  '<p class="hint">Arriba, un circuito de verdad: si se cierra el botón, la corriente llega a la bobina del relé. Abajo, ese mismo circuito dibujado en Ladder. Sigan los pasos para leerlo.</p>'+
+  '<div class="walk"><div class="walk-txt"><span class="lbl" id="wkN">Paso 1 de 6</span><p id="wkT"></p></div><div class="fc-nav"><button class="btn2" type="button" id="wkPrev">Anterior</button><button class="primary" type="button" id="wkNext">Siguiente paso</button></div></div></div>',
+ D:{tags:{S:{a:'%I0.0',n:'START'},L:{a:'%Q0.0',n:'LUZ START'}},inputs:[{t:'push',k:'S',label:'START'}],outputs:[{k:'L',label:'Luz verde',c:'g'}]},
+ R:[{g:[[NO('S')]],o:{t:'coil',k:'L'}}],
+ body:'<p>Antes de los PLC, las máquinas se controlaban con muchos relés cableados a mano. Para cambiar cómo funcionaba la máquina había que cambiar los cables. Los dibujos de esos circuitos parecían una escalera acostada, y de ahí viene Ladder.</p><ul><li>En Ladder, los <b>contactos</b> y las <b>bobinas</b> ya no son piezas de metal: son bits dentro del PLC.</li><li>Un <b>contacto</b> es una pregunta sobre un bit: "¿vale 1?". Si la respuesta es sí, deja pasar la energía.</li><li>Una <b>bobina</b> es una orden: si le llega energía, pone su bit en 1; si no, lo pone en 0.</li><li>Para cambiar lo que hace la máquina ya no se recablea: se cambia el dibujo en TIA Portal y se descarga otra vez.</li></ul>',
+ mod:'En el módulo, cada salida del PLC activa un relé real: %Q0.0 activa K1, que enciende la luz verde. Así el PLC no carga directamente con la luz, el variador o las electroválvulas.'},
+{s:'Primer escalón',t:'Su primer escalón: el timbre',life:'Piensen en un foco con su interruptor en la pared: la corriente sale de un lado, pasa por el interruptor y llega al foco. Ladder dibuja eso mismo, pero acostado.',
+ body:'<p>Ya saben qué es un contacto y una bobina. Ahora juntemos todo en su primer escalón completo. Un programa en Ladder se lee como un libro: de izquierda a derecha y de arriba hacia abajo.</p><ul><li>La línea de la <b>izquierda</b> es de donde sale la energía. La de la <b>derecha</b> es a donde llega.</li><li>Cada línea horizontal es un <b>escalón</b>. En TIA Portal se llama <b>network</b>.</li><li>A la izquierda van las <b>condiciones</b> (contactos) y a la derecha lo que se <b>activa</b> (bobina).</li><li>Si hay un camino completo de izquierda a derecha, la bobina se activa. En esta página, el camino con energía se pinta de <b>verde</b>.</li></ul><p>El PLC repite esto una y otra vez, muy rápido: lee las entradas, revisa los escalones de arriba hacia abajo y actualiza las salidas.</p>',
  D:{tags:{B:{a:'%I0.0',n:'BOTÓN'},T:{a:'%Q0.0',n:'TIMBRE'}},inputs:[{t:'push',k:'B',label:'Botón del timbre'}],outputs:[{k:'T',label:'Timbre'}]},
  R:[{g:[[NO('B')]],o:{t:'coil',k:'T'}}],
  tryit:'Mantengan presionado el botón y vean cómo el verde llega hasta el timbre. Al soltarlo, el camino se corta.',
+ tip:'Confundir el botón con la salida. El contacto es la condición, lo que el PLC revisa; la bobina es lo que se activa. Un contacto nunca enciende nada por sí solo.',
  mod:'En el módulo, START está en %I0.0 y la luz verde en %Q0.0. Las direcciones que empiezan con %I son entradas y las que empiezan con %Q son salidas.'},
 {s:'NO y NC',t:'Contacto abierto (NO) y contacto cerrado (NC)',life:'La luz del refrigerador: con la puerta cerrada, la puerta aprieta un botoncito y la luz está apagada. Al abrir la puerta, el botón se suelta y la luz se enciende.',
  body:'<p>Un contacto le hace una pregunta al PLC sobre un bit, que solo puede valer 1 o 0:</p><ul><li><b>Contacto NO</b> (normalmente abierto) <code>-| |-</code>: deja pasar la energía cuando el bit vale <b>1</b>.</li><li><b>Contacto NC</b> (normalmente cerrado) <code>-|/|-</code>: deja pasar la energía cuando el bit vale <b>0</b>.</li></ul><p>En el ejemplo, el botón de la puerta vale 1 cuando la puerta está cerrada. Con un contacto NC, la luz se enciende justo cuando ese bit cae a 0.</p>',
  D:{tags:{P:{a:'%I0.1',n:'PUERTA'},L:{a:'%Q0.0',n:'LUZ'}},inputs:[{t:'toggle',k:'P',label:'Puerta cerrada',on:true}],outputs:[{k:'L',label:'Luz del refrigerador'}]},
  R:[{g:[[NC('P')]],o:{t:'coil',k:'L'}}],
  tryit:'Toquen "Puerta cerrada" para abrir y cerrar la puerta. Fíjense en el valor del bit: con 1 el contacto NC corta, y con 0 deja pasar.',
+ tip:'Pensar que NC significa "apagado". NC solo indica que el contacto deja pasar la energía cuando el bit vale 0.',
  mod:'En el módulo, la luz roja se enciende con un contacto NC de LUZ START (%Q0.0): está prendida justo cuando la verde está apagada.'},
 {s:'Serie y paralelo',t:'En serie es "Y", en paralelo es "O"',life:'Una prensa industrial pide los dos botones a la vez, uno con cada mano, para que nadie meta la mano: eso es "Y". Un timbre que suena desde la puerta de enfrente o desde la de atrás: eso es "O".',
  body:'<ul><li><b>En serie</b> (uno detrás de otro): la energía pasa solo si <b>todos</b> los contactos dejan pasar. Es una condición "Y".</li><li><b>En paralelo</b> (uno encima de otro): basta con que <b>uno</b> deje pasar. Es una condición "O".</li></ul>',
@@ -1723,36 +1779,42 @@ const PL=[
    inputs:[{t:'toggle',k:'BI',label:'Botón izquierdo'},{t:'toggle',k:'BD',label:'Botón derecho'},{t:'toggle',k:'P1',label:'Puerta de enfrente'},{t:'toggle',k:'P2',label:'Puerta de atrás'}],outputs:[{k:'PR',label:'Prensa'},{k:'TI',label:'Timbre'}]},
  R:[{g:[[NO('BI')],[NO('BD')]],o:{t:'coil',k:'PR'},note:'Serie: los dos botones tienen que estar activos.'},{g:[[NO('P1'),NO('P2')]],o:{t:'coil',k:'TI'},note:'Paralelo: basta con una de las dos puertas.'}],
  tryit:'Activen un botón de la prensa y luego los dos. Después prueben las puertas por separado.',
+ tip:'Poner en paralelo condiciones que deberían ir en serie. Así la salida se activa con cualquiera de ellas, y no solo cuando se cumplen todas.',
  mod:'En el Network 2 del módulo hay cuatro condiciones en serie para sacar el cilindro 1: no estar en manual, luz verde encendida, banda en marcha y el inductivo detectando metal.'},
 {s:'Enclavamiento',t:'Enclavamiento: que se quede encendido',life:'El motor de una bomba de agua: se presiona START y la bomba sigue trabajando aunque suelten el botón. Solo se apaga con STOP.',
  body:'<p>Si la bobina dependiera solo de START, se apagaría al soltar el botón. El truco es poner, <b>en paralelo con START</b>, un contacto de la <b>misma salida</b>. Cuando la salida se enciende, ese contacto la mantiene encendida: se "enclava" o se autorretiene.</p><p>Para apagarla, se pone en serie un contacto NC de STOP: al presionarlo, corta el camino.</p>',
  D:{tags:{S:{a:'%I0.0',n:'START'},P:{a:'%I0.1',n:'STOP'},M:{a:'%Q0.2',n:'BOMBA'}},inputs:[{t:'push',k:'S',label:'START'},{t:'push',k:'P',label:'STOP'}],outputs:[{k:'M',label:'Bomba'}]},
  R:[{g:[[NO('S'),NO('M')],[NC('P')]],o:{t:'coil',k:'M'},note:'El contacto de BOMBA, debajo de START, es el que la mantiene encendida.'}],
  tryit:'Toquen START y suéltenlo: la bomba sigue encendida gracias al contacto de abajo. Después toquen STOP.',
- mod:'En este ejemplo STOP es un botón NO, para que sea fácil de entender. En el módulo real STOP es NC; eso se explica en la lección 8.'},
+ tip:'Olvidar el contacto de STOP en serie. La salida se enclava y ya nada la puede apagar.',
+ mod:'En este ejemplo STOP es un botón NO, para que sea fácil de entender. En el módulo real STOP es NC; eso se explica en la lección 11.'},
 {s:'Set y Reset',t:'Set y Reset: encender y apagar con órdenes separadas',life:'Como una lámpara con dos botones: uno solo la enciende y el otro solo la apaga. No importa cuánto tiempo los presionen.',
  body:'<ul><li>Una bobina <b>S</b> (Set) enciende el bit y lo deja encendido, aunque la condición desaparezca.</li><li>Una bobina <b>R</b> (Reset) lo apaga y lo deja apagado.</li></ul><p>El programa del módulo usa la caja <b>SR</b> de TIA Portal, que hace lo mismo en un solo bloque: la entrada S enciende y la entrada R1 apaga. Si las dos llegan a la vez, gana R1 y se apaga, que es lo más seguro.</p>',
  D:{tags:{S:{a:'%I0.0',n:'START'},P:{a:'%I0.1',n:'STOP'},M:{a:'%Q0.2',n:'BOMBA'}},inputs:[{t:'push',k:'S',label:'START'},{t:'push',k:'P',label:'STOP'}],outputs:[{k:'M',label:'Bomba'}]},
  R:[{g:[[NO('S')]],o:{t:'S',k:'M'}},{g:[[NO('P')]],o:{t:'R',k:'M'}}],
  tryit:'Toquen START y luego STOP. Fíjense que la bomba se queda como la dejó la última orden, sin necesidad de un contacto de enclavamiento.',
+ tip:'Usar Set sin ningún Reset para ese bit. Se enciende una vez y se queda encendido para siempre.',
  mod:'En el Network 1, la caja SR Tag_1 guarda el arranque de la luz verde y la caja SR Tag_2 guarda el arranque del variador.',chk:'p6'},
 {s:'TON',t:'Temporizador TON: esperar antes de activar',life:'El botón de encendido del teléfono: si lo tocan rapidito no pasa nada; hay que sostenerlo unos segundos para que encienda.',
  body:'<p>El <b>TON</b> (retardo a la conexión) cuenta tiempo mientras su entrada tiene energía:</p><ul><li><b>PT</b> es el tiempo programado, por ejemplo 3 s.</li><li><b>ET</b> es el tiempo que lleva contado.</li><li>Cuando ET llega a PT, su salida <b>Q</b> se activa.</li><li>Si la entrada se corta antes, vuelve a cero.</li></ul><p>La salida del temporizador se usa como contacto en otro escalón.</p>',
  D:{tags:{B:{a:'%I0.0',n:'BOTÓN'},T1:{a:'T1.Q',n:'TON'},PA:{a:'%Q0.0',n:'PANTALLA'}},inputs:[{t:'push',k:'B',label:'Botón de encendido'}],outputs:[{k:'PA',label:'Pantalla encendida'}]},
  R:[{g:[[NO('B')]],o:{t:'TON',k:'T1',pt:3000}},{g:[[NO('T1')]],o:{t:'coil',k:'PA'}}],
  tryit:'Sostengan el botón y miren cómo se llena la barra del TON. Si lo sueltan antes de 3 s, vuelve a cero.',
+ tip:'Esperar que el TON encienda algo por sí solo. El temporizador solo cuenta tiempo: para encender una salida hay que usar su salida Q como contacto en otro escalón.',
  mod:'Así arranca el módulo: en el Network 1, AUTO y START sostenido 3 s activan el primer TON (DB1). Otro TON (DB2) espera 3 s más para habilitar el variador.',chk:'p4'},
 {s:'CTU',t:'Contador CTU: contar veces',life:'Una caja que se llena con 3 piezas: cada pieza que cae suma uno, y al llegar a 3 se enciende el aviso de "caja llena". Un botón vacía la caja y la cuenta vuelve a cero.',
  body:'<ul><li>El <b>CTU</b> suma 1 cada vez que su entrada pasa de 0 a 1. Mantener la entrada encendida no suma más.</li><li><b>CV</b> es la cuenta actual y <b>PV</b> el número al que hay que llegar.</li><li>Cuando CV llega a PV, su salida <b>Q</b> se activa.</li><li>Con el <b>reset</b>, la cuenta vuelve a cero.</li></ul>',
  D:{tags:{SE:{a:'%I0.4',n:'PIEZA'},C1:{a:'C1.Q',n:'CONTADOR'},AV:{a:'%Q0.4',n:'CAJA LLENA'},RS:{a:'%I0.1',n:'VACIAR'}},inputs:[{t:'push',k:'SE',label:'Cae una pieza'},{t:'push',k:'RS',label:'Vaciar la caja'}],outputs:[{k:'AV',label:'Caja llena'}]},
  R:[{g:[[NO('SE')]],o:{t:'CTU',k:'C1',pv:3}},{g:[[NO('C1')]],o:{t:'coil',k:'AV'}},{g:[[NO('RS')]],o:{t:'RC',k:'C1'}}],
  tryit:'Toquen "Cae una pieza" tres veces y vean cómo sube CV. Si dejan el botón presionado, solo cuenta una vez.',
+ tip:'Olvidar el reset. Cuando CV llega a PV, la salida se queda activa hasta que alguien reinicie la cuenta.',
  mod:'El modo manual del módulo usa siete contadores, del Network 5 al 11, con PV del 1 al 7. Así cada toque de START activa un paso diferente.',chk:'p7'},
 {s:'NC del módulo',t:'El STOP y los sensores del módulo son NC',life:'Es como un hilo tendido en una puerta: mientras está entero, todo está bien; si alguien lo corta, salta la alarma. Un botón o sensor NC avisa justamente cuando su señal se corta.',
  body:'<p>Aquí hay que separar dos cosas: el <b>tipo de botón o sensor</b>, que es físico, y el <b>tipo de contacto</b> en Ladder.</p><ul><li>El <b>STOP</b> es un botón NC: sin presionar, %I0.1 vale <b>1</b>; al presionarlo cae a <b>0</b>. Si su cable se corta, también cae a 0 y el sistema se detiene, que es lo más seguro.</li><li>El <b>inductivo</b> y el <b>fotoeléctrico</b> son NC: sin pieza dan 1 y al detectar caen a 0.</li><li>Por eso, para hacer algo <b>cuando se detecta la pieza</b>, en Ladder se usa un <b>contacto NC</b>, que deja pasar cuando el bit vale 0.</li></ul>',
  D:{tags:tagsOf(['I0.2','I0.4','Q0.3']),inputs:[{t:'toggle',k:'I0.2',label:'Maneta en AUTO'},{t:'sensor',k:'I0.4',label:'Pieza de metal frente al sensor'}],outputs:[{k:'Q0.3',label:'Cilindro 1 (Y1)'}]},
  R:[{g:[[NO('I0.2')],[NC('I0.4')]],o:{t:'coil',k:'Q0.3'}}],
  tryit:'Pongan la maneta en AUTO y después pongan una pieza frente al sensor. Fíjense que %I0.4 cae a 0, y por eso el contacto NC deja pasar.',
+ tip:'Usar un contacto NO para el inductivo pensando que "detectar" es 1. En el módulo, detectar hace que el bit caiga a 0, así que se usa un contacto NC.',
  mod:'Esta es la idea del Network 2. El escalón real tiene más condiciones y usa Set y Reset para que el cilindro termine su carrera; lo pueden ver en "Programa del módulo".',chk:'s6'}
 ];
 
@@ -1825,6 +1887,12 @@ function runTests(ex,prog){
 /* ================= LADDER: PANTALLA ================= */
 const clone=o=>JSON.parse(JSON.stringify(o));
 const LP=progress.ladder;
+/* Las lecciones 1 a 3 (desde cero) se agregaron después: el avance guardado se recorre tres números */
+if(store.get('ladderV',1)<2){
+  const nl={};Object.keys(LP.l).forEach(k=>{nl[+k+3]=1;});LP.l=nl;
+  const pl=+store.get('plesson',0)||0;if(pl)store.set('plesson',pl+3);
+  store.set('progress',progress);store.set('ladderV',2);
+}
 function markPL(n){if(!LP.l[n]){LP.l[n]=1;saveP();}}
 function navHTML(n,cur,done,href,lbl){
   return Array.from({length:n},(_,i)=>'<a href="'+href(i+1)+'" class="'+(done(i+1)?'done':'')+'"'+(i+1===cur?' aria-current="step"':'')+' aria-label="'+lbl(i+1)+'"><span class="d">'+(i+1)+'</span></a>').join('');
@@ -1832,14 +1900,69 @@ function navHTML(n,cur,done,href,lbl){
 /* Lecciones */
 $('plHost').innerHTML=PL.map((l,i)=>'<article class="plesson" data-n="'+(i+1)+'" hidden>'+
   '<div class="lesson-head"><span class="eyebrow">Lección '+(i+1)+' de '+PL.length+'</span><h2>'+esc(l.t)+'</h2></div>'+
+  (l.intro?'<span class="tag">Desde cero</span>':'')+
   '<div class="keybox"><span class="eyebrow">Ejemplo de la vida diaria</span><p>'+esc(l.life)+'</p></div>'+
-  '<p class="hint"><b>Pruébenlo:</b> '+esc(l.tryit)+'</p>'+ldDiagHTML('pl'+i)+
-  '<div class="stack"><h3>Cómo funciona</h3>'+l.body+'</div>'+
+  (l.pre||'')+(l.D&&l.tryit?'<p class="hint"><b>Pruébenlo:</b> '+esc(l.tryit)+'</p>':'')+(l.D?ldDiagHTML('pl'+i):'')+(l.html||'')+(!l.D&&l.tryit?'<p class="hint"><b>Pruébenlo:</b> '+esc(l.tryit)+'</p>':'')+
+  '<div class="stack"><h3>'+(l.intro?'Expliquémoslo con calma':'Cómo funciona')+'</h3>'+l.body+'</div>'+
+  (l.tip?'<div class="card tipc"><span class="eyebrow">Error común</span><p>'+esc(l.tip)+'</p></div>':'')+
   '<div class="card"><span class="eyebrow">En el módulo</span><p>'+esc(l.mod)+'</p></div>'+
   (l.chk?'<div class="check" data-q="'+l.chk+'"></div>':'')+'</article>').join('');
 const PLS=[...document.querySelectorAll('.plesson')];
-PL.forEach((l,i)=>mountLD({D:l.D,rungs:()=>l.R,host:$('pl'+i+'Rungs'),ctl:$('pl'+i+'Ctl'),outs:$('pl'+i+'Outs')}));
+PL.forEach((l,i)=>l.D&&mountLD({D:l.D,rungs:()=>l.R,host:$('pl'+i+'Rungs'),ctl:$('pl'+i+'Ctl'),outs:$('pl'+i+'Outs')}));
 PLS.forEach(a=>a.querySelectorAll('.check').forEach(initCheck));
+/* Lección 1: el ciclo del PLC en cámara lenta */
+(function(){
+  let st=0,btn=false,read=0,out=0,paused=false;
+  const box=$('cyc');if(!box)return;
+  const draw=()=>{box.querySelectorAll('.cyc-steps li').forEach(li=>li.classList.toggle('on',+li.dataset.s===st));
+    $('cycBtn').setAttribute('aria-pressed',btn);$('cycLamp').classList.toggle('on',!!out);};
+  $('cycBtn').addEventListener('click',()=>{btn=!btn;draw();});
+  $('cycPause').addEventListener('click',()=>{paused=!paused;$('cycPause').textContent=paused?'Seguir':'Pausa';});
+  setInterval(()=>{
+    if(paused||view!=='programar'||box.offsetParent===null)return;
+    st=(st+1)%3;
+    if(st===0){read=btn?1:0;$('cy0').textContent='START = '+read+(read?' (presionado)':' (suelto)');}
+    else if(st===1)$('cy1').textContent='Regla: si START = 1, encender la luz. '+(read?'Se cumple.':'No se cumple.');
+    else{out=read;$('cy2').textContent='Luz verde = '+out+(out?' (encendida)':' (apagada)');}
+    draw();
+  },1400);
+  draw();
+})();
+/* Lección 2: lector de direcciones */
+(function(){
+  const DESC={'I0.0':'Pulsador START del panel.','I0.1':'Pulsador STOP del panel. Es NC: sin presionar vale 1.','I0.2':'Maneta en AUTO.','I0.3':'Maneta en MANUAL.','I0.4':'Sensor inductivo: detecta metal. Es NC: sin pieza vale 1.','I0.5':'Sensor fotoeléctrico: detecta que hay un objeto. Es NC.','I0.6':'Reed S3: el cilindro 1 llegó al final de su carrera.','I0.7':'Reed S4: el cilindro 2 llegó al final de su carrera.',
+    'Q0.0':'Luz verde, a través del relé K1.','Q0.1':'Luz roja, a través del relé K2.','Q0.2':'Habilita el variador que mueve la banda, a través del relé K3.','Q0.3':'Electroválvula Y1 del cilindro 1, a través del relé K4.','Q0.4':'Electroválvula Y2 del cilindro 2, a través del relé K5.','M3.5':'MARCA MANUAL: recuerda que el modo manual está habilitado.'};
+  const KIND={I:['entrada','lo que el PLC escucha'],Q:['salida','lo que el PLC ordena'],M:['marca','memoria interna del PLC']};
+  const host=$('adrChips');if(!host)return;
+  host.innerHTML=Object.keys(DESC).map(k=>'<button type="button" class="chip" data-k="'+k+'" aria-pressed="false">'+esc(MT[k][0])+'</button>').join('');
+  const show=k=>{
+    const L=k[0],[by,bi]=k.slice(1).split('.');
+    host.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',c.dataset.k===k));
+    $('adrOut').innerHTML='<div class="adr-big"><span class="ap">%</span><span class="al">'+L+'</span><span class="ab">'+by+'</span>.<span class="abt">'+bi+'</span></div>'+
+      '<ul class="adr-leg"><li><span class="ap">%</span> es una dirección del PLC.</li><li><span class="al">'+L+'</span> es una <b>'+KIND[L][0]+'</b>: '+KIND[L][1]+'.</li><li><span class="ab">'+by+'</span> es el byte '+by+', un grupo de 8 bits.</li><li><span class="abt">'+bi+'</span> es el bit '+bi+' de ese grupo (van del 0 al 7).</li></ul>'+
+      '<p><b>Etiqueta: '+esc(MT[k][1])+'.</b> '+esc(DESC[k])+'</p>';
+  };
+  host.addEventListener('click',e=>{const c=e.target.closest('.chip');if(c)show(c.dataset.k);});
+  show('I0.4');
+})();
+/* Lección 3: recorrido guiado por un escalón */
+(function(){
+  const art=PLS[2];if(!art||!$('wkNext'))return;
+  const W=[['.rail.l','Esta línea vertical de la izquierda es como el +24 V del circuito: de aquí sale la energía.'],
+    ['.ct','Esto es un contacto. Arriba dice su dirección (%I0.0) y el valor de su bit; abajo, su nombre (START). Le pregunta al PLC: "¿START vale 1?".'],
+    ['.w.fill','Si el contacto deja pasar, la energía sigue por esta línea hacia la derecha.'],
+    ['.ou','Esto es una bobina. Representa la salida %Q0.0, la luz verde. Si le llega energía, el PLC pone ese bit en 1 y la luz se enciende.'],
+    ['.rail.r','La línea de la derecha cierra el circuito, como el 0 V.'],
+    ['.lk','Ahora pruébenlo: mantengan presionado START y sigan el camino verde de izquierda a derecha.']];
+  let i=0;
+  const draw=()=>{art.querySelectorAll('.focus').forEach(e=>e.classList.remove('focus'));
+    art.querySelectorAll(W[i][0]).forEach(e=>{if(e.closest('.ldiag'))e.classList.add('focus');});
+    $('wkN').textContent='Paso '+(i+1)+' de '+W.length;$('wkT').textContent=W[i][1];
+    $('wkPrev').disabled=i===0;$('wkNext').textContent=i===W.length-1?'Volver al paso 1':'Siguiente paso';};
+  $('wkPrev').addEventListener('click',()=>{if(i>0){i--;draw();}});
+  $('wkNext').addEventListener('click',()=>{i=(i+1)%W.length;draw();});
+  draw();
+})();
 let plCur=Math.min(PL.length,Math.max(1,+store.get('plesson',1)||1));
 function showPL(n){
   plCur=n;store.set('plesson',n);
